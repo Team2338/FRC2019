@@ -1,7 +1,6 @@
 package team.gif.robot.commands.auto;
 
 import edu.wpi.first.wpilibj.command.Command;
-import team.gif.robot.subsystems.Drive;
 
 public class DoNothing extends Command {
 

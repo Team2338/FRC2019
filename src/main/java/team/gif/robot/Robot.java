@@ -1,6 +1,5 @@
 package team.gif.robot;
 
-import edu.wpi.first.hal.PowerJNI;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -19,7 +18,7 @@ import team.gif.robot.commands.auto.DoNothing;
 public class Robot extends TimedRobot {
 
     private enum FieldPosition {
-        LEFT, CENTER, RIGHT
+        LEFT, CENTER, RIGHT, HIGH_LEFT, HIGH_RIGHT
     }
 
     private enum AutoMode {
@@ -30,7 +29,6 @@ public class Robot extends TimedRobot {
     private final SendableChooser<AutoMode> autoModeChooser = new SendableChooser<>();
     private FieldPosition selectedFieldPosition;
     private AutoMode selectedAutoMode;
-    private String gameData;
     private Command auto;
 
     /**
@@ -42,6 +40,8 @@ public class Robot extends TimedRobot {
         fieldPositionChooser.setDefaultOption("Left", FieldPosition.LEFT);
         fieldPositionChooser.addOption("Center", FieldPosition.CENTER);
         fieldPositionChooser.addOption("Right", FieldPosition.RIGHT);
+        fieldPositionChooser.addOption("High Left", FieldPosition.HIGH_LEFT);
+        fieldPositionChooser.addOption("High Right", FieldPosition.HIGH_RIGHT);
         SmartDashboard.putData("Field Position", fieldPositionChooser);
 
         autoModeChooser.setDefaultOption("Do Something", AutoMode.DO_SOMETHING);
@@ -71,8 +71,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         selectedFieldPosition = fieldPositionChooser.getSelected();
         selectedAutoMode = autoModeChooser.getSelected();
-        gameData = DriverStation.getInstance().getGameSpecificMessage();
-        System.out.println("Position: " + selectedFieldPosition + ", Auto: " + selectedAutoMode + ", Data: " + gameData);
+        System.out.println("Position: " + selectedFieldPosition + ", Auto: " + selectedAutoMode);
 
         if (selectedAutoMode == AutoMode.DO_SOMETHING) {
             if (selectedFieldPosition == FieldPosition.LEFT) {

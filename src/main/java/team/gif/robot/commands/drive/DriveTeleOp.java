@@ -1,14 +1,14 @@
 package team.gif.robot.commands.drive;
 
 import edu.wpi.first.wpilibj.command.Command;
-import team.gif.robot.subsystems.Drive;
+import team.gif.robot.subsystems.Drivetrain;
 
 public class DriveTeleOp extends Command {
 
-    private Drive drive = Drive.getInstance();
+    private Drivetrain drivetrain = Drivetrain.getInstance();
 
     public DriveTeleOp() {
-        requires(drive);
+        requires(drivetrain);
     }
 
     @Override
