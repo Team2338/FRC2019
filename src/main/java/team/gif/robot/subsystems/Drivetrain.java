@@ -5,15 +5,18 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import team.gif.lib.Odometry;
 import team.gif.robot.RobotMap;
-import team.gif.robot.commands.drive.DriveTeleOp;
+import team.gif.robot.commands.drivetrain.DriveTeleOp;
 
 public class Drivetrain extends Subsystem {
 
     private static Drivetrain instance;
 
-    private TalonSRX leftMaster, rightMaster;
-    private VictorSPX leftSlave, rightSlave;
+    private final TalonSRX leftMaster, rightMaster;
+    private final VictorSPX leftSlave, rightSlave;
+
+    private Odometry odometry = new Odometry();
 
     private Drivetrain() {
         leftMaster = new TalonSRX(RobotMap.LEFT_MASTER_ID);
@@ -41,12 +44,53 @@ public class Drivetrain extends Subsystem {
         return instance;
     }
 
-    public void setLeft(double leftPercent) {
-
+    /**
+     * Sets the percent output of both sides of the drivetrain.
+     *
+     * @param left output percent (-1.0 to +1.0)
+     * @param right output percent (-1.0 to +1.0)
+     */
+    public void setOutput(double left, double right) {
+        // do a thing
     }
 
-    public void setRight(double rightPercent) {
+    /**
+     * Accumulated position of the left side of the drivetrain.
+     *
+     * @return left position in ticks
+     */
+    public int getLeftEncPosition() {
+        return 0;
+    }
 
+    /**
+     * Accumulated position of the right side of the drivetrain.
+     *
+     * @return right position in ticks
+     */
+    public int getRightEncPosition() {
+        return 0;
+    }
+
+    public double getLeftPosition() {
+        return 0.0;
+    }
+
+    public double getRightPosition() {
+        return 0.0;
+    }
+
+    /**
+     * Accumulated heading of the robot.
+     *
+     * @return heading in degrees
+     */
+    public double getHeading() {
+        return 0.0;
+    }
+
+    public void resetOdometry() {
+        odometry.reset();
     }
 
     @Override

@@ -6,7 +6,10 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.WPILibVersion;
+import team.gif.lib.AutoMode;
+import team.gif.lib.AutoPosition;
 import team.gif.robot.commands.auto.DoNothing;
+import team.gif.robot.subsystems.Drivetrain;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -17,19 +20,17 @@ import team.gif.robot.commands.auto.DoNothing;
  */
 public class Robot extends TimedRobot {
 
-    private enum FieldPosition {
-        LEFT, CENTER, RIGHT, HIGH_LEFT, HIGH_RIGHT
-    }
+    private Drivetrain drivetrain = Drivetrain.getInstance();
 
-    private enum AutoMode {
-        DO_SOMETHING, DO_SOMETHING_ELSE
-    }
-
-    private final SendableChooser<FieldPosition> fieldPositionChooser = new SendableChooser<>();
+    private final SendableChooser<AutoPosition> autoPositionChooser = new SendableChooser<>();
     private final SendableChooser<AutoMode> autoModeChooser = new SendableChooser<>();
-    private FieldPosition selectedFieldPosition;
+    private AutoPosition selectedAutoPosition;
     private AutoMode selectedAutoMode;
     private Command auto;
+
+    public Robot() {
+        super(0.01);
+    }
 
     /**
      * This function is run when the robot is first started up and should be
@@ -37,12 +38,12 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        fieldPositionChooser.setDefaultOption("Left", FieldPosition.LEFT);
-        fieldPositionChooser.addOption("Center", FieldPosition.CENTER);
-        fieldPositionChooser.addOption("Right", FieldPosition.RIGHT);
-        fieldPositionChooser.addOption("High Left", FieldPosition.HIGH_LEFT);
-        fieldPositionChooser.addOption("High Right", FieldPosition.HIGH_RIGHT);
-        SmartDashboard.putData("Field Position", fieldPositionChooser);
+        autoPositionChooser.setDefaultOption("Left", AutoPosition.LEFT);
+        autoPositionChooser.addOption("Center", AutoPosition.CENTER);
+        autoPositionChooser.addOption("Right", AutoPosition.RIGHT);
+        autoPositionChooser.addOption("High Left", AutoPosition.HIGH_LEFT);
+        autoPositionChooser.addOption("High Right", AutoPosition.HIGH_RIGHT);
+        SmartDashboard.putData("Field Position", autoPositionChooser);
 
         autoModeChooser.setDefaultOption("Do Something", AutoMode.DO_SOMETHING);
         autoModeChooser.addOption("Do Something Else", AutoMode.DO_SOMETHING_ELSE);
@@ -69,24 +70,24 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        selectedFieldPosition = fieldPositionChooser.getSelected();
+        selectedAutoPosition = autoPositionChooser.getSelected();
         selectedAutoMode = autoModeChooser.getSelected();
-        System.out.println("Position: " + selectedFieldPosition + ", Auto: " + selectedAutoMode);
+        System.out.println("Position: " + selectedAutoPosition + ", Mode: " + selectedAutoMode);
 
         if (selectedAutoMode == AutoMode.DO_SOMETHING) {
-            if (selectedFieldPosition == FieldPosition.LEFT) {
+            if (selectedAutoPosition == AutoPosition.LEFT) {
                 auto = new DoNothing();
-            } else if (selectedFieldPosition == FieldPosition.CENTER) {
+            } else if (selectedAutoPosition == AutoPosition.CENTER) {
                 auto = new DoNothing();
-            } else if (selectedFieldPosition == FieldPosition.RIGHT) {
+            } else if (selectedAutoPosition == AutoPosition.RIGHT) {
                 auto = new DoNothing();
             }
         } else if (selectedAutoMode == AutoMode.DO_SOMETHING_ELSE) {
-            if (selectedFieldPosition == FieldPosition.LEFT) {
+            if (selectedAutoPosition == AutoPosition.LEFT) {
                 auto = new DoNothing();
-            } else if (selectedFieldPosition == FieldPosition.CENTER) {
+            } else if (selectedAutoPosition == AutoPosition.CENTER) {
                 auto = new DoNothing();
-            } else if (selectedFieldPosition == FieldPosition.RIGHT) {
+            } else if (selectedAutoPosition == AutoPosition.RIGHT) {
                 auto = new DoNothing();
             }
         }
@@ -118,21 +119,5 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-    }
-
-    /**
-     * This function is called once each time the robot enters test mode.
-     */
-    @Override
-    public void testInit() {
-
-    }
-
-    /**
-     * This function is called periodically during test mode.
-     */
-    @Override
-    public void testPeriodic() {
-
     }
 }

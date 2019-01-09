@@ -1,4 +1,4 @@
-package team.gif.robot.commands.drive;
+package team.gif.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.command.Command;
 import team.gif.robot.subsystems.Drivetrain;
@@ -22,12 +22,12 @@ public class DriveTeleOp extends Command {
     }
 
     @Override
-    protected void end() {
-
+    protected boolean isFinished() {
+        return false;
     }
 
     @Override
-    protected boolean isFinished() {
-        return false;
+    protected void end() {
+
     }
 }

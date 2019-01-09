@@ -19,12 +19,12 @@ public class DoNothing extends Command {
     }
 
     @Override
-    protected void end() {
-
+    protected boolean isFinished() {
+        return true;
     }
 
     @Override
-    protected boolean isFinished() {
-        return true;
+    protected void end() {
+
     }
 }

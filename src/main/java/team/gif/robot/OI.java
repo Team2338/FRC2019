@@ -11,6 +11,7 @@ public class OI {
     private OI() {
         driver = new XboxController(RobotMap.DRIVER_CONTROLLER_ID);
         aux = new XboxController(RobotMap.AUX_CONTROLLER_ID);
+
     }
 
     public static OI getInstance() {
