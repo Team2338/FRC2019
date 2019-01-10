@@ -5,8 +5,10 @@ import team.gif.robot.subsystems.Drivetrain;
 
 public class Odometry implements Runnable {
 
-    Drivetrain drive = Drivetrain.getInstance();
-    Notifier notifier = new Notifier(this);
+    private static Odometry instance;
+
+    private Drivetrain drive = Drivetrain.getInstance();
+    private Notifier notifier = new Notifier(this);
 
     private double currPos;
     private double lastPos;
@@ -15,8 +17,15 @@ public class Odometry implements Runnable {
     private double x;
     private double y;
 
-    public Odometry() {
+    private Odometry() {
         notifier.startPeriodic(0.005);
+    }
+
+    public static Odometry getInstance() {
+        if (instance == null) {
+            instance = new Odometry();
+        }
+        return instance;
     }
 
     @Override

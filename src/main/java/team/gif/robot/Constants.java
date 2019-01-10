@@ -2,6 +2,21 @@ package team.gif.robot;
 
 public abstract class Constants {
 
+    public static final double CAMERA_HEIGHT = 6.0; // Ground to lens height (in)
+    public static final double TARGET_TAPE_LENGTH = 5.5; // Length of one strip of vision tape (in)
+    public static final double TARGET_TAPE_WIDTH = 2.0; // Width of one strip of vision tape (in)
+    public static final double TARGET_TAPE_ANGLE = 14.5; // Angle of tape tilt (degrees)
+    public static final double LOW_TARGET_TOP_HEIGHT = 31.5; // Ground to top of low target height (in)
+    public static final double HIGH_TARGET_TOP_HEIGHT = 39.125; // Ground to top of high target height (in)
+    public static final double TARGET_INNER_WIDTH = 8.0; // Gap at closest points of target tape (in)
+    public static final double TARGET_TAPE_VERTICAL_CENTER = (TARGET_TAPE_LENGTH * Math.cos(Math.toRadians(TARGET_TAPE_ANGLE))
+            + TARGET_TAPE_WIDTH * Math.sin(Math.toRadians(14.5))) / 2; // Half of individual tape height after tilt (in)
+    public static final double TARGET_TAPE_HORIZONTAL_CENTER = (TARGET_TAPE_WIDTH * Math.cos(Math.toRadians(TARGET_TAPE_ANGLE))
+            + TARGET_TAPE_LENGTH * Math.sin(Math.toRadians(14.5))) / 2; // Half of individual tape width after tilt (in)
+    public static final double LOW_TARGET_CENTER_HEIGHT = LOW_TARGET_TOP_HEIGHT - TARGET_TAPE_VERTICAL_CENTER; // Ground to low target center (in)
+    public static final double HIGH_TARGET_CENTER_HEIGHT = HIGH_TARGET_TOP_HEIGHT - TARGET_TAPE_VERTICAL_CENTER; // Ground to high target center (in)
+    public static final double TARGET_CENTER_WIDTH = 2 * TARGET_TAPE_HORIZONTAL_CENTER + TARGET_INNER_WIDTH; // Center to center target width (in)
+
     public class Drivetrain {
         // Physical Stuff
         public static final double WHEEL_DIAMETER = 6.0;

@@ -1,14 +1,14 @@
 package team.gif.robot;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.WPILibVersion;
 import team.gif.lib.AutoMode;
 import team.gif.lib.AutoPosition;
-import team.gif.robot.commands.auto.DoNothing;
+import team.gif.robot.commands.auto.AutoTemplate;
 import team.gif.robot.subsystems.Drivetrain;
 
 /**
@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
     private final SendableChooser<AutoMode> autoModeChooser = new SendableChooser<>();
     private AutoPosition selectedAutoPosition;
     private AutoMode selectedAutoMode;
-    private Command auto;
+    private CommandGroup auto;
 
     public Robot() {
         super(0.01);
@@ -76,19 +76,19 @@ public class Robot extends TimedRobot {
 
         if (selectedAutoMode == AutoMode.DO_SOMETHING) {
             if (selectedAutoPosition == AutoPosition.LEFT) {
-                auto = new DoNothing();
+                auto = new AutoTemplate();
             } else if (selectedAutoPosition == AutoPosition.CENTER) {
-                auto = new DoNothing();
+                auto = new AutoTemplate();
             } else if (selectedAutoPosition == AutoPosition.RIGHT) {
-                auto = new DoNothing();
+                auto = new AutoTemplate();
             }
         } else if (selectedAutoMode == AutoMode.DO_SOMETHING_ELSE) {
             if (selectedAutoPosition == AutoPosition.LEFT) {
-                auto = new DoNothing();
+                auto = new AutoTemplate();
             } else if (selectedAutoPosition == AutoPosition.CENTER) {
-                auto = new DoNothing();
+                auto = new AutoTemplate();
             } else if (selectedAutoPosition == AutoPosition.RIGHT) {
-                auto = new DoNothing();
+                auto = new AutoTemplate();
             }
         }
 
@@ -103,6 +103,9 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
+        if (OI.getInstance().getAutoCancel()) {
+            auto.cancel();
+        }
     }
 
     /**
@@ -110,7 +113,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-
+        if (auto != null) {
+            auto.cancel();
+        }
     }
 
     /**

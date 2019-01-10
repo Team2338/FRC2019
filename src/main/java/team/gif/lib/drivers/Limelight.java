@@ -147,7 +147,43 @@ public class Limelight {
     }
 
     /**
-     * Returns a data value from 1 of 3 raw contours given a valid key.
+     * Returns sidelength of the shortest side of the fitted bounding box.
+     *
+     * @return sidelength in pixels
+     */
+    public int getShortLength() {
+        return table.getEntry("tshort").getNumber(0).intValue();
+    }
+
+    /**
+     * Returns sidelength of the longest side of the fitted bounding box.
+     *
+     * @return sidelength in pixels
+     */
+    public int getLongLength() {
+        return table.getEntry("tlong").getNumber(0).intValue();
+    }
+
+    /**
+     * Returns horizontal sidelength of the rough bounding box.
+     *
+     * @return sidelength in pixels (0 to 320)
+     */
+    public int getHorizLength() {
+        return table.getEntry("thoriz").getNumber(0).intValue();
+    }
+
+    /**
+     * Returns vertical sidelength of the rough bounding box.
+     *
+     * @return sidelength in pixels (0 to 320)
+     */
+    public int getVertLength() {
+        return table.getEntry("tvert").getNumber(0).intValue();
+    }
+
+    /**
+     * Returns a data value from 1 of 3 raw (ungrouped) contours given a valid key.
      *
      * "tx[num]" : x position in normalized screenspace (-1 to +1)
      * "ty[num]" : y position in normalized screenspace (-1 to +1)

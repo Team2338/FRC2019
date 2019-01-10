@@ -16,7 +16,7 @@ public class Drivetrain extends Subsystem {
     private final TalonSRX leftMaster, rightMaster;
     private final VictorSPX leftSlave, rightSlave;
 
-    private Odometry odometry = new Odometry();
+    private Odometry odometry = Odometry.getInstance();
 
     private Drivetrain() {
         leftMaster = new TalonSRX(RobotMap.LEFT_MASTER_ID);
