@@ -39,7 +39,7 @@ public class LimelightMethods extends Command {
 
     }
     protected double getSkewHorz(){
-        double dTheta = pixelsToAngles(limelight.getHorizLength(), 320, CAMERA_HORZ_FOV)/2;
+        double dTheta = pixelsToAngles(limelight.getHorizLength(), CAMERA_RES_HORZ, CAMERA_HORZ_FOV)/2;
         double w =  (TARGET_TAPE_HORIZONTAL_CENTER*4 + TARGET_INNER_WIDTH)/2 ;
         double phi  = Math.asin((getDistance()*Math.sin(dTheta))/w);
         double ang1 = Math.toRadians(180) - dTheta - phi;
