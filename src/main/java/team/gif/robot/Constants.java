@@ -3,6 +3,11 @@ package team.gif.robot;
 public abstract class Constants {
 
     public static final double CAMERA_HEIGHT = 6.0; // Ground to lens height (in)
+    public static final double CAMERA_ANGLE = 0; // Angle of the camera to the ground
+    public static final double CAMERA_HORZ_FOV = 54; //Camera horizontal FOV in radians
+    public static final double CAMERA_VERT_FOV = 41; // Camera vertical FOV in radians
+    public static final int CAMERA_RES_HORZ = 32;
+    public static final int CAMERA_RES_VERT=240;
     public static final double TARGET_TAPE_LENGTH = 5.5; // Length of one strip of vision tape (in)
     public static final double TARGET_TAPE_WIDTH = 2.0; // Width of one strip of vision tape (in)
     public static final double TARGET_TAPE_ANGLE = 14.5; // Angle of tape tilt (degrees)
