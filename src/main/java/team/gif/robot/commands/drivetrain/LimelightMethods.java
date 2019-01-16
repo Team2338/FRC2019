@@ -26,8 +26,9 @@ public class LimelightMethods extends Command {
 
     protected double getDistance(){
         double yOffset = limelight.getYOffset();
-        double distance = (LOW_TARGET_CENTER_HEIGHT - CAMERA_HEIGHT) / Math.tan(Math.toRadians(CAMERA_ANGLE + yOffset));
-        return distance;
+//        double distance = (LOW_TARGET_CENTER_HEIGHT - CAMERA_HEIGHT) / Math.tan(Math.toRadians(CAMERA_ANGLE + yOffset));
+//        return distance;
+        return 0;
     }
 
     protected double pixelsToAngles(double pixelLength, int pixelAmount, double angleFOV){
@@ -39,14 +40,14 @@ public class LimelightMethods extends Command {
 
     }
     protected double getSkewHorz(){
-        double dTheta = pixelsToAngles(limelight.getHorizLength(), CAMERA_RES_HORZ, CAMERA_HORZ_FOV)/2;
-        double w =  (TARGET_TAPE_HORIZONTAL_CENTER*4 + TARGET_INNER_WIDTH)/2 ;
-        double phi  = Math.asin((getDistance()*Math.sin(dTheta))/w);
-        double ang1 = Math.toRadians(180) - dTheta - phi;
-        double ang2 = phi-dTheta;
-        return ang1;
+//        double dTheta = pixelsToAngles(limelight.getHorizLength(), CAMERA_RES_HORZ, CAMERA_HORZ_FOV)/2;
+//        double w =  (TARGET_TAPE_HORIZONTAL_CENTER*4 + TARGET_INNER_WIDTH)/2 ;
+//        double phi  = Math.asin((getDistance()*Math.sin(dTheta))/w);
+//        double ang1 = Math.toRadians(180) - dTheta - phi;
+//        double ang2 = phi-dTheta;
+//        return ang1;
 
-
+return 0;
     }
 
     @Override

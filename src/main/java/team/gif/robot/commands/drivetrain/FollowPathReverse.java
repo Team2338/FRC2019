@@ -52,7 +52,7 @@ public class FollowPathReverse extends Command {
         double headingTarget = Math.toDegrees(-leftFollower.getHeading()); //TODO: Check if both followers yield same heading.
         double turn = rotatePID.getOutput(heading, headingTarget);
 
-        drivetrain.setOutput(-(leftOutput + turn), -(rightOutput - turn));
+        drivetrain.setOutputs(-(leftOutput + turn), -(rightOutput - turn));
     }
 
     @Override
@@ -62,6 +62,6 @@ public class FollowPathReverse extends Command {
 
     @Override
     protected void end() {
-        drivetrain.setOutput(0.0, 0.0);
+        drivetrain.setOutputs(0.0, 0.0);
     }
 }

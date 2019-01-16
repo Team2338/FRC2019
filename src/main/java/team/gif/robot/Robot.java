@@ -28,10 +28,6 @@ public class Robot extends TimedRobot {
     private AutoMode selectedAutoMode;
     private CommandGroup auto;
 
-    public Robot() {
-        super(0.01);
-    }
-
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -49,6 +45,8 @@ public class Robot extends TimedRobot {
         autoModeChooser.addOption("Do Something Else", AutoMode.DO_SOMETHING_ELSE);
         SmartDashboard.putData("Auto Mode", autoModeChooser);
 
+        drivetrain.beginOdometry();
+
         System.out.println("Robot Initialized. WPILib V" + WPILibVersion.Version);
     }
 
@@ -62,6 +60,16 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
+
+    }
+
+    @Override
+    public void disabledInit() {
+
+    }
+
+    @Override
+    public void disabledPeriodic() {
 
     }
 
@@ -125,4 +133,5 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
     }
+
 }

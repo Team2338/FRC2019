@@ -3,12 +3,12 @@ package team.gif.lib;
 import edu.wpi.first.wpilibj.Notifier;
 import team.gif.robot.subsystems.Drivetrain;
 
-public class Odometry implements Runnable {
+public class Odometry implements Runnable{
 
     private static Odometry instance;
 
-    private Drivetrain drive = Drivetrain.getInstance();
-    private Notifier notifier = new Notifier(this);
+    private Drivetrain drive;
+    private Notifier notifier;
 
     private double currPos;
     private double lastPos;
@@ -18,7 +18,8 @@ public class Odometry implements Runnable {
     private double y;
 
     private Odometry() {
-        notifier.startPeriodic(0.005);
+        drive = Drivetrain.getInstance();
+        notifier = new Notifier(this);
     }
 
     public static Odometry getInstance() {
@@ -28,13 +29,17 @@ public class Odometry implements Runnable {
         return instance;
     }
 
+    public void start() {
+        notifier.startPeriodic(0.005);
+    }
+
     @Override
     public void run() {
-        currPos = (drive.getLeftPosition() + drive.getRightPosition())/2.0;
+        currPos = (drive.getLeftPosition() + drive.getRightPosition()) / 2.0;
         deltaPos = currPos - lastPos;
-        theta = drive.getHeading();
-        x +=  Math.cos(Math.toRadians(theta)) * deltaPos;
-        y +=  Math.sin(Math.toRadians(theta)) * deltaPos;
+        theta = Math.toRadians(drive.getHeading());
+        x +=  Math.cos(theta) * deltaPos;
+        y +=  Math.sin(theta) * deltaPos;
         lastPos = currPos;
     }
 

@@ -1,11 +1,12 @@
 package team.gif.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxFrames;
+import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import team.gif.lib.Odometry;
+import team.gif.robot.Constants;
 import team.gif.robot.RobotMap;
 import team.gif.robot.commands.drivetrain.DriveTeleOp;
 
@@ -13,28 +14,19 @@ public class Drivetrain extends Subsystem {
 
     private static Drivetrain instance;
 
-    private final TalonSRX leftMaster, rightMaster;
-    private final VictorSPX leftSlave, rightSlave;
-
-    private Odometry odometry = Odometry.getInstance();
+    private final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
+    private Odometry odometry;
 
     private Drivetrain() {
-        leftMaster = new TalonSRX(RobotMap.LEFT_MASTER_ID);
-        leftSlave = new VictorSPX(RobotMap.LEFT_SLAVE_ID);
-        rightMaster = new TalonSRX(RobotMap.RIGHT_MASTER_ID);
-        rightSlave = new VictorSPX(RobotMap.RIGHT_SLAVE_ID);
+        leftMaster = configNeo(RobotMap.LEFT_MASTER_ID);
+        leftSlave = configNeo(RobotMap.LEFT_SLAVE_ID);
+        rightMaster = configNeo(RobotMap.RIGHT_MASTER_ID);
+        rightSlave = configNeo(RobotMap.RIGHT_SLAVE_ID);
 
-        leftMaster.configFactoryDefault();
-        leftSlave.configFactoryDefault();
-        rightMaster.configFactoryDefault();
-        rightSlave.configFactoryDefault();
-        leftMaster.setNeutralMode(NeutralMode.Brake);
-        leftSlave.setNeutralMode(NeutralMode.Brake);
-        rightMaster.setNeutralMode(NeutralMode.Brake);
-        rightSlave.setNeutralMode(NeutralMode.Brake);
+        rightMaster.setInverted(true);
 
-        leftSlave.set(ControlMode.Follower, RobotMap.LEFT_MASTER_ID);
-        rightSlave.set(ControlMode.Follower, RobotMap.RIGHT_MASTER_ID);
+        leftSlave.follow(leftMaster, false);
+        rightSlave.follow(rightMaster, false);
     }
 
     public static Drivetrain getInstance() {
@@ -45,52 +37,102 @@ public class Drivetrain extends Subsystem {
     }
 
     /**
-     * Sets the percent output of both sides of the drivetrain.
+     * Sets the percent voltage output of both sides of the drivetrain.
      *
      * @param left output percent (-1.0 to +1.0)
      * @param right output percent (-1.0 to +1.0)
      */
-    public void setOutput(double left, double right) {
-        // do a thing
+    public void setOutputs(double left, double right) {
+        leftMaster.set(left);
+        rightMaster.set(right);
     }
 
     /**
-     * Accumulated position of the left side of the drivetrain.
-     *
-     * @return left position in ticks
+     * @return native encoder position in ticks
      */
     public int getLeftEncPosition() {
         return 0;
     }
 
     /**
-     * Accumulated position of the right side of the drivetrain.
-     *
-     * @return right position in ticks
+     * @return native encoder position in ticks
      */
     public int getRightEncPosition() {
         return 0;
     }
 
+    /**
+     * @return encoder position in inches
+     */
     public double getLeftPosition() {
-        return 0.0;
+        return getLeftEncPosition() * Constants.Drivetrain.TICKS_TO_INCHES;
     }
 
+    /**
+     * @return encoder position in inches
+     */
     public double getRightPosition() {
+        return getRightEncPosition() * Constants.Drivetrain.TICKS_TO_INCHES;
+    }
+
+    /**
+     * @return native encoder velocity in ticks/100ms
+     */
+    public double getLeftEncVelocity() {
         return 0.0;
     }
 
     /**
-     * Accumulated heading of the robot.
-     *
-     * @return heading in degrees
+     * @return native encoder velocity in ticks/100ms
+     */
+    public double getRightEncVelocity() {
+        return 0.0;
+    }
+
+    /**
+     * @return encoder velocity in rad/s
+     */
+    public double getLeftVelocity() {
+        return getLeftEncVelocity() * Constants.Drivetrain.TICKS_PER_100MS_TO_RADS_PER_S;
+    }
+
+    /**
+     * @return encoder velocity in rad/s
+     */
+    public double getRightVelocity() {
+        return getRightEncVelocity() * Constants.Drivetrain.TICKS_PER_100MS_TO_RADS_PER_S;
+    }
+
+    /**
+     * @return motor velocity in rpm
+     */
+    public double getLeftMotorVelocity() {
+        return leftMaster.getEncoder().getVelocity();
+    }
+
+    /**
+     * @return motor velocity in rpm
+     */
+    public double getRightMotorVelocity() {
+        return rightMaster.getEncoder().getVelocity();
+    }
+
+    /**
+     * @return accumulated heading in degrees
      */
     public double getHeading() {
         return 0.0;
     }
 
-    public void resetOdometry() {
-        odometry.reset();
+    public void beginOdometry() {
+        odometry = Odometry.getInstance();
+        odometry.start();
+    }
+
+    private CANSparkMax configNeo(int id) {
+        CANSparkMax spark = new CANSparkMax(id, CANSparkMaxLowLevel.MotorType.kBrushless);
+        spark.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        return spark;
     }
 
     @Override
