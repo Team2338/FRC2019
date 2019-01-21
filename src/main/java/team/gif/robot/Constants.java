@@ -68,6 +68,10 @@ public abstract class Constants {
 
     public static class Climber {
         public static final double VARIABLE_RATE_PISTON_PERIOD = 0.2; // Resolution of the solenoid PWM in seconds
+        public static final double COR_TO_SIDE = 0;//Center of Robot to side
+        public static final double COR_TO_FRONT = 0;//Center of Robot to front
+
+
     }
 
     /*

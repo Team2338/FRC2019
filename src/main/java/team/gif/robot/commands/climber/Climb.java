@@ -30,13 +30,21 @@ public class Climb extends Command {
     protected void execute() {
         time = Timer.getFPGATimestamp();
 
-        double[] ypr_deg = drivetrain.getYawPitchRoll();
+        //Blocked out below code cause not being used
+        //double[] ypr_deg = drivetrain.getYawPitchRoll();
         double[] errors = climber.getBalanceError();
+//        double[] heightError = climber.getRelativeHeight();
 
         climber.setFrontLeft(1.0 - (kP * errors[0]), time);
         climber.setRearLeft(0.75 - (kP * errors[1]), time);
         climber.setFrontRight(1.0 - (kP * errors[2]), time);
         climber.setRearRight(0.75 - (kP * errors[3]), time);
+
+//        climber.setFrontLeft(.6 - (kP * heightError[0]), time);
+//        climber.setRearLeft(0.6 - (kP * heightError[1]), time);
+//        climber.setFrontRight(.6 - (kP * heightError[2]), time);
+//        climber.setRearRight(0.6 - (kP * heightError[3]), time);
+
 
 //        climber.setFrontLeft(0.75, timeMs);
 //        climber.setRearLeft(0.5, timeMs);

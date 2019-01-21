@@ -71,6 +71,17 @@ public class Climber extends Subsystem {
         return new double[] {frontLeftError, rearLeftError, frontRightError, rearRightError};
     }
 
+    public double[] getRelativeHeight(){
+        double pitch = getYawPitchRoll()[1];
+        double roll = getYawPitchRoll()[2];
+        //Measures the height of each corner relative to the center of the robot as the error
+        double frontRightHeight = Constants.Climber.COR_TO_SIDE * Math.sin(roll) + Constants.Climber.COR_TO_FRONT * Math.sin(pitch);
+        double frontLeftHeight = -Constants.Climber.COR_TO_SIDE * Math.sin(roll) + Constants.Climber.COR_TO_FRONT * Math.sin(pitch);
+        double rearRightHeight = Constants.Climber.COR_TO_SIDE * Math.sin(roll) - Constants.Climber.COR_TO_FRONT * Math.sin(pitch);
+        double rearLeftHeight = -Constants.Climber.COR_TO_SIDE * Math.sin(roll) - Constants.Climber.COR_TO_FRONT * Math.sin(pitch);
+        return new double[] {frontLeftHeight, rearLeftHeight, frontRightHeight, rearRightHeight};
+    }
+
     @Override
     protected void initDefaultCommand() {
 
