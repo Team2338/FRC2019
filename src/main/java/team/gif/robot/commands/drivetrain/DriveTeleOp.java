@@ -2,7 +2,6 @@ package team.gif.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.command.Command;
-//import team.gif.lib.DriveController;
 import team.gif.lib.DriveController;
 import team.gif.robot.OI;
 import team.gif.robot.subsystems.Drivetrain;

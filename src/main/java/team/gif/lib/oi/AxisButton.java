@@ -17,7 +17,7 @@ public class AxisButton extends Button {
      *
      * Returns true when the axis passes a specified threshold.
      *
-     * @param joystick the {@link GenericHID} object that has the axis (e.g. Joystick, KinectStick, etc)
+     * @param joystick {@link GenericHID} that has the axis (e.g. Joystick, KinectStick, etc)
      * @param axisNumber the axis number (see {@link GenericHID#getRawAxis(int)})
      * @param threshold the threshold to surpass
      */

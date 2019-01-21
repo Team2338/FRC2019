@@ -3,12 +3,14 @@ package team.gif.robot;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.WPILibVersion;
 import team.gif.lib.AutoMode;
 import team.gif.lib.AutoPosition;
-import team.gif.robot.commands.auto.AutoTemplate;
+import team.gif.robot.commands.CommandGroupTemplate;
+import team.gif.robot.subsystems.Climber;
 import team.gif.robot.subsystems.Drivetrain;
 
 /**
@@ -21,6 +23,7 @@ import team.gif.robot.subsystems.Drivetrain;
 public class Robot extends TimedRobot {
 
     private Drivetrain drivetrain = Drivetrain.getInstance();
+    private Climber climber = Climber.getInstance();
 
     private final SendableChooser<AutoPosition> autoPositionChooser = new SendableChooser<>();
     private final SendableChooser<AutoMode> autoModeChooser = new SendableChooser<>();
@@ -34,16 +37,19 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        autoPositionChooser.setDefaultOption("Left", AutoPosition.LEFT);
-        autoPositionChooser.addOption("Center", AutoPosition.CENTER);
-        autoPositionChooser.addOption("Right", AutoPosition.RIGHT);
-        autoPositionChooser.addOption("High Left", AutoPosition.HIGH_LEFT);
-        autoPositionChooser.addOption("High Right", AutoPosition.HIGH_RIGHT);
-        SmartDashboard.putData("Field Position", autoPositionChooser);
+        autoPositionChooser.setDefaultOption("L1: Left", AutoPosition.L1_LEFT);
+        autoPositionChooser.addOption("L1: Center", AutoPosition.L1_CENTER);
+        autoPositionChooser.addOption("L1: Right", AutoPosition.L1_RIGHT);
+        autoPositionChooser.addOption("L2: Left", AutoPosition.L2_LEFT);
+        autoPositionChooser.addOption("L2: Right", AutoPosition.L2_RIGHT);
+        Shuffleboard.getTab("Auto").add("Field Position", autoPositionChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
 
         autoModeChooser.setDefaultOption("Do Something", AutoMode.DO_SOMETHING);
         autoModeChooser.addOption("Do Something Else", AutoMode.DO_SOMETHING_ELSE);
-        SmartDashboard.putData("Auto Mode", autoModeChooser);
+        Shuffleboard.getTab("Auto").add("Auto Mode", autoModeChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
+
+        selectedAutoPosition = autoPositionChooser.getSelected();
+        selectedAutoMode = autoModeChooser.getSelected();
 
         drivetrain.beginOdometry();
 
@@ -53,7 +59,7 @@ public class Robot extends TimedRobot {
     /**
      * This function is called every robot packet, no matter the mode. Use
      * this for items like diagnostics that you want ran during disabled,
-     * autonomous, teleoperated and test.
+     * autonomous, and tele-op.
      *
      * <p>This runs after the mode specific periodic functions, but before
      * LiveWindow and SmartDashboard integrated updating.
@@ -70,7 +76,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-
+        if (!selectedAutoPosition.equals(autoPositionChooser.getSelected()) || !selectedAutoMode.equals(autoModeChooser.getSelected())) {
+            updateSelectedAuto();
+        }
     }
 
     /**
@@ -78,27 +86,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        selectedAutoPosition = autoPositionChooser.getSelected();
-        selectedAutoMode = autoModeChooser.getSelected();
-        System.out.println("Position: " + selectedAutoPosition + ", Mode: " + selectedAutoMode);
-
-        if (selectedAutoMode == AutoMode.DO_SOMETHING) {
-            if (selectedAutoPosition == AutoPosition.LEFT) {
-                auto = new AutoTemplate();
-            } else if (selectedAutoPosition == AutoPosition.CENTER) {
-                auto = new AutoTemplate();
-            } else if (selectedAutoPosition == AutoPosition.RIGHT) {
-                auto = new AutoTemplate();
-            }
-        } else if (selectedAutoMode == AutoMode.DO_SOMETHING_ELSE) {
-            if (selectedAutoPosition == AutoPosition.LEFT) {
-                auto = new AutoTemplate();
-            } else if (selectedAutoPosition == AutoPosition.CENTER) {
-                auto = new AutoTemplate();
-            } else if (selectedAutoPosition == AutoPosition.RIGHT) {
-                auto = new AutoTemplate();
-            }
-        }
+        updateSelectedAuto();
 
         if (auto != null) {
             auto.start();
@@ -111,27 +99,65 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
-        if (OI.getInstance().getAutoCancel()) {
-            auto.cancel();
-        }
     }
 
     /**
-     * This function is called once each time the robot enters teleop mode.
+     * This function is called once each time the robot enters tele-op mode.
      */
     @Override
     public void teleopInit() {
         if (auto != null) {
             auto.cancel();
         }
+
+        Shuffleboard.selectTab("TeleOp");
     }
 
     /**
-     * This function is called periodically during teleop mode.
+     * This function is called periodically during tele-op mode.
      */
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
+
+        // Temporary Testing Code TODO: Remove Me!
+        double[] errors = climber.getBalanceError();
+        System.out.println("FL Error: " + errors[0]);
+        System.out.println("RL Error: " + errors[1]);
+        System.out.println("FR Error: " + errors[2]);
+        System.out.println("RR Error: " + errors[3]);
+    }
+
+    private void updateSelectedAuto() {
+        selectedAutoPosition = autoPositionChooser.getSelected();
+        selectedAutoMode = autoModeChooser.getSelected();
+        System.out.println("Position: " + selectedAutoPosition + ", Mode: " + selectedAutoMode);
+
+        if (selectedAutoMode == AutoMode.DO_SOMETHING) {
+            if (selectedAutoPosition == AutoPosition.L1_LEFT) {
+                auto = new CommandGroupTemplate();
+            } else if (selectedAutoPosition == AutoPosition.L1_CENTER) {
+                auto = new CommandGroupTemplate();
+            } else if (selectedAutoPosition == AutoPosition.L1_RIGHT) {
+                auto = new CommandGroupTemplate();
+            } else {
+                auto = new CommandGroupTemplate();
+                System.out.println("[WARNING]: This combination does not have an auto command.");
+            }
+        } else if (selectedAutoMode == AutoMode.DO_SOMETHING_ELSE) {
+            if (selectedAutoPosition == AutoPosition.L1_LEFT) {
+                auto = new CommandGroupTemplate();
+            } else if (selectedAutoPosition == AutoPosition.L1_CENTER) {
+                auto = new CommandGroupTemplate();
+            } else if (selectedAutoPosition == AutoPosition.L1_RIGHT) {
+                auto = new CommandGroupTemplate();
+            } else if (selectedAutoPosition == AutoPosition.L2_LEFT) {
+                auto = new CommandGroupTemplate();
+            } else if (selectedAutoPosition == AutoPosition.L2_RIGHT) {
+                auto = new CommandGroupTemplate();
+            }
+        }
+        System.out.println("Selected Auto: " + auto);
     }
 
 }

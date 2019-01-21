@@ -1,11 +1,11 @@
 package team.gif.robot.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class DoNothing extends Command {
+public class CommandGroupTemplate extends CommandGroup {
 
-    public DoNothing() {
-
+    public CommandGroupTemplate() {
+        addSequential(new CommandTemplate());
     }
 
     @Override
@@ -20,7 +20,7 @@ public class DoNothing extends Command {
 
     @Override
     protected boolean isFinished() {
-        return true;
+        return false;
     }
 
     @Override

@@ -45,7 +45,7 @@ public abstract class Constants {
         public static final double TRACK_WIDTH = 25.0;
         public static final int TICKS_PER_REV = 4096;
         public static final double TICKS_TO_INCHES = (1.0/TICKS_PER_REV) * (WHEEL_DIAMETER*PI);
-        public static final double TICKS_PER_100MS_TO_RADS_PER_S = (1.0/TICKS_PER_REV) * (2*PI) * (1000.0/100.0);
+        public static final double TPS_TO_RPS = (1.0/TICKS_PER_REV) * (2*PI);
 
         public static final double INPUT_DEADBAND = 0.02;
         public static final double QUICK_STOP_THRESHOLD = 0.2;
@@ -58,12 +58,16 @@ public abstract class Constants {
         public static final double ROTATE_P = 0.0;
         public static final double ROTATE_I = 0.0;
         public static final double ROTATE_D = 0.0;
-        public static final double V_LEFT = 0.0;
-        public static final double V_RIGHT = 0.0;
+        public static final double V_LEFT = 1.0 / (9.75*WHEEL_DIAMETER/2.0);
+        public static final double V_RIGHT = 1.0 / (9.75*WHEEL_DIAMETER/2.0);
         public static final double V_INTERCEPT_LEFT = 0.0;
         public static final double V_INTERCEPT_RIGHT = 0.0;
-        public static final double A_LEFT = 0.0;
-        public static final double A_RIGHT = 0.0;
+        public static final double A_LEFT = 1.0 / (50.0*WHEEL_DIAMETER/2.0);
+        public static final double A_RIGHT = 1.0 / (50.0*WHEEL_DIAMETER/2.0);
+    }
+
+    public static class Climber {
+        public static final double VARIABLE_RATE_PISTON_PERIOD = 0.2; // Resolution of the solenoid PWM in seconds
     }
 
     /*

@@ -1,9 +1,8 @@
 package team.gif.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxFrames;
 import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import team.gif.lib.Odometry;
 import team.gif.robot.Constants;
@@ -15,6 +14,7 @@ public class Drivetrain extends Subsystem {
     private static Drivetrain instance;
 
     private final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
+    private final TalonSRX leftEncoderTalon, rightEncoderTalon;
     private Odometry odometry;
 
     private Drivetrain() {
@@ -22,6 +22,9 @@ public class Drivetrain extends Subsystem {
         leftSlave = configNeo(RobotMap.LEFT_SLAVE_ID);
         rightMaster = configNeo(RobotMap.RIGHT_MASTER_ID);
         rightSlave = configNeo(RobotMap.RIGHT_SLAVE_ID);
+
+        leftEncoderTalon = Elevator.getInstance().getDriveEncoderTalon();
+        rightEncoderTalon = Claw.getInstance().getDriveEncoderTalon();
 
         rightMaster.setInverted(true);
 
@@ -50,88 +53,99 @@ public class Drivetrain extends Subsystem {
     /**
      * @return native encoder position in ticks
      */
-    public int getLeftEncPosition() {
-        return 0;
+    public int getLeftPosTicks() {
+        return leftEncoderTalon.getSelectedSensorPosition();
     }
 
     /**
      * @return native encoder position in ticks
      */
-    public int getRightEncPosition() {
-        return 0;
+    public int getRightPosTicks() {
+        return rightEncoderTalon.getSelectedSensorPosition();
     }
 
     /**
      * @return encoder position in inches
      */
-    public double getLeftPosition() {
-        return getLeftEncPosition() * Constants.Drivetrain.TICKS_TO_INCHES;
+    public double getLeftPosInches() {
+        return getLeftPosTicks() * Constants.Drivetrain.TICKS_TO_INCHES;
     }
 
     /**
      * @return encoder position in inches
      */
-    public double getRightPosition() {
-        return getRightEncPosition() * Constants.Drivetrain.TICKS_TO_INCHES;
+    public double getRightPosInches() {
+        return getRightPosTicks() * Constants.Drivetrain.TICKS_TO_INCHES;
     }
 
     /**
-     * @return native encoder velocity in ticks/100ms
+     * @return encoder velocity in ticks/s
      */
-    public double getLeftEncVelocity() {
-        return 0.0;
+    public double getLeftVelTPS() {
+        return leftEncoderTalon.getSelectedSensorVelocity() * 10.0;
     }
 
     /**
-     * @return native encoder velocity in ticks/100ms
+     * @return encoder velocity in ticks/s
      */
-    public double getRightEncVelocity() {
-        return 0.0;
-    }
-
-    /**
-     * @return encoder velocity in rad/s
-     */
-    public double getLeftVelocity() {
-        return getLeftEncVelocity() * Constants.Drivetrain.TICKS_PER_100MS_TO_RADS_PER_S;
+    public double getRightVelTPS() {
+        return rightEncoderTalon.getSelectedSensorVelocity() * 10.0;
     }
 
     /**
      * @return encoder velocity in rad/s
      */
-    public double getRightVelocity() {
-        return getRightEncVelocity() * Constants.Drivetrain.TICKS_PER_100MS_TO_RADS_PER_S;
+    public double getLeftVelRPS() {
+        return getLeftVelTPS() * Constants.Drivetrain.TPS_TO_RPS;
     }
 
     /**
-     * @return motor velocity in rpm
+     * @return encoder velocity in rad/s
      */
-    public double getLeftMotorVelocity() {
-        return leftMaster.getEncoder().getVelocity();
+    public double getRightVelRPS() {
+        return getRightVelTPS() * Constants.Drivetrain.TPS_TO_RPS;
     }
 
     /**
-     * @return motor velocity in rpm
+     * @return array containing accumulated yaw[0], pitch[1], and roll[2] in degrees
      */
-    public double getRightMotorVelocity() {
-        return rightMaster.getEncoder().getVelocity();
+    public double[] getYawPitchRoll() {
+        return Climber.getInstance().getYawPitchRoll();
     }
 
     /**
      * @return accumulated heading in degrees
      */
-    public double getHeading() {
-        return 0.0;
+    public double getHeadingDegrees() {
+        return getYawPitchRoll()[0];
     }
 
+    /**
+     * @return accumulated heading in radians
+     */
+    public double getHeadingRadians() {
+        return Math.toRadians(getHeadingDegrees());
+    }
+
+    /**
+     * Initializes the odometry subprocess and begins estimating robot pose.
+     */
     public void beginOdometry() {
         odometry = Odometry.getInstance();
         odometry.start();
     }
 
+    /**
+     * Configures CANSparkMax's for use with NEO motors in a drivetrain.
+     *
+     * @param id the CAN id of the spark
+     * @return a configured CANSparkMax
+     */
     private CANSparkMax configNeo(int id) {
         CANSparkMax spark = new CANSparkMax(id, CANSparkMaxLowLevel.MotorType.kBrushless);
         spark.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        spark.setSmartCurrentLimit(80);
+        spark.setRampRate(0.0);
         return spark;
     }
 

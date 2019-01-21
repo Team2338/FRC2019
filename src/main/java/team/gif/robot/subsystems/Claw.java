@@ -1,14 +1,27 @@
 package team.gif.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import team.gif.lib.drivers.Limelight;
+import team.gif.robot.RobotMap;
 
 public class Claw extends Subsystem {
 
     private static Claw instance;
 
-    private Claw() {
+    private final TalonSRX intake;
+    private final Solenoid deploy, clamp, hooks;
 
+    private Claw() {
+        intake = new TalonSRX(RobotMap.CLAW_INTAKE_ID);
+
+        deploy = new Solenoid(1, RobotMap.CLAW_DEPLOY_ID);
+        clamp = new Solenoid(1, RobotMap.CLAW_CLAMP_ID);
+        hooks = new Solenoid(1, RobotMap.CLAW_HOOKS_ID);
+
+        intake.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        intake.setSensorPhase(false);
     }
 
     public static Claw getInstance() {
@@ -16,6 +29,10 @@ public class Claw extends Subsystem {
             instance = new Claw();
         }
         return instance;
+    }
+
+    TalonSRX getDriveEncoderTalon() {
+        return intake;
     }
 
     @Override

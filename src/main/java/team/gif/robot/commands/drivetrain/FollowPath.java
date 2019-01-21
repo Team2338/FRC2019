@@ -37,9 +37,9 @@ public class FollowPath extends Command implements Runnable{
 
     @Override
     protected void initialize() {
-        leftFollower.configureEncoder(drivetrain.getLeftEncPosition(), Constants.Drivetrain.TICKS_PER_REV,
+        leftFollower.configureEncoder(drivetrain.getLeftPosTicks(), Constants.Drivetrain.TICKS_PER_REV,
                 Constants.Drivetrain.WHEEL_DIAMETER);
-        rightFollower.configureEncoder(drivetrain.getRightEncPosition(), Constants.Drivetrain.TICKS_PER_REV,
+        rightFollower.configureEncoder(drivetrain.getRightPosTicks(), Constants.Drivetrain.TICKS_PER_REV,
                 Constants.Drivetrain.WHEEL_DIAMETER);
 
         notifier.startPeriodic(0.01);
@@ -47,13 +47,13 @@ public class FollowPath extends Command implements Runnable{
 
     @Override
     public void run() {
-        double leftOutput = leftFollower.calculate(drivetrain.getLeftEncPosition());
-        double rightOutput = rightFollower.calculate(drivetrain.getRightEncPosition());
+        double leftOutput = leftFollower.calculate(drivetrain.getLeftPosTicks());
+        double rightOutput = rightFollower.calculate(drivetrain.getRightPosTicks());
 
         if (Math.abs(leftOutput) > 0.01) leftOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_LEFT, leftOutput);
         if (Math.abs(rightOutput) > 0.01) rightOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_RIGHT, rightOutput);
 
-        double heading = Pathfinder.boundHalfDegrees(drivetrain.getHeading());
+        double heading = Pathfinder.boundHalfDegrees(drivetrain.getHeadingDegrees());
         double headingTarget = Math.toDegrees(leftFollower.getHeading()); //TODO: Check if both followers yield same heading.
         double turn = rotatePID.getOutput(heading, headingTarget);
 
@@ -76,4 +76,5 @@ public class FollowPath extends Command implements Runnable{
         notifier.close();
         drivetrain.setOutputs(0.0, 0.0);
     }
+
 }

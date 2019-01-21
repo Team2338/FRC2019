@@ -10,12 +10,12 @@ public class Odometry implements Runnable{
     private Drivetrain drive;
     private Notifier notifier;
 
-    private double currPos;
-    private double lastPos;
-    private double deltaPos;
     private double theta;
     private double x;
     private double y;
+    private double currPos;
+    private double deltaPos;
+    private double lastPos;
 
     private Odometry() {
         drive = Drivetrain.getInstance();
@@ -35,11 +35,11 @@ public class Odometry implements Runnable{
 
     @Override
     public void run() {
-        currPos = (drive.getLeftPosition() + drive.getRightPosition()) / 2.0;
+        currPos = (drive.getLeftPosInches() + drive.getRightPosInches()) / 2.0;
         deltaPos = currPos - lastPos;
-        theta = Math.toRadians(drive.getHeading());
-        x +=  Math.cos(theta) * deltaPos;
-        y +=  Math.sin(theta) * deltaPos;
+        theta = drive.getHeadingRadians();
+        x +=  deltaPos * Math.cos(theta);
+        y +=  deltaPos * Math.sin(theta);
         lastPos = currPos;
     }
 

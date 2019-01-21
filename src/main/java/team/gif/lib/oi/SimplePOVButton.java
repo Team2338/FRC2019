@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.buttons.Button;
 /**
  * A {@link Button} that gets its state from the d-pad of {@link GenericHID}.
  */
-public class POVButton extends Button {
+public class SimplePOVButton extends Button {
 
     public enum Direction {
         NORTH(0),
@@ -33,10 +33,10 @@ public class POVButton extends Button {
      *
      * Returns true when the axis passes a specified threshold.
      *
-     * @param joystick the {@link GenericHID} object that has the axis (e.g. Joystick, KinectStick, etc)
-     * @param direction the direction of the d-pad (see {@link GenericHID#getPOV(int)})
+     * @param joystick {@link GenericHID} that has the axis (e.g. Joystick, KinectStick, etc)
+     * @param direction direction of the d-pad (see {@link GenericHID#getPOV(int)})
      */
-    public POVButton(GenericHID joystick, Direction direction) {
+    public SimplePOVButton(GenericHID joystick, Direction direction) {
         this.joystick = joystick;
         this.direction = direction;
     }
