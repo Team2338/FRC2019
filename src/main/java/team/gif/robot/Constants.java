@@ -73,6 +73,19 @@ public abstract class Constants {
         public static final double GYRO_SENSITIVITY = 0.01;
     }
 
+    public static class Elevator{
+        public static final double P = 0.0;
+        public static final double I = 0.0;
+        public static final double D = 0.0;
+        public static final double F = 0.0;
+        public static final int CRUISE_VEL = 0;
+        public static final int ACCEL = 0;
+        public static final double GRAV_FEED_FORWARD = 0;
+        public static final double ROCKET_BOTTOM = 0;
+        public static final double ROCKET_MID = 0;
+        public static final double ROCKET_TOP = 0;
+    }
+
     /*
     Steps to measure effective track width:
     1. Determine your effective wheel diameter

@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import team.gif.robot.Constants;
 import team.gif.robot.RobotMap;
 
 public class Elevator extends Subsystem {
@@ -42,6 +43,16 @@ public class Elevator extends Subsystem {
         talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         talon.setSensorPhase(false);
         talon.setInverted(false);
+
+
+        talon.config_kP(0, Constants.Elevator.P);
+        talon.config_kI(0, Constants.Elevator.I);
+        talon.config_kD(0, Constants.Elevator.D);
+        talon.config_kF(0, Constants.Elevator.F);
+
+        talon.configMotionCruiseVelocity(Constants.Elevator.CRUISE_VEL);
+        talon.configMotionAcceleration(Constants.Elevator.ACCEL);
+
     }
 
     @Override

@@ -2,17 +2,13 @@ package team.gif.robot;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.WPILibVersion;
 import team.gif.lib.AutoMode;
 import team.gif.lib.AutoPosition;
-import team.gif.lib.Odometry;
-import team.gif.lib.VisionMath;
 import team.gif.lib.drivers.Limelight;
 import team.gif.robot.commands.CommandGroupTemplate;
 import team.gif.robot.subsystems.Climber;
@@ -72,6 +68,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
+
 
     }
 
