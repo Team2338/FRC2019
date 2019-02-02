@@ -64,20 +64,6 @@ import team.gif.robot.Constants;
  * <p>The positive X axis points ahead, the positive Y axis points right, and the positive Z axis
  * points down. Rotations follow the right-hand rule, so clockwise rotation around the Z axis is
  * positive.
- *
- * <p>Inputs smaller then {@value edu.wpi.first.wpilibj.drive.RobotDriveBase#kDefaultDeadband} will
- * be set to 0, and larger values will be scaled so that the full range is still used. This
- * deadband value can be changed with {@link #setDeadband}.
- *
- * <p>RobotDrive porting guide:
- * <br>{@link #tankDrive(double, double)} is equivalent to
- * {@link edu.wpi.first.wpilibj.RobotDrive#tankDrive(double, double)} if a deadband of 0 is used.
- * <br>{@link #arcadeDrive(double, double)} is equivalent to
- * {@link edu.wpi.first.wpilibj.RobotDrive#arcadeDrive(double, double)} if a deadband of 0 is used
- * and the the rotation input is inverted eg arcadeDrive(y, -rotation)
- * <br>{@link #curvatureDrive(double, double, boolean)} is similar in concept to
- * {@link edu.wpi.first.wpilibj.RobotDrive#drive(double, double)} with the addition of a quick turn
- * mode. However, it is not designed to give exactly the same response.
  */
 public class DriveController {
 
@@ -88,9 +74,6 @@ public class DriveController {
 
     /**
      * Construct a DriveController.
-     *
-     * <p>To pass multiple motors per side, use a {@link SpeedControllerGroup}. If a motor needs to be
-     * inverted, do so before passing it in.
      */
     public DriveController() {
 
@@ -157,8 +140,6 @@ public class DriveController {
             }
         }
 
-//        m_leftMotor.set(limit(leftMotorOutput) * m_maxOutput);
-//        m_rightMotor.set(limit(rightMotorOutput) * m_maxOutput);
         return new double[] {limit(leftMotorOutput), limit(rightMotorOutput)};
     }
 
@@ -170,33 +151,33 @@ public class DriveController {
      * robot's quick turn functionality - "quick turn" overrides constant-curvature turning for
      * turn-in-place maneuvers.
      *
-     * @param xSpeed      The robot's speed along the X axis [-1.0..1.0]. Forward is positive.
-     * @param zRotation   The robot's rotation rate around the Z axis [-1.0..1.0]. Clockwise is
+     * @param magnitude      The robot's speed along the X axis [-1.0..1.0]. Forward is positive.
+     * @param rotation   The robot's rotation rate around the Z axis [-1.0..1.0]. Clockwise is
      *                    positive.
-     * @param isQuickTurn If set, overrides constant-curvature turning for
+     * @param quickTurn If set, overrides constant-curvature turning for
      *                    turn-in-place maneuvers.
      */
     @SuppressWarnings({"ParameterName", "PMD.CyclomaticComplexity"})
-    public double[] curvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn) {
-        xSpeed = limit(xSpeed);
-        xSpeed = applyDeadband(xSpeed, deadband);
+    public double[] curvatureDrive(double magnitude, double rotation, boolean quickTurn) {
+        magnitude = limit(magnitude);
+        magnitude = applyDeadband(magnitude, deadband);
 
-        zRotation = limit(zRotation);
-        zRotation = applyDeadband(zRotation, deadband);
+        rotation = limit(rotation);
+        rotation = applyDeadband(rotation, deadband);
 
         double angularPower;
         boolean overPower;
 
-        if (isQuickTurn) {
-            if (Math.abs(xSpeed) < quickStopThreshold) {
+        if (quickTurn) {
+            if (Math.abs(magnitude) < quickStopThreshold) {
                 quickStopAccumulator = (1 - quickStopAlpha) * quickStopAccumulator
-                        + quickStopAlpha * limit(zRotation) * 2;
+                        + quickStopAlpha * limit(rotation) * 2;
             }
             overPower = true;
-            angularPower = zRotation;
+            angularPower = rotation;
         } else {
             overPower = false;
-            angularPower = Math.abs(xSpeed) * zRotation - quickStopAccumulator;
+            angularPower = Math.abs(magnitude) * rotation - quickStopAccumulator;
 
             if (quickStopAccumulator > 1) {
                 quickStopAccumulator -= 1;
@@ -207,8 +188,8 @@ public class DriveController {
             }
         }
 
-        double leftMotorOutput = xSpeed + angularPower;
-        double rightMotorOutput = xSpeed - angularPower;
+        double leftMotorOutput = magnitude + angularPower;
+        double rightMotorOutput = magnitude - angularPower;
 
         // If rotation is overpowered, reduce both outputs to within acceptable range
         if (overPower) {
@@ -234,8 +215,6 @@ public class DriveController {
             rightMotorOutput /= maxMagnitude;
         }
 
-//        m_leftMotor.set(leftMotorOutput * m_maxOutput);
-//        m_rightMotor.set(rightMotorOutput * m_maxOutput);
         return new double[] {limit(leftMotorOutput), limit(rightMotorOutput)};
     }
 
@@ -275,8 +254,6 @@ public class DriveController {
             rightSpeed = Math.copySign(rightSpeed * rightSpeed, rightSpeed);
         }
 
-//        m_leftMotor.set(leftSpeed * m_maxOutput);
-//        m_rightMotor.set(rightSpeed * m_maxOutput);
         return new double[] {leftSpeed, rightSpeed};
     }
 

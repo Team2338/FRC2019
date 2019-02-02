@@ -1,13 +1,10 @@
 package team.gif.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.POVButton;
 import team.gif.lib.oi.AxisButton;
 import team.gif.lib.oi.ComboButton;
-import team.gif.robot.commands.climber.Climb;
-import team.gif.robot.commands.climber.UnClimb;
 
 public class OI {
 
@@ -56,8 +53,7 @@ public class OI {
     public final ComboButton aFullStop = new ComboButton(aBack, aStart);
 
     private OI() {
-        aA.whenPressed(new Climb(4.0));
-        aB.whenPressed(new UnClimb(2.0));
+
     }
 
     public static OI getInstance() {

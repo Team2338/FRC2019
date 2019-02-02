@@ -1,19 +1,15 @@
 package team.gif.robot.commands.climber;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import team.gif.robot.OI;
+import team.gif.robot.Constants;
 import team.gif.robot.subsystems.Climber;
-import team.gif.robot.subsystems.Drivetrain;
 
 public class Climb extends Command {
 
-    private Climber climber = Climber.getInstance();
-    private Drivetrain drivetrain = Drivetrain.getInstance();
+    private final Climber climber = Climber.getInstance();
+    private final double kP = Constants.Climber.GYRO_SENSITIVITY;
     private double time;
-    private double kP;
 
     public Climb(double timeout) {
         super(timeout);
@@ -22,8 +18,7 @@ public class Climb extends Command {
 
     @Override
     protected void initialize() {
-        time = Timer.getFPGATimestamp();
-        kP = 0.01;
+
     }
 
     @Override
@@ -35,10 +30,12 @@ public class Climb extends Command {
         double[] errors = climber.getBalanceError();
 //        double[] heightError = climber.getRelativeHeight();
 
-        climber.setFrontLeft(1.0 - (kP * errors[0]), time);
-        climber.setRearLeft(0.75 - (kP * errors[1]), time);
-        climber.setFrontRight(1.0 - (kP * errors[2]), time);
-        climber.setRearRight(0.75 - (kP * errors[3]), time);
+        double frontLeftPercent = 1.0 - kP * errors[0];
+        double rearLeftPercent = 0.75 - kP * errors[0];
+        double frontRightPercent = 1.0 - kP * errors[0];
+        double rearRightPercent = 0.75 - kP * errors[0];
+
+        climber.setPistons(frontLeftPercent, rearLeftPercent, frontRightPercent, rearRightPercent, time);
 
 //        climber.setFrontLeft(.6 - (kP * heightError[0]), time);
 //        climber.setRearLeft(0.6 - (kP * heightError[1]), time);
@@ -59,9 +56,6 @@ public class Climb extends Command {
 
     @Override
     protected void end() {
-        climber.setFrontLeft(0.0, time);
-        climber.setRearLeft(0.0, time);
-        climber.setFrontRight(0.0, time);
-        climber.setRearRight(0.0, time);
+        climber.setPistons(0.0, 0.0, 0.0, 0.0, 0.0);
     }
 }

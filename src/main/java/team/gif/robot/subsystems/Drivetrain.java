@@ -1,5 +1,7 @@
 package team.gif.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -18,14 +20,21 @@ public class Drivetrain extends Subsystem {
     private Odometry odometry;
 
     private Drivetrain() {
-        leftMaster = configNeo(RobotMap.LEFT_MASTER_ID);
-        leftSlave = configNeo(RobotMap.LEFT_SLAVE_ID);
-        rightMaster = configNeo(RobotMap.RIGHT_MASTER_ID);
-        rightSlave = configNeo(RobotMap.RIGHT_SLAVE_ID);
+        leftMaster = new CANSparkMax(RobotMap.LEFT_MASTER_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        leftSlave = new CANSparkMax(RobotMap.LEFT_SLAVE_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rightMaster = new CANSparkMax(RobotMap.RIGHT_MASTER_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rightSlave = new CANSparkMax(RobotMap.RIGHT_SLAVE_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        configNeo(leftMaster);
+        configNeo(leftSlave);
+        configNeo(rightMaster);
+        configNeo(rightSlave);
 
-        leftEncoderTalon = Elevator.getInstance().getDriveEncoderTalon();
-        rightEncoderTalon = Claw.getInstance().getDriveEncoderTalon();
+        leftEncoderTalon = Claw.getInstance().getDriveEncoderTalon();
+        rightEncoderTalon = Climber.getInstance().getDriveEncoderTalon();
+        configDriveEncoder(leftEncoderTalon);
+        configDriveEncoder(rightEncoderTalon);
 
+        leftMaster.setInverted(false);
         rightMaster.setInverted(true);
 
         leftSlave.follow(leftMaster, false);
@@ -40,7 +49,7 @@ public class Drivetrain extends Subsystem {
     }
 
     /**
-     * Sets the percent voltage output of both sides of the drivetrain.
+     * Sets the percent voltage output of each side of the drivetrain.
      *
      * @param left output percent (-1.0 to +1.0)
      * @param right output percent (-1.0 to +1.0)
@@ -107,21 +116,21 @@ public class Drivetrain extends Subsystem {
     }
 
     /**
-     * @return array containing accumulated yaw[0], pitch[1], and roll[2] in degrees
+     * @return array containing yaw[0], pitch[1], and roll[2] in degrees
      */
     public double[] getYawPitchRoll() {
         return Climber.getInstance().getYawPitchRoll();
     }
 
     /**
-     * @return accumulated heading in degrees
+     * @return heading in degrees
      */
     public double getHeadingDegrees() {
         return getYawPitchRoll()[0];
     }
 
     /**
-     * @return accumulated heading in radians
+     * @return heading in radians
      */
     public double getHeadingRadians() {
         return Math.toRadians(getHeadingDegrees());
@@ -138,15 +147,23 @@ public class Drivetrain extends Subsystem {
     /**
      * Configures CANSparkMax's for use with NEO motors in a drivetrain.
      *
-     * @param id the CAN id of the spark
-     * @return a configured CANSparkMax
+     * @param spark {@link CANSparkMax} to configure
      */
-    private CANSparkMax configNeo(int id) {
-        CANSparkMax spark = new CANSparkMax(id, CANSparkMaxLowLevel.MotorType.kBrushless);
+    private void configNeo(CANSparkMax spark) {
         spark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         spark.setSmartCurrentLimit(80);
         spark.setRampRate(0.0);
-        return spark;
+    }
+
+    /**
+     * Configures TalonSRX's to act as receivers for the drivetrain's encoders.
+     *
+     * @param talon {@link TalonSRX} to configure
+     */
+    private void configDriveEncoder(TalonSRX talon) {
+        talon.configFactoryDefault();
+        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5);
+        talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
     }
 
     @Override

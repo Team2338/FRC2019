@@ -10,7 +10,7 @@ import team.gif.lib.MiniPID;
 import team.gif.robot.Constants;
 import team.gif.robot.subsystems.Drivetrain;
 
-public class FollowPath extends Command implements Runnable{
+public class FollowPath extends Command implements Runnable {
 
     private Drivetrain drivetrain;
     private TankModifier modifier;
@@ -54,7 +54,7 @@ public class FollowPath extends Command implements Runnable{
         if (Math.abs(rightOutput) > 0.01) rightOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_RIGHT, rightOutput);
 
         double heading = Pathfinder.boundHalfDegrees(drivetrain.getHeadingDegrees());
-        double headingTarget = Math.toDegrees(leftFollower.getHeading()); //TODO: Check if both followers yield same heading.
+        double headingTarget = Math.toDegrees(leftFollower.getHeading());
         double turn = rotatePID.getOutput(heading, headingTarget);
 
         drivetrain.setOutputs(leftOutput + turn, rightOutput - turn);

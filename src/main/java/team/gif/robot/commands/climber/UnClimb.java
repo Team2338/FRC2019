@@ -14,11 +14,7 @@ public class UnClimb extends Command {
 
     @Override
     protected void initialize() {
-        climber.setFrontLeft(-1.0, 0.0);
-        climber.setRearLeft(-1.0, 0.0);
-        climber.setFrontRight(-1.0, 0.0);
-        climber.setRearRight(-1.0, 0.0);
-
+        climber.setPistons(-1.0, -1.0, -1.0, -1.0, 0.0);
     }
 
     @Override
@@ -33,9 +29,6 @@ public class UnClimb extends Command {
 
     @Override
     protected void end() {
-        climber.setFrontLeft(0.0, 0.0);
-        climber.setRearLeft(0.0, 0.0);
-        climber.setFrontRight(0.0, 0.0);
-        climber.setRearRight(0.0, 0.0);
+        climber.setPistons(0.0, 0.0, 0.0, 0.0, 0.0);
     }
 }

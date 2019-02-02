@@ -2,8 +2,8 @@ package team.gif.lib;
 
 public class VisionMath {
 
-    public double getPlanarDistance(double heightDiff, double theta) {
-        return heightDiff / Math.tan(theta);
+    public static double getPlanarDistance(double heightDiff, double yTheta) {
+        return heightDiff / Math.tan(yTheta);
     }
 
     /**
@@ -16,12 +16,16 @@ public class VisionMath {
      * @param yTheta vertical angle difference between sensor and target in radians
      * @return absolute distance from sensor to target in heightDiff units
      */
-    public double getCorrectedDistance(double heightDiff, double xTheta, double yTheta) {
+    public static double getCorrectedDistance(double heightDiff, double xTheta, double yTheta) {
         return getPlanarDistance(heightDiff, yTheta) / Math.cos(xTheta);
     }
 
-    public double pixelsToDegrees(double pixels, double totalPixels, double fov) {
-        return Math.tan(fov/2.0) * (pixels/totalPixels);
+    public static double pixelsToDegrees(double pixels, double totalPixels, double fov) {
+        return Math.atan(pixels / (totalPixels/2.0) / Math.tan(fov/2.0));
+    }
+
+    public static double nPixelToDegrees(double np, double fov) {
+        return Math.atan2(1, Math.tan(fov/2) / np);
     }
 
     public double[] getRelativeSkew(double heightDiff, double xTheta, double yTheta, double pixelLength, double targetMaxWidth) {
@@ -31,5 +35,4 @@ public class VisionMath {
         double[] result = {Math.toRadians(180.0) - dTheta - phi, phi - dTheta};
         return result;
     }
-
 }

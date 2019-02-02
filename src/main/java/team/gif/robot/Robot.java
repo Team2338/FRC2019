@@ -1,14 +1,19 @@
 package team.gif.robot;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.WPILibVersion;
 import team.gif.lib.AutoMode;
 import team.gif.lib.AutoPosition;
+import team.gif.lib.Odometry;
+import team.gif.lib.VisionMath;
+import team.gif.lib.drivers.Limelight;
 import team.gif.robot.commands.CommandGroupTemplate;
 import team.gif.robot.subsystems.Climber;
 import team.gif.robot.subsystems.Drivetrain;
@@ -24,12 +29,13 @@ public class Robot extends TimedRobot {
 
     private Drivetrain drivetrain = Drivetrain.getInstance();
     private Climber climber = Climber.getInstance();
+    private Limelight limelight = Limelight.getInstance();
 
     private final SendableChooser<AutoPosition> autoPositionChooser = new SendableChooser<>();
     private final SendableChooser<AutoMode> autoModeChooser = new SendableChooser<>();
     private AutoPosition selectedAutoPosition;
     private AutoMode selectedAutoMode;
-    private CommandGroup auto;
+    private Command auto;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -119,15 +125,15 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-
-        // Temporary Testing Code TODO: Remove Me!
-        double[] errors = climber.getBalanceError();
-        System.out.println("FL Error: " + errors[0]);
-        System.out.println("RL Error: " + errors[1]);
-        System.out.println("FR Error: " + errors[2]);
-        System.out.println("RR Error: " + errors[3]);
     }
 
+    /**
+     * Retrieves the selected auto mode and position from {@link Shuffleboard} and updates the relevant member
+     * variables. Depending on the selected mode and position, an auto {@link Command} is chosen and stored to be run
+     * at the beginning of autonomous. The selection of each of these parameters is printed to the console.
+     *
+     * All combinations that do not have a designated auto should be assigned a default command and print a message.
+     */
     private void updateSelectedAuto() {
         selectedAutoPosition = autoPositionChooser.getSelected();
         selectedAutoMode = autoModeChooser.getSelected();

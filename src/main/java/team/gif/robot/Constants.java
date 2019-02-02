@@ -1,22 +1,22 @@
 package team.gif.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
+
 import static java.lang.Math.*;
 
 public abstract class Constants {
 
-
-
     public static class Camera {
-        public static final double CAMERA_POS_X = 6.0; // X lens displacement from wheelbase center (in)
-        public static final double CAMERA_POS_Y = 6.0; // Y lens displacement from wheelbase center (in)
-        public static final double CAMERA_POS_Z = 6.0; // Ground to lens height (in)
-        public static final double CAMERA_ANGLE_OFFSET = toRadians(0.0); // Angle of camera to ground (radians)
-        public static final double CAMERA_HORIZ_FOV = toRadians(54.0); // Horizontal FOV (radians)
-        public static final double CAMERA_VERT_FOV = toRadians(41.0); // Vertical FOV (radians)
-//        public static final double CAMERA_HORIZ_FOV = toRadians(59.6); // Horizontal FOV (radians)
-//        public static final double CAMERA_VERT_FOV = toRadians(49.7); // Vertical FOV (radians)
-        public static final int CAMERA_HORIZ_RES = 320; // Horizontal resolution (pixels)
-        public static final int CAMERA_VERT_RES = 240; // Vertical resolution (pixels)
+        public static final double POS_X = 6.0; // X lens displacement from wheelbase center (in)
+        public static final double POS_Y = 6.0; // Y lens displacement from wheelbase center (in)
+        public static final double POS_Z = 8.75; // Ground to lens height (in)
+        public static final double VERT_ANGLE_OFFSET = toRadians(0.0); // Angle of camera to ground (radians)
+//        public static final double HORIZ_FOV = toRadians(54.0); // Horizontal FOV (radians)
+//        public static final double VERT_FOV = toRadians(41.0); // Vertical FOV (radians)
+        public static final double HORIZ_FOV = toRadians(59.6); // Horizontal FOV (radians)
+        public static final double VERT_FOV = toRadians(49.7); // Vertical FOV (radians)
+        public static final int HORIZ_RES = 320; // Horizontal resolution (pixels)
+        public static final int VERT_RES = 240; // Vertical resolution (pixels)
     }
 
     public static class Target {
@@ -34,8 +34,8 @@ public abstract class Constants {
 
         public static final double TARGET_CENTER_WIDTH = TARGET_INNER_WIDTH + TARGET_TAPE_ADJUSTED_WIDTH; // Center to center target width (in)
         public static final double TARGET_OUTER_WIDTH = TARGET_INNER_WIDTH + 2 * TARGET_TAPE_ADJUSTED_WIDTH;
-        public static final double LOW_TARGET_CENTER_HEIGHT = LOW_TARGET_TOP_HEIGHT - (TARGET_TAPE_ADJUSTED_HEIGHT/2); // Ground to low target center (in)
-        public static final double HIGH_TARGET_CENTER_HEIGHT = HIGH_TARGET_TOP_HEIGHT - (TARGET_TAPE_ADJUSTED_HEIGHT/2); // Ground to high target center (in)
+        public static final double LOW_TARGET_CENTER_HEIGHT = LOW_TARGET_TOP_HEIGHT - (TARGET_TAPE_ADJUSTED_HEIGHT/2.0); // Ground to low target center (in)
+        public static final double HIGH_TARGET_CENTER_HEIGHT = HIGH_TARGET_TOP_HEIGHT - (TARGET_TAPE_ADJUSTED_HEIGHT/2.0); // Ground to high target center (in)
 
     }
 
@@ -68,10 +68,9 @@ public abstract class Constants {
 
     public static class Climber {
         public static final double VARIABLE_RATE_PISTON_PERIOD = 0.2; // Resolution of the solenoid PWM in seconds
-        public static final double COR_TO_SIDE = 0;//Center of Robot to side
-        public static final double COR_TO_FRONT = 0;//Center of Robot to front
-
-
+        public static final double COR_TO_SIDE = 0; //Center of Robot to side
+        public static final double COR_TO_FRONT = 0; //Center of Robot to front
+        public static final double GYRO_SENSITIVITY = 0.01;
     }
 
     /*

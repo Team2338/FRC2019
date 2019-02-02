@@ -3,6 +3,7 @@ package team.gif.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import team.gif.lib.VariableRateSolenoid;
 import team.gif.robot.Constants;
@@ -23,7 +24,7 @@ public class Climber extends Subsystem {
         rearRight = new VariableRateSolenoid(RobotMap.REAR_RIGHT_FORWARD_ID, RobotMap.REAR_RIGHT_REVERSE_ID);
 
         climbDrive = new TalonSRX(RobotMap.CLIMB_DRIVE_ID);
-        imu = new PigeonIMU(climbDrive);
+        imu = new PigeonIMU(RobotMap.PIGEON_ID);
         climbDrive.configFactoryDefault();
         imu.configFactoryDefault();
     }
@@ -35,37 +36,52 @@ public class Climber extends Subsystem {
         return instance;
     }
 
-    public void setFrontLeft(double percent, double time) {
-        frontLeft.setPercentOutput(percent, Constants.Climber.VARIABLE_RATE_PISTON_PERIOD, time);
+    /**
+     * Sets the duty cycle for each climber piston. This method must be called in a loop to update {@param time}.
+     *
+     * @param frontLeft output percent (-1.0 to +1.0)
+     * @param rearLeft output percent (-1.0 to +1.0)
+     * @param frontRight output percent (-1.0 to +1.0)
+     * @param rearRight output percent (-1.0 to +1.0)
+     * @param time system time in seconds (see {@link Timer#getFPGATimestamp()})
+     */
+    public void setPistons(double frontLeft, double rearLeft, double frontRight, double rearRight, double time) {
+        this.frontLeft.setPercentOutput(frontLeft, Constants.Climber.VARIABLE_RATE_PISTON_PERIOD, time);
+        this.rearLeft.setPercentOutput(rearLeft, Constants.Climber.VARIABLE_RATE_PISTON_PERIOD, time);
+        this.frontRight.setPercentOutput(frontRight, Constants.Climber.VARIABLE_RATE_PISTON_PERIOD, time);
+        this.rearRight.setPercentOutput(rearRight, Constants.Climber.VARIABLE_RATE_PISTON_PERIOD, time);
     }
 
-    public void setRearLeft(double percent, double time) {
-        rearLeft.setPercentOutput(percent, Constants.Climber.VARIABLE_RATE_PISTON_PERIOD, time);
-    }
-
-    public void setFrontRight(double percent, double time) {
-        frontRight.setPercentOutput(percent, Constants.Climber.VARIABLE_RATE_PISTON_PERIOD, time);
-    }
-
-    public void setRearRight(double percent, double time) {
-        rearRight.setPercentOutput(percent, Constants.Climber.VARIABLE_RATE_PISTON_PERIOD, time);
-    }
-
+    /**
+     * Sets the percent voltage output for the rear wheel climb drive.
+     *
+     * @param percent output percent (-1.0 to +1.0)
+     */
     public void setClimbDrive(double percent) {
         climbDrive.set(ControlMode.PercentOutput, percent);
     }
 
+    /**
+     * @return array containing yaw[0], pitch[1], and roll[2] in degrees
+     */
     double[] getYawPitchRoll() {
         double[] ypr_deg = new double[3];
         imu.getYawPitchRoll(ypr_deg);
         return ypr_deg;
     }
 
+    /**
+     * Calculates balance error for each corner of the drivetrain. Positive values are above the CG, negative values
+     * are below. These are calculated by summing the relevant tilts for each corner. This means that each error has
+     * a theoretical range of +180 to -180 degrees.
+     *
+     * @return errors for front left [0], rear left [1], front right [2], and rear right [3] in degrees.
+     */
     public double[] getBalanceError() {
         double pitch = getYawPitchRoll()[1];
         double roll = getYawPitchRoll()[2];
-        double frontLeftError = pitch + roll; // negative error means more effort required e.g. negative is lower
-        double rearLeftError = -pitch + roll; // TODO: Test whether these return the right polarities with native pitch and roll
+        double frontLeftError = pitch + roll;
+        double rearLeftError = -pitch + roll;
         double frontRightError = pitch - roll;
         double rearRightError = -pitch - roll;
         return new double[] {frontLeftError, rearLeftError, frontRightError, rearRightError};
@@ -80,6 +96,10 @@ public class Climber extends Subsystem {
         double rearRightHeight = Constants.Climber.COR_TO_SIDE * Math.sin(roll) - Constants.Climber.COR_TO_FRONT * Math.sin(pitch);
         double rearLeftHeight = -Constants.Climber.COR_TO_SIDE * Math.sin(roll) - Constants.Climber.COR_TO_FRONT * Math.sin(pitch);
         return new double[] {frontLeftHeight, rearLeftHeight, frontRightHeight, rearRightHeight};
+    }
+
+    TalonSRX getDriveEncoderTalon() {
+        return climbDrive;
     }
 
     @Override

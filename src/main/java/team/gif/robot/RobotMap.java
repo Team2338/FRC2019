@@ -12,10 +12,10 @@ public abstract class RobotMap {
     public static final int RIGHT_MASTER_ID = 2;
     public static final int RIGHT_SLAVE_ID = 3;
 
-    public static final int LIFT_MASTER_ID = 0;
-    public static final int LIFT_SLAVE_ID = 1;
+    public static final int ELEVATOR_LIFT_ID = 0;
 
-    public static final int CLAW_INTAKE_ID = 2;
+    public static final int CLAW_INTAKE_LEFT_ID = 1;
+    public static final int CLAW_INTAKE_RIGHT_ID = 2;
 
     public static final int CLIMB_DRIVE_ID = 3;
 
@@ -32,4 +32,7 @@ public abstract class RobotMap {
     public static final int CLAW_DEPLOY_ID = 0;
     public static final int CLAW_CLAMP_ID = 1;
     public static final int CLAW_HOOKS_ID = 2;
+
+    // Sensors
+    public static final int PIGEON_ID = 0;
 }

@@ -1,7 +1,9 @@
 package team.gif.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import team.gif.robot.RobotMap;
@@ -10,22 +12,12 @@ public class Elevator extends Subsystem {
 
     private static Elevator instance;
 
-    private final TalonSRX liftMaster, liftSlave;
+    private final TalonSRX lift;
 
     private Elevator() {
-        liftMaster = new TalonSRX(RobotMap.LIFT_MASTER_ID);
-        liftSlave = new TalonSRX(RobotMap.LIFT_SLAVE_ID);
-
-        liftMaster.setInverted(false);
-        liftSlave.setInverted(InvertType.FollowMaster);
-
-        liftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-        liftMaster.setSensorPhase(false);
-
-        liftSlave.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-        liftSlave.setSensorPhase(false);
-
-        liftSlave.follow(liftMaster);
+        lift = new TalonSRX(RobotMap.ELEVATOR_LIFT_ID);
+        configLift(lift);
+        //TODO: Motion Magic config stuff like setting constants
     }
 
     public static Elevator getInstance() {
@@ -35,8 +27,21 @@ public class Elevator extends Subsystem {
         return instance;
     }
 
-    TalonSRX getDriveEncoderTalon() {
-        return liftSlave;
+    public void setPercentOutput(double percent) {
+        lift.set(ControlMode.PercentOutput, percent);
+    }
+
+    public void setMotionMagic(double position, double feedForward) {
+        lift.set(ControlMode.MotionMagic, position, DemandType.ArbitraryFeedForward, feedForward);
+    }
+
+    private void configLift(TalonSRX talon) {
+        talon.configFactoryDefault();
+        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
+        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
+        talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        talon.setSensorPhase(false);
+        talon.setInverted(false);
     }
 
     @Override
