@@ -7,12 +7,21 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.WPILibVersion;
+import jaci.pathfinder.Pathfinder;
+import jaci.pathfinder.Trajectory;
+import jaci.pathfinder.Waypoint;
+import jaci.pathfinder.modifiers.TankModifier;
 import team.gif.lib.AutoMode;
 import team.gif.lib.AutoPosition;
 import team.gif.lib.drivers.Limelight;
 import team.gif.robot.commands.CommandGroupTemplate;
+import team.gif.robot.commands.auto.Mobility;
+import team.gif.robot.subsystems.Claw;
 import team.gif.robot.subsystems.Climber;
 import team.gif.robot.subsystems.Drivetrain;
+import team.gif.robot.subsystems.Elevator;
+
+import java.io.File;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,9 +32,12 @@ import team.gif.robot.subsystems.Drivetrain;
  */
 public class Robot extends TimedRobot {
 
-    private Drivetrain drivetrain = Drivetrain.getInstance();
+    private Claw claw = Claw.getInstance();
     private Climber climber = Climber.getInstance();
+    private Drivetrain drivetrain = Drivetrain.getInstance();
+    private Elevator elevator = Elevator.getInstance();
     private Limelight limelight = Limelight.getInstance();
+//    private SerialPort port = new SerialPort(9600, SerialPort.Port.kUSB);
 
     private final SendableChooser<AutoPosition> autoPositionChooser = new SendableChooser<>();
     private final SendableChooser<AutoMode> autoModeChooser = new SendableChooser<>();
@@ -46,16 +58,20 @@ public class Robot extends TimedRobot {
         autoPositionChooser.addOption("L2: Right", AutoPosition.L2_RIGHT);
         Shuffleboard.getTab("Auto").add("Field Position", autoPositionChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
 
-        autoModeChooser.setDefaultOption("Do Something", AutoMode.DO_SOMETHING);
-        autoModeChooser.addOption("Do Something Else", AutoMode.DO_SOMETHING_ELSE);
+        autoModeChooser.setDefaultOption("Mobility", AutoMode.MOBILITY);
+        autoModeChooser.addOption("Double Rocket", AutoMode.DOUBLE_ROCKET);
+        autoModeChooser.addOption("Cargo Ship: Front", AutoMode.CARGO_SHIP_FRONT);
+        autoModeChooser.addOption("Cargo Ship: Near", AutoMode.CARGO_SHIP_NEAR);
+        autoModeChooser.addOption("Cargo Ship: Mid", AutoMode.CARGO_SHIP_MID);
+        autoModeChooser.addOption("Cargo Ship: Far", AutoMode.CARGO_SHIP_FAR);
         Shuffleboard.getTab("Auto").add("Auto Mode", autoModeChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
 
         selectedAutoPosition = autoPositionChooser.getSelected();
         selectedAutoMode = autoModeChooser.getSelected();
 
-        drivetrain.beginOdometry();
+//        drivetrain.beginOdometry();
 
-        System.out.println("Robot Initialized. WPILib V" + WPILibVersion.Version);
+        System.out.println("Robot Initialized. WPILib Version " + WPILibVersion.Version);
     }
 
     /**
@@ -68,7 +84,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-
 
     }
 
@@ -136,22 +151,14 @@ public class Robot extends TimedRobot {
         selectedAutoMode = autoModeChooser.getSelected();
         System.out.println("Position: " + selectedAutoPosition + ", Mode: " + selectedAutoMode);
 
-        if (selectedAutoMode == AutoMode.DO_SOMETHING) {
+        if (selectedAutoMode == AutoMode.MOBILITY) {
+            auto = new Mobility(selectedAutoPosition);
+        } else if (selectedAutoMode == AutoMode.DOUBLE_ROCKET) {
             if (selectedAutoPosition == AutoPosition.L1_LEFT) {
                 auto = new CommandGroupTemplate();
             } else if (selectedAutoPosition == AutoPosition.L1_CENTER) {
-                auto = new CommandGroupTemplate();
-            } else if (selectedAutoPosition == AutoPosition.L1_RIGHT) {
-                auto = new CommandGroupTemplate();
-            } else {
-                auto = new CommandGroupTemplate();
+                auto = new Mobility(selectedAutoPosition);
                 System.out.println("[WARNING]: This combination does not have an auto command.");
-            }
-        } else if (selectedAutoMode == AutoMode.DO_SOMETHING_ELSE) {
-            if (selectedAutoPosition == AutoPosition.L1_LEFT) {
-                auto = new CommandGroupTemplate();
-            } else if (selectedAutoPosition == AutoPosition.L1_CENTER) {
-                auto = new CommandGroupTemplate();
             } else if (selectedAutoPosition == AutoPosition.L1_RIGHT) {
                 auto = new CommandGroupTemplate();
             } else if (selectedAutoPosition == AutoPosition.L2_LEFT) {
@@ -160,6 +167,7 @@ public class Robot extends TimedRobot {
                 auto = new CommandGroupTemplate();
             }
         }
+
         System.out.println("Selected Auto: " + auto);
     }
 

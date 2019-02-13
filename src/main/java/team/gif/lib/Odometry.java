@@ -3,7 +3,7 @@ package team.gif.lib;
 import edu.wpi.first.wpilibj.Notifier;
 import team.gif.robot.subsystems.Drivetrain;
 
-public class Odometry implements Runnable{
+public class Odometry implements Runnable {
 
     private static Odometry instance;
 
@@ -60,4 +60,5 @@ public class Odometry implements Runnable{
         y = 0.0;
         lastPos = 0.0;
     }
+
 }

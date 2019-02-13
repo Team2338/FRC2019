@@ -3,6 +3,7 @@ package team.gif.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -16,6 +17,7 @@ public class Drivetrain extends Subsystem {
     private static Drivetrain instance;
 
     private final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
+    private final PigeonIMU pigeon;
     private final TalonSRX leftEncoderTalon, rightEncoderTalon;
     private Odometry odometry;
 
@@ -28,6 +30,8 @@ public class Drivetrain extends Subsystem {
         configNeo(leftSlave);
         configNeo(rightMaster);
         configNeo(rightSlave);
+
+        pigeon = new PigeonIMU(RobotMap.PIGEON_ID);
 
         leftEncoderTalon = Claw.getInstance().getDriveEncoderTalon();
         rightEncoderTalon = Climber.getInstance().getDriveEncoderTalon();
@@ -119,7 +123,9 @@ public class Drivetrain extends Subsystem {
      * @return array containing yaw[0], pitch[1], and roll[2] in degrees
      */
     public double[] getYawPitchRoll() {
-        return Climber.getInstance().getYawPitchRoll();
+        double[] ypr_deg = new double[3];
+        pigeon.getYawPitchRoll(ypr_deg);
+        return ypr_deg;
     }
 
     /**

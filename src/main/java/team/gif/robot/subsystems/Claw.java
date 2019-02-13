@@ -13,7 +13,7 @@ public class Claw extends Subsystem {
     private final Solenoid deploy, clamp, hooks;
 
     private Claw() {
-        intake = new TalonSRX(RobotMap.CLAW_INTAKE_LEFT_ID);
+        intake = new TalonSRX(RobotMap.CLAW_INTAKE_ID);
 
         deploy = new Solenoid(1, RobotMap.CLAW_DEPLOY_ID);
         clamp = new Solenoid(1, RobotMap.CLAW_CLAMP_ID);

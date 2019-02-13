@@ -1,10 +1,14 @@
 package team.gif.lib;
 
 public enum AutoMode {
-    DO_SOMETHING(0),
-    DO_SOMETHING_ELSE(1);
+    MOBILITY(0),
+    DOUBLE_ROCKET(1),
+    CARGO_SHIP_FRONT(2),
+    CARGO_SHIP_NEAR(3),
+    CARGO_SHIP_MID(4),
+    CARGO_SHIP_FAR(5);
 
-    public int value;
+    private int value;
     AutoMode(int value) {
         this.value = value;
     }

@@ -52,8 +52,8 @@ public class Elevator extends Subsystem {
         talon.config_kI(0, Constants.Elevator.I);
         talon.config_kD(0, Constants.Elevator.D);
         talon.config_kF(0, Constants.Elevator.F);
-        talon.configMotionCruiseVelocity(Constants.Elevator.CRUISE_VELOCITY);
-        talon.configMotionAcceleration(Constants.Elevator.ACCELERATION);
+        talon.configMotionCruiseVelocity(Constants.Elevator.MAX_VELOCITY);
+        talon.configMotionAcceleration(Constants.Elevator.MAX_ACCELERATION);
 
         talon.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
         talon.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);

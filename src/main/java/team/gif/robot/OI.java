@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.POVButton;
 import team.gif.lib.oi.AxisButton;
 import team.gif.lib.oi.ComboButton;
+import team.gif.robot.commands.climber.Climb;
+import team.gif.robot.commands.climber.UnClimb;
+import team.gif.robot.commands.climber.UnClimbFront;
 import team.gif.robot.commands.elevator.SetElevatorPosition;
 
 public class OI {
@@ -54,10 +57,9 @@ public class OI {
     public final ComboButton aFullStop = new ComboButton(aBack, aStart);
 
     private OI() {
-        dA.whenPressed(new SetElevatorPosition(Constants.Elevator.ROCKET_BOTTOM));
-        dB.whenPressed(new SetElevatorPosition(Constants.Elevator.ROCKET_MID));
-        dY.whenPressed(new SetElevatorPosition(Constants.Elevator.ROCKET_TOP));
-
+        dB.whenPressed(new Climb(6.0));
+        dY.whenPressed(new UnClimbFront(3.0));
+        dA.whileHeld(new UnClimb(3.0));
     }
 
     public static OI getInstance() {

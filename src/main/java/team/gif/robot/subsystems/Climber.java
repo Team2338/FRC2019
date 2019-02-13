@@ -62,40 +62,21 @@ public class Climber extends Subsystem {
     }
 
     /**
-     * @return array containing yaw[0], pitch[1], and roll[2] in degrees
-     */
-    double[] getYawPitchRoll() {
-        double[] ypr_deg = new double[3];
-        imu.getYawPitchRoll(ypr_deg);
-        return ypr_deg;
-    }
-
-    /**
      * Calculates balance error for each corner of the drivetrain. Positive values are above the CG, negative values
      * are below. These are calculated by summing the relevant tilts for each corner. This means that each error has
      * a theoretical range of +180 to -180 degrees.
      *
-     * @return errors for front left [0], rear left [1], front right [2], and rear right [3] in degrees.
+     * @param ypr_deg array containing rotation on all axes
+     * @return errors for front left [0], rear left [1], front right [2], and rear right [3] in degrees
      */
-    public double[] getBalanceError() {
-        double pitch = getYawPitchRoll()[1];
-        double roll = getYawPitchRoll()[2];
+    public double[] getBalanceError(double[] ypr_deg) {
+        double pitch = ypr_deg[1] - 0.395; // TODO: Make me a constant!
+        double roll = ypr_deg[2] - 1.27;
         double frontLeftError = pitch + roll;
         double rearLeftError = -pitch + roll;
         double frontRightError = pitch - roll;
         double rearRightError = -pitch - roll;
         return new double[] {frontLeftError, rearLeftError, frontRightError, rearRightError};
-    }
-
-    public double[] getRelativeHeight(){
-        double pitch = getYawPitchRoll()[1];
-        double roll = getYawPitchRoll()[2];
-        //Measures the height of each corner relative to the center of the robot as the error
-        double frontRightHeight = Constants.Climber.COR_TO_SIDE * Math.sin(roll) + Constants.Climber.COR_TO_FRONT * Math.sin(pitch);
-        double frontLeftHeight = -Constants.Climber.COR_TO_SIDE * Math.sin(roll) + Constants.Climber.COR_TO_FRONT * Math.sin(pitch);
-        double rearRightHeight = Constants.Climber.COR_TO_SIDE * Math.sin(roll) - Constants.Climber.COR_TO_FRONT * Math.sin(pitch);
-        double rearLeftHeight = -Constants.Climber.COR_TO_SIDE * Math.sin(roll) - Constants.Climber.COR_TO_FRONT * Math.sin(pitch);
-        return new double[] {frontLeftHeight, rearLeftHeight, frontRightHeight, rearRightHeight};
     }
 
     TalonSRX getDriveEncoderTalon() {
