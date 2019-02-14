@@ -57,9 +57,9 @@ public class OI {
     public final ComboButton aFullStop = new ComboButton(aBack, aStart);
 
     private OI() {
-        dB.whenPressed(new Climb(6.0));
-        dY.whenPressed(new UnClimbFront(3.0));
-        dA.whileHeld(new UnClimb(3.0));
+//        dB.whenPressed(new Climb(6.0));
+//        dY.whenPressed(new UnClimbFront(3.0));
+//        dA.whileHeld(new UnClimb(3.0));
     }
 
     public static OI getInstance() {

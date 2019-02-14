@@ -104,7 +104,7 @@ public class Limelight {
     /**
      * Returns the horizontal offset from crosshair to target.
      *
-     * @return offset in degrees (-27 to +27)
+     * @return offset in degrees (-29.8 to +29.8)
      */
     public double getXOffset() {
         return table.getEntry("tx").getDouble(0.0);
@@ -113,7 +113,7 @@ public class Limelight {
     /**
      * Returns the vertical offset from crosshair to target.
      *
-     * @return offset in degrees (-20.5 to +20.5)
+     * @return offset in degrees (-24.85 to +24.85)
      */
     public double getYOffset() {
         return table.getEntry("ty").getDouble(0.0);
@@ -176,10 +176,19 @@ public class Limelight {
     /**
      * Returns vertical sidelength of the rough bounding box.
      *
-     * @return sidelength in pixels (0 to 320)
+     * @return sidelength in pixels (0 to 240)
      */
     public int getVertLength() {
         return table.getEntry("tvert").getNumber(0).intValue();
+    }
+
+    /**
+     * Gets the pose of the camera relative to the target.
+     *
+     * @return x[0], y[1], z[2], pitch[3], yaw[4], roll[5]
+     */
+    public double[] getCamTran() {
+        return table.getEntry("camtran").getDoubleArray(new double[]{0,0,0,0,0,0});
     }
 
     /**

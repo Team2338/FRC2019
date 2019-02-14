@@ -1,5 +1,6 @@
 package team.gif.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -27,6 +28,22 @@ public class Claw extends Subsystem {
             instance = new Claw();
         }
         return instance;
+    }
+
+    public void setIntake(double percent) {
+        intake.set(ControlMode.PercentOutput, percent);
+    }
+
+    public void deployClaw(boolean out) {
+        deploy.set(out);
+    }
+
+    public void setClamp(boolean in) {
+        clamp.set(in);
+    }
+
+    public void setHooks(boolean out) {
+        hooks.set(out);
     }
 
     TalonSRX getDriveEncoderTalon() {

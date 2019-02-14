@@ -36,6 +36,18 @@ public class Elevator extends Subsystem {
         lift.set(ControlMode.MotionMagic, position, DemandType.ArbitraryFeedForward, feedForward);
     }
 
+    public int getPosition() {
+        return lift.getSelectedSensorPosition();
+    }
+
+    public boolean getForwardLimit() {
+        return lift.getSensorCollection().isFwdLimitSwitchClosed();
+    }
+
+    public boolean getReverseLimit() {
+        return lift.getSensorCollection().isRevLimitSwitchClosed();
+    }
+
     public boolean isStopped() {
         return Math.abs(lift.getClosedLoopError()) < Constants.Elevator.ALLOWABLE_ERROR;
     }
@@ -45,7 +57,7 @@ public class Elevator extends Subsystem {
         talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
         talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
         talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-        talon.setSensorPhase(false);
+        talon.setSensorPhase(true);
         talon.setInverted(false);
 
         talon.config_kP(0, Constants.Elevator.P);
@@ -56,8 +68,8 @@ public class Elevator extends Subsystem {
         talon.configMotionAcceleration(Constants.Elevator.MAX_ACCELERATION);
 
         talon.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
-        talon.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
-        talon.configClearPositionOnLimitR(true, 0);
+        talon.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+//        talon.configClearPositionOnLimitR(true, 0);
     }
 
     @Override

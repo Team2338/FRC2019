@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.WPILibVersion;
 import jaci.pathfinder.Pathfinder;
@@ -36,9 +37,12 @@ public class Robot extends TimedRobot {
     private Climber climber = Climber.getInstance();
     private Drivetrain drivetrain = Drivetrain.getInstance();
     private Elevator elevator = Elevator.getInstance();
+    private OI oi = OI.getInstance();
     private Limelight limelight = Limelight.getInstance();
 //    private SerialPort port = new SerialPort(9600, SerialPort.Port.kUSB);
 
+    private final ShuffleboardTab autoTab = Shuffleboard.getTab("Auto");
+    private final ShuffleboardTab teleopTab = Shuffleboard.getTab("TeleOp");
     private final SendableChooser<AutoPosition> autoPositionChooser = new SendableChooser<>();
     private final SendableChooser<AutoMode> autoModeChooser = new SendableChooser<>();
     private AutoPosition selectedAutoPosition;
@@ -56,7 +60,7 @@ public class Robot extends TimedRobot {
         autoPositionChooser.addOption("L1: Right", AutoPosition.L1_RIGHT);
         autoPositionChooser.addOption("L2: Left", AutoPosition.L2_LEFT);
         autoPositionChooser.addOption("L2: Right", AutoPosition.L2_RIGHT);
-        Shuffleboard.getTab("Auto").add("Field Position", autoPositionChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
+        autoTab.add("Field Position", autoPositionChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
 
         autoModeChooser.setDefaultOption("Mobility", AutoMode.MOBILITY);
         autoModeChooser.addOption("Double Rocket", AutoMode.DOUBLE_ROCKET);
@@ -64,7 +68,7 @@ public class Robot extends TimedRobot {
         autoModeChooser.addOption("Cargo Ship: Near", AutoMode.CARGO_SHIP_NEAR);
         autoModeChooser.addOption("Cargo Ship: Mid", AutoMode.CARGO_SHIP_MID);
         autoModeChooser.addOption("Cargo Ship: Far", AutoMode.CARGO_SHIP_FAR);
-        Shuffleboard.getTab("Auto").add("Auto Mode", autoModeChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
+        autoTab.add("Auto Mode", autoModeChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
 
         selectedAutoPosition = autoPositionChooser.getSelected();
         selectedAutoMode = autoModeChooser.getSelected();
@@ -84,7 +88,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-
+//        teleopTab.add("Elev Pos: ", 0).getEntry().setNumber(elevator.getPosition());
+//        System.out.println("Pos: " + elevator.getPosition() + " Rev: " + elevator.getReverseLimit() + " Fwd: " + elevator.getForwardLimit());
     }
 
     @Override
@@ -137,6 +142,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
+//        elevator.setPercentOutput(0.5 * -oi.aux.getY(GenericHID.Hand.kLeft));
     }
 
     /**

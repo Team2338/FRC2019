@@ -13,8 +13,8 @@ public abstract class RobotMap {
     public static final int RIGHT_SLAVE_ID = 3;
 
     // Talon SRXs
-    public static final int ELEVATOR_LIFT_ID = 0;
-    public static final int CLAW_INTAKE_ID = 1;
+    public static final int ELEVATOR_LIFT_ID = 1;
+    public static final int CLAW_INTAKE_ID = 0;
     public static final int CLIMB_DRIVE_ID = 2;
 
     // Solenoids
