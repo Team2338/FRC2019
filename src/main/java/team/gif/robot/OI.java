@@ -9,6 +9,7 @@ import team.gif.robot.commands.climber.Climb;
 import team.gif.robot.commands.climber.UnClimb;
 import team.gif.robot.commands.climber.UnClimbFront;
 import team.gif.robot.commands.elevator.SetElevatorPosition;
+import team.gif.robot.commands.elevator.VoltageRamper;
 
 public class OI {
 
@@ -60,6 +61,7 @@ public class OI {
 //        dB.whenPressed(new Climb(6.0));
 //        dY.whenPressed(new UnClimbFront(3.0));
 //        dA.whileHeld(new UnClimb(3.0));
+        dA.whileHeld(new VoltageRamper(10));
     }
 
     public static OI getInstance() {
