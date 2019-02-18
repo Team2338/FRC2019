@@ -27,10 +27,10 @@ public class Limelight {
 
     /**
      * Sets the mode of the limelight's LED array.
-     * Mode 0 uses LED mode in current pipeline (see {@link this#setPipeline(int)}
-     * Mode 1 is 'force off'
-     * Mode 2 is 'force blink'
-     * Mode 3 is 'force on'
+     * ClawMode 0 uses LED mode in current pipeline (see {@link this#setPipeline(int)}
+     * ClawMode 1 is 'force off'
+     * ClawMode 2 is 'force blink'
+     * ClawMode 3 is 'force on'
      *
      * @param mode desired LED mode
      */
@@ -42,8 +42,8 @@ public class Limelight {
 
     /**
      * Sets the limelight's mode of operation.
-     * Mode 0 activates vision processing (decreased exposure)
-     * Mode 1 activates driver vision (increased exposure, no processing)
+     * ClawMode 0 activates vision processing (decreased exposure)
+     * ClawMode 1 activates driver vision (increased exposure, no processing)
      *
      * @param mode desired camera mode
      */
@@ -67,9 +67,9 @@ public class Limelight {
 
     /**
      * Sets the limelight's streaming mode.
-     * Mode 0 is "Standard - Side-by-side streams if a webcam is attached to Limelight"
-     * Mode 1 is "PiP Main - The secondary camera stream is placed in the lower-right corner of the primary camera stream"
-     * Mode 2 is "PiP Secondary - The primary camera stream is placed in the lower-right corner of the secondary camera stream"
+     * ClawMode 0 is "Standard - Side-by-side streams if a webcam is attached to Limelight"
+     * ClawMode 1 is "PiP Main - The secondary camera stream is placed in the lower-right corner of the primary camera stream"
+     * ClawMode 2 is "PiP Secondary - The primary camera stream is placed in the lower-right corner of the secondary camera stream"
      *
      * @param mode desired streaming mode
      */
@@ -81,8 +81,8 @@ public class Limelight {
 
     /**
      * Sets the limelight's snapshot mode. The limelight allows for taking pictures throughout a match.
-     * Mode 0 stops taking snapshots
-     * Mode 1 takes two snapshots per second.
+     * ClawMode 0 stops taking snapshots
+     * ClawMode 1 takes two snapshots per second.
      *
      * @param mode desired snapshot mode
      */

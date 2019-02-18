@@ -2,8 +2,11 @@ package team.gif.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import team.gif.robot.Constants;
 import team.gif.robot.RobotMap;
 
 public class Claw extends Subsystem {
@@ -12,13 +15,23 @@ public class Claw extends Subsystem {
 
     private final TalonSRX intake;
     private final Solenoid deploy, clamp, hooks;
+    private final Servo left, right;
+
+    public final AnalogInput ballSensor;
+
+    private boolean hatchMode = true;
 
     private Claw() {
         intake = new TalonSRX(RobotMap.CLAW_INTAKE_ID);
 
-        deploy = new Solenoid(1, RobotMap.CLAW_DEPLOY_ID);
-        clamp = new Solenoid(1, RobotMap.CLAW_CLAMP_ID);
-        hooks = new Solenoid(1, RobotMap.CLAW_HOOKS_ID);
+        deploy = new Solenoid(RobotMap.CLAW_DEPLOY_ID);
+        clamp = new Solenoid(RobotMap.CLAW_CLAMP_ID);
+        hooks = new Solenoid(RobotMap.CLAW_HOOKS_ID);
+
+        left = new Servo(RobotMap.LEFT_SERVO_ID);
+        right = new Servo(RobotMap.RIGHT_SERVO_ID);
+
+        ballSensor = new AnalogInput(RobotMap.BALL_SENSOR_ID);
 
         intake.configFactoryDefault();
     }
@@ -38,12 +51,33 @@ public class Claw extends Subsystem {
         deploy.set(out);
     }
 
-    public void setClamp(boolean in) {
-        clamp.set(in);
+    public void openClamp(boolean open) {
+        clamp.set(open);
     }
 
-    public void setHooks(boolean out) {
+    public void deployHooks(boolean out) {
         hooks.set(out);
+    }
+
+    public void engageServoBrakes(boolean engaged) {
+        left.set(engaged ? Constants.Claw.LEFT_BRAKE_POS : Constants.Claw.LEFT_NEUTRAL_POS);
+        right.set(engaged ? Constants.Claw.RIGHT_BRAKE_POS : Constants.Claw.RIGHT_NEUTRAL_POS);
+    }
+
+    public void setHatchMode(boolean hatchMode) {
+        this.hatchMode = hatchMode;
+    }
+
+    public boolean isHatchMode() {
+        return hatchMode;
+    }
+
+    public boolean isDeployed() {
+        return deploy.get();
+    }
+
+    public boolean hasBall() {
+        return ballSensor.getAverageVoltage() < 1.0;
     }
 
     TalonSRX getDriveEncoderTalon() {

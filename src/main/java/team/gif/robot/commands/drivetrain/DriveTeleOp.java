@@ -8,12 +8,10 @@ import team.gif.robot.subsystems.Drivetrain;
 
 public class DriveTeleOp extends Command {
 
-    private Drivetrain drivetrain;
-    private DriveController controller;
+    private final Drivetrain drivetrain = Drivetrain.getInstance();
+    private final DriveController controller = new DriveController();
 
     public DriveTeleOp() {
-        drivetrain = Drivetrain.getInstance();
-        controller = new DriveController();
         requires(drivetrain);
     }
 

@@ -35,6 +35,10 @@ public class AxisButton extends Button {
      */
     @Override
     public boolean get() {
-        return joystick.getRawAxis(axisNumber) > threshold;
+        if (threshold > 0.0) {
+            return joystick.getRawAxis(axisNumber) > threshold;
+        } else {
+            return joystick.getRawAxis(axisNumber) < threshold;
+        }
     }
 }

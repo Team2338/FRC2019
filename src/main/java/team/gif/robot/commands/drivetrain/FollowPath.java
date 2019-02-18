@@ -12,15 +12,14 @@ import team.gif.robot.subsystems.Drivetrain;
 
 public class FollowPath extends Command implements Runnable {
 
-    private Drivetrain drivetrain;
-    private TankModifier modifier;
-    private EncoderFollower leftFollower;
-    private EncoderFollower rightFollower;
-    private MiniPID rotatePID;
-    private Notifier notifier;
+    private final Drivetrain drivetrain = Drivetrain.getInstance();
+    private final TankModifier modifier;
+    private final EncoderFollower leftFollower;
+    private final EncoderFollower rightFollower;
+    private final MiniPID rotatePID;
+    private final Notifier notifier;
 
     public FollowPath(Trajectory trajectory) {
-        drivetrain = Drivetrain.getInstance();
         modifier = new TankModifier(trajectory).modify(Constants.Drivetrain.TRACK_WIDTH);
         leftFollower = new EncoderFollower(modifier.getLeftTrajectory());
         rightFollower = new EncoderFollower(modifier.getRightTrajectory());

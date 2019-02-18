@@ -3,7 +3,7 @@ package team.gif.lib;
 /**
  * Small, easy to use PID implementation with advanced controller capability.<br>
  * Minimal usage:<br>
- * MiniPID pid = new MiniPID(p,i,d); <br>
+ * MiniPID pid = new MiniPID(P,i,d); <br>
  * ...looping code...{ <br>
  *   output= pid.getOutput(sensorvalue,target); <br>
  * }

@@ -16,7 +16,7 @@ public class Drivetrain extends Subsystem {
 
     private static Drivetrain instance;
 
-    private final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
+    public final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
     private final PigeonIMU pigeon;
     private final TalonSRX leftEncoderTalon, rightEncoderTalon;
     private Odometry odometry;
@@ -30,6 +30,9 @@ public class Drivetrain extends Subsystem {
         configNeo(leftSlave);
         configNeo(rightMaster);
         configNeo(rightSlave);
+
+        leftSlave.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        rightSlave.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
         pigeon = new PigeonIMU(RobotMap.PIGEON_ID);
 
@@ -157,8 +160,9 @@ public class Drivetrain extends Subsystem {
      */
     private void configNeo(CANSparkMax spark) {
         spark.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        spark.enableVoltageCompensation(12.0);
         spark.setSmartCurrentLimit(80);
-        spark.setRampRate(0.0);
+        spark.setOpenLoopRampRate(0.2);
     }
 
     /**

@@ -29,11 +29,11 @@ public class Elevator extends Subsystem {
     }
 
     public void setPercentOutput(double percent) {
-        lift.set(ControlMode.PercentOutput, percent);
+        lift.set(ControlMode.PercentOutput, percent, DemandType.ArbitraryFeedForward, Constants.Elevator.GRAV_FEED_FORWARD);
     }
 
-    public void setMotionMagic(double position, double feedForward) {
-        lift.set(ControlMode.MotionMagic, position, DemandType.ArbitraryFeedForward, feedForward);
+    public void setMotionMagic(double position) {
+        lift.set(ControlMode.MotionMagic, position, DemandType.ArbitraryFeedForward, Constants.Elevator.GRAV_FEED_FORWARD);
     }
 
     public int getPosition() {
@@ -48,8 +48,16 @@ public class Elevator extends Subsystem {
         return lift.getSensorCollection().isRevLimitSwitchClosed();
     }
 
-    public boolean isStopped() {
+    public boolean isFinished() {
         return Math.abs(lift.getClosedLoopError()) < Constants.Elevator.ALLOWABLE_ERROR;
+    }
+
+    public double getVoltage() {
+        return lift.getMotorOutputVoltage();
+    }
+
+    public double getVelocityRPS() {
+        return lift.getSelectedSensorVelocity() * 10.0 * Constants.Drivetrain.TPS_TO_RPS;
     }
 
     private void configLift(TalonSRX talon) {
@@ -57,6 +65,7 @@ public class Elevator extends Subsystem {
         talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
         talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
         talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        talon.enableVoltageCompensation(true);
         talon.setSensorPhase(true);
         talon.setInverted(false);
 

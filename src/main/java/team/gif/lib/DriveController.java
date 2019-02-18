@@ -6,12 +6,12 @@ import team.gif.robot.Constants;
  * A class for driving differential drive/skid-steer drive platforms such as the Kit of Parts drive
  * base, "tank drive", or West Coast Drive.
  *
- * <p>These drive bases typically have drop-center / skid-steer with two or more wheels per side
+ * <P>These drive bases typically have drop-center / skid-steer with two or more wheels per side
  * (e.g., 6WD or 8WD). This class takes a SpeedController per side. For four and
  * six motor drivetrains, construct and pass in {@link edu.wpi.first.wpilibj.SpeedControllerGroup}
  * instances as follows.
  *
- * <p>Four motor drivetrain:
+ * <P>Four motor drivetrain:
  * <pre><code>
  * public class Robot {
  *   Spark m_frontLeft = new Spark(1);
@@ -26,7 +26,7 @@ import team.gif.robot.Constants;
  * }
  * </code></pre>
  *
- * <p>Six motor drivetrain:
+ * <P>Six motor drivetrain:
  * <pre><code>
  * public class Robot {
  *   Spark m_frontLeft = new Spark(1);
@@ -43,9 +43,9 @@ import team.gif.robot.Constants;
  * }
  * </code></pre>
  *
- * <p>A differential drive robot has left and right wheels separated by an arbitrary width.
+ * <P>A differential drive robot has left and right wheels separated by an arbitrary width.
  *
- * <p>Drive base diagram:
+ * <P>Drive base diagram:
  * <pre>
  * |_______|
  * | |   | |
@@ -54,14 +54,14 @@ import team.gif.robot.Constants;
  * |       |
  * </pre>
  *
- * <p>Each drive() function provides different inverse kinematic relations for a differential drive
+ * <P>Each drive() function provides different inverse kinematic relations for a differential drive
  * robot. Motor outputs for the right side are negated, so motor direction inversion by the user is
  * usually unnecessary.
  *
- * <p>This library uses the NED axes convention (North-East-Down as external reference in the world
+ * <P>This library uses the NED axes convention (North-East-Down as external reference in the world
  * frame): http://www.nuclearprojects.com/ins/images/axis_big.png.
  *
- * <p>The positive X axis points ahead, the positive Y axis points right, and the positive Z axis
+ * <P>The positive X axis points ahead, the positive Y axis points right, and the positive Z axis
  * points down. Rotations follow the right-hand rule, so clockwise rotation around the Z axis is
  * positive.
  */
@@ -146,7 +146,7 @@ public class DriveController {
     /**
      * Curvature drive method for differential drive platform.
      *
-     * <p>The rotation argument controls the curvature of the robot's path rather than its rate of
+     * <P>The rotation argument controls the curvature of the robot's path rather than its rate of
      * heading change. This makes the robot more controllable at high speeds. Also handles the
      * robot's quick turn functionality - "quick turn" overrides constant-curvature turning for
      * turn-in-place maneuvers.
@@ -260,9 +260,9 @@ public class DriveController {
     /**
      * Sets the QuickStop speed threshold in curvature drive.
      *
-     * <p>QuickStop compensates for the robot's moment of inertia when stopping after a QuickTurn.
+     * <P>QuickStop compensates for the robot's moment of inertia when stopping after a QuickTurn.
      *
-     * <p>While QuickTurn is enabled, the QuickStop accumulator takes on the rotation rate value
+     * <P>While QuickTurn is enabled, the QuickStop accumulator takes on the rotation rate value
      * outputted by the low-pass filter when the robot's speed along the X axis is below the
      * threshold. When QuickTurn is disabled, the accumulator's value is applied against the computed
      * angular power request to slow the robot's rotation.
@@ -277,7 +277,7 @@ public class DriveController {
     /**
      * Sets the low-pass filter gain for QuickStop in curvature drive.
      *
-     * <p>The low-pass filter filters incoming rotation rate commands to smooth out high frequency
+     * <P>The low-pass filter filters incoming rotation rate commands to smooth out high frequency
      * changes.
      *
      * @param alpha Low-pass filter gain [0.0..2.0]. Smaller values result in slower output changes.

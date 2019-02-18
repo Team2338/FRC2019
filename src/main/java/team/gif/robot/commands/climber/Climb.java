@@ -1,7 +1,6 @@
 package team.gif.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import team.gif.robot.Constants;
 import team.gif.robot.OI;
@@ -13,46 +12,41 @@ public class Climb extends Command {
     private final Climber climber = Climber.getInstance();
     private final Drivetrain drivetrain = Drivetrain.getInstance();
     private final double kP = Constants.Climber.GYRO_SENSITIVITY;
-    private double currTime;
-    private double timeout;
 
-    public Climb(double timeout) {
-//        super(timeout);
-        this.timeout = timeout;
+    public Climb() {
         requires(climber);
     }
 
     @Override
     protected void initialize() {
-
+        climber.setPistons(true, true);
     }
 
     @Override
     protected void execute() {
-        currTime = Timer.getFPGATimestamp();
+        double pitch = drivetrain.getYawPitchRoll()[1];
 
-        if (timeSinceInitialized() < timeout) {
-            double[] errors = climber.getBalanceError(drivetrain.getYawPitchRoll());
-//            double[] errors = new double[]{0,0,0,0};
-
-            double frontLeftPercent = 0.84 - kP * errors[0];
-            double rearLeftPercent = 0.65 - kP * errors[0];
-            double frontRightPercent = 0.84 - kP * errors[0];
-            double rearRightPercent = 0.65 - kP * errors[0];
-
-            climber.setPistons(frontLeftPercent, rearLeftPercent, frontRightPercent, rearRightPercent, currTime);
+//        if (climber.getWinchCurrent() > 5.0) {
+        if (climber.getWinchPos() < 19000) {
+            climber.setWinchPercent(-(0.40 + kP * pitch));
         } else {
-            climber.setClimbDrive(-OI.getInstance().driver.getY(GenericHID.Hand.kLeft));
+            climber.setWinchPercent(-0.12);
         }
+//        } else {
+//            climber.setWinchPercent(0.0);
+//        }
+
+        climber.setDrive(5.0 * OI.getInstance().driver.getY(GenericHID.Hand.kLeft));
     }
 
     @Override
     protected boolean isFinished() {
-        return isTimedOut();
+        return false;
     }
 
     @Override
     protected void end() {
-        climber.setPistons(0.0, 0.0, 0.0, 0.0, 0.0);
+        climber.setWinchPercent(0.0);
+        climber.setDrive(0.0);
     }
 }

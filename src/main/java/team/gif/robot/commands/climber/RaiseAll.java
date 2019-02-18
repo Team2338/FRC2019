@@ -1,35 +1,36 @@
 package team.gif.robot.commands.climber;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.command.Command;
+import team.gif.robot.OI;
 import team.gif.robot.subsystems.Climber;
 
-public class UnClimbFront extends Command {
+public class RaiseAll extends Command {
 
     private Climber climber = Climber.getInstance();
 
-    public UnClimbFront(double timeout) {
-        super(timeout);
+    public RaiseAll() {
         requires(climber);
     }
 
     @Override
     protected void initialize() {
-        climber.setPistons(-1.0, 0.0, -1.0, 0.0, 0.0);
-        climber.setClimbDrive(0.2);
+
     }
 
     @Override
     protected void execute() {
-
+        climber.setPistons(false, true);
+        climber.setWinchPercent(0.5);
     }
 
     @Override
     protected boolean isFinished() {
-        return isTimedOut();
+        return false;
     }
 
     @Override
     protected void end() {
-        climber.setPistons(0.0, 0.0, 0.0, 0.0, 0.0);
+
     }
 }

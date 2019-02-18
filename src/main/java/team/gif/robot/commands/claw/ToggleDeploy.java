@@ -1,16 +1,19 @@
 package team.gif.robot.commands.claw;
 
 import edu.wpi.first.wpilibj.command.Command;
+import team.gif.robot.subsystems.Claw;
 
-public class CollectHatch extends Command {
+public class ToggleDeploy extends Command {
 
-    public CollectHatch() {
+    private final Claw claw = Claw.getInstance();
 
+    public ToggleDeploy() {
+        requires(claw);
     }
 
     @Override
     protected void initialize() {
-
+        claw.deployClaw(!claw.isDeployed());
     }
 
     @Override

@@ -23,6 +23,7 @@ import team.gif.robot.subsystems.Drivetrain;
 import team.gif.robot.subsystems.Elevator;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -68,7 +69,7 @@ public class Robot extends TimedRobot {
         autoModeChooser.addOption("Cargo Ship: Near", AutoMode.CARGO_SHIP_NEAR);
         autoModeChooser.addOption("Cargo Ship: Mid", AutoMode.CARGO_SHIP_MID);
         autoModeChooser.addOption("Cargo Ship: Far", AutoMode.CARGO_SHIP_FAR);
-        autoTab.add("Auto Mode", autoModeChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
+        autoTab.add("Auto ClawMode", autoModeChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
 
         selectedAutoPosition = autoPositionChooser.getSelected();
         selectedAutoMode = autoModeChooser.getSelected();
@@ -83,13 +84,18 @@ public class Robot extends TimedRobot {
      * this for items like diagnostics that you want ran during disabled,
      * autonomous, and tele-op.
      *
-     * <p>This runs after the mode specific periodic functions, but before
+     * <P>This runs after the mode specific periodic functions, but before
      * LiveWindow and SmartDashboard integrated updating.
      */
     @Override
     public void robotPeriodic() {
-//        teleopTab.add("Elev Pos: ", 0).getEntry().setNumber(elevator.getPosition());
 //        System.out.println("Pos: " + elevator.getPosition() + " Rev: " + elevator.getReverseLimit() + " Fwd: " + elevator.getForwardLimit());
+//        System.out.println(Arrays.toString(limelight.getCamTran()));
+//        System.out.println("Left" + claw.leftServoPos() + "Right" + claw.rightServoPos());
+//        System.out.println("WinchPos: " + climber.getWinchPos());
+//        System.out.println("LeftVel: " + drivetrain.getLeftVelTPS() + ", RightVel: " + drivetrain.getRightVelTPS() +
+//                ", LeftOutput: " + drivetrain.leftMaster.getAppliedOutput() + ", RightOutput: " + drivetrain.rightMaster.getAppliedOutput());
+//    System.out.println("Has Ball: " + claw.hasBall());
     }
 
     @Override
@@ -142,7 +148,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-//        elevator.setPercentOutput(0.5 * -oi.aux.getY(GenericHID.Hand.kLeft));
+        elevator.setPercentOutput(-oi.aux.getY(GenericHID.Hand.kLeft));
     }
 
     /**
@@ -155,7 +161,7 @@ public class Robot extends TimedRobot {
     private void updateSelectedAuto() {
         selectedAutoPosition = autoPositionChooser.getSelected();
         selectedAutoMode = autoModeChooser.getSelected();
-        System.out.println("Position: " + selectedAutoPosition + ", Mode: " + selectedAutoMode);
+        System.out.println("Position: " + selectedAutoPosition + ", ClawMode: " + selectedAutoMode);
 
         if (selectedAutoMode == AutoMode.MOBILITY) {
             auto = new Mobility(selectedAutoPosition);

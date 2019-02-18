@@ -1,7 +1,5 @@
 package team.gif.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
-
 import static java.lang.Math.*;
 
 public abstract class Constants {
@@ -10,7 +8,7 @@ public abstract class Constants {
         public static final double POS_X = 6.0; // X lens displacement from wheelbase center (in)
         public static final double POS_Y = 6.0; // Y lens displacement from wheelbase center (in)
         public static final double POS_Z = 8.75; // Ground to lens height (in)
-        public static final double VERT_ANGLE_OFFSET = toRadians(0.0); // Angle of camera to ground (radians)
+        public static final double ANGLE_OFFSET = toRadians(-10.0); // Angle of camera to ground (radians)
         public static final double HORIZ_FOV = toRadians(59.6); // Horizontal FOV (radians)
         public static final double VERT_FOV = toRadians(49.7); // Vertical FOV (radians)
         public static final int HORIZ_RES = 320; // Horizontal resolution (pixels)
@@ -35,6 +33,23 @@ public abstract class Constants {
         public static final double LOW_TARGET_CENTER_HEIGHT = LOW_TARGET_TOP_HEIGHT - (TARGET_TAPE_ADJUSTED_HEIGHT/2.0); // Ground to low target center (in)
         public static final double HIGH_TARGET_CENTER_HEIGHT = HIGH_TARGET_TOP_HEIGHT - (TARGET_TAPE_ADJUSTED_HEIGHT/2.0); // Ground to high target center (in)
 
+    }
+
+    public static class Claw {
+        public static final double LEFT_BRAKE_POS = 0.2;
+        public static final double LEFT_NEUTRAL_POS = 1.0;
+        public static final double RIGHT_BRAKE_POS = 0.65;
+        public static final double RIGHT_NEUTRAL_POS = 0.0;
+    }
+
+    public static class Climber {
+        public static final double VARIABLE_RATE_PISTON_PERIOD = 0.2; // Resolution of the solenoid PWM in seconds
+        public static final double GYRO_SENSITIVITY = 0.1;
+        public static final double P = 0.0;
+        public static final double I = 0.0;
+        public static final double D = 0.0;
+        public static final double F = 0.0;
+        public static final double PISTON_FEED_FORWARD = 0.25;
     }
 
     public static class Drivetrain {
@@ -64,22 +79,18 @@ public abstract class Constants {
         public static final double A_RIGHT = 1.0 / (50.0 * WHEEL_DIAMETER / 2.0);
     }
 
-    public static class Climber {
-        public static final double VARIABLE_RATE_PISTON_PERIOD = 0.2; // Resolution of the solenoid PWM in seconds
-        public static final double GYRO_SENSITIVITY = 0.01;
-    }
-
     public static class Elevator {
-
-        public static final double P = 0.0;
+        public static final double P = 0.1;
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double F = 0.0;
-        public static final double GRAV_FEED_FORWARD = 0.0; // Percent constant to counteract gravity
+//        public static final double F = 0.615;
+        public static final double GRAV_FEED_FORWARD = 3.58 / 12.0; // Percent constant to counteract gravity
+        private static final double VOLTS_PER_RAD_PER_SEC = .33;
+        public static final double F = (VOLTS_PER_RAD_PER_SEC * (1023.0 / (12.0 - 12.0*GRAV_FEED_FORWARD)) * (2*Math.PI/4096) * (10));
 
         public static final int ALLOWABLE_ERROR = 10; // Error to allow move command to end
-        public static final int MAX_VELOCITY = 100; // Elevator velocity (ticks/100ms)
-        public static final int MAX_ACCELERATION = 100; // Elevator acceleration (ticks/100ms/s)
+        public static final int MAX_VELOCITY = 1500; // Elevator velocity (ticks/100ms)
+        public static final int MAX_ACCELERATION = 1500; // Elevator acceleration (ticks/100ms/s)
 
         public static final int MIN_POS = 0; // Minimum soft limit
         public static final int MAX_POS = 100; // Maximum soft limit

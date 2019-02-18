@@ -1,50 +1,50 @@
 package team.gif.robot.commands.elevator;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import team.gif.robot.subsystems.Elevator;
 
 public class VoltageRamper extends Command {
-    private final Elevator elevator;
-    private int percentIncrease;
-    private double lastTime;
+
+    private final Elevator elevator = Elevator.getInstance();
+    private final ShuffleboardTab tab = Shuffleboard.getTab("Debug");
+    private NetworkTableEntry voltage;
+    private NetworkTableEntry rps;
     private double timeout;
 
     public VoltageRamper(double timeout){
-        elevator = Elevator.getInstance();
-        percentIncrease = 0;
         this.timeout = timeout;
-        lastTime = Timer.getFPGATimestamp();
+        setTimeout(timeout);
         requires(elevator);
     }
 
     @Override
     protected void initialize() {
-
+        voltage = tab.add("ElevVoltage", 0.0).getEntry();
+        rps = tab.add("ElevRPS", 0.0).getEntry();
+        Shuffleboard.startRecording();
     }
+
     @Override
     protected void execute() {
-
-        if (Timer.getFPGATimestamp() - lastTime > .1) {
-            elevator.setPercentOutput(percentIncrease);
-            lastTime = Timer.getFPGATimestamp();
-            percentIncrease += (0.25 / 12.0)*.1;
-
-            SmartDashboard.putNumber("Voltage Running At", elevator.getMotorVoltage());
-            SmartDashboard.putNumber("Speed in Radians/Sec", elevator.getMotorSpeed());
-        }
+        elevator.setPercentOutput(timeSinceInitialized() * (0.25 / 12.0));
+        voltage.setDouble(elevator.getVoltage());
+        rps.setDouble(elevator.getVelocityRPS());
     }
 
     @Override
     protected boolean isFinished() {
-        return elevator.isStopped();
+        return isTimedOut();
     }
 
     @Override
     protected void end() {
+        Shuffleboard.stopRecording();
         elevator.setPercentOutput(0);
-
     }
 
 }
