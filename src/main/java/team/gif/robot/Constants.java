@@ -8,7 +8,7 @@ public abstract class Constants {
         public static final double POS_X = 6.0; // X lens displacement from wheelbase center (in)
         public static final double POS_Y = 6.0; // Y lens displacement from wheelbase center (in)
         public static final double POS_Z = 8.75; // Ground to lens height (in)
-        public static final double ANGLE_OFFSET = toRadians(-10.0); // Angle of camera to ground (radians)
+        public static final double ANGLE_OFFSET = toRadians(-25.0); // Angle of camera to ground (radians)
         public static final double HORIZ_FOV = toRadians(59.6); // Horizontal FOV (radians)
         public static final double VERT_FOV = toRadians(49.7); // Vertical FOV (radians)
         public static final int HORIZ_RES = 320; // Horizontal resolution (pixels)
@@ -80,7 +80,7 @@ public abstract class Constants {
     }
 
     public static class Elevator {
-        public static final double P = 0.1;
+        public static final double P = 10.0;
         public static final double I = 0.0;
         public static final double D = 0.0;
 //        public static final double F = 0.615;
@@ -88,19 +88,32 @@ public abstract class Constants {
         private static final double VOLTS_PER_RAD_PER_SEC = .33;
         public static final double F = (VOLTS_PER_RAD_PER_SEC * (1023.0 / (12.0 - 12.0*GRAV_FEED_FORWARD)) * (2*Math.PI/4096) * (10));
 
-        public static final int ALLOWABLE_ERROR = 10; // Error to allow move command to end
+        public static final int ALLOWABLE_ERROR = 100; // Error to allow move command to end
         public static final int MAX_VELOCITY = 1500; // Elevator velocity (ticks/100ms)
-        public static final int MAX_ACCELERATION = 1500; // Elevator acceleration (ticks/100ms/s)
+        public static final int MAX_ACCELERATION = 3000; // Elevator acceleration (ticks/100ms/s)
 
-        public static final int MIN_POS = 0; // Minimum soft limit
-        public static final int MAX_POS = 100; // Maximum soft limit
-        public static final int HATCH_LOW_POS = 0;
-        public static final int HATCH_MID_POS = 50;
-        public static final int HATCH_HIGH_POS = 100;
-        public static final int CARGO_LOW_POS = 0;
-        public static final int CARGO_MID_POS = 50;
-        public static final int CARGO_HIGH_POS = 100;
+        private static final double DIAMETRICAL_PITCH = 1.432;
+        private static final double PORT_HEIGHT_DIFF = 28.0;
+        private static final double HATCH_CARGO_HEIGHT_DIFF = 8.5;
+        private static final int TICKS_PER_REV = 4096;
+        private static final int BOTTOM_POS = 3000;
+
+        public static final int MIN_POS = 1400; // Minimum soft limit 4500
+        public static final int MAX_POS = 37000; // Maximum soft limit
+        public static final int HATCH_LOW_POS = 6000; // C: 9000 P: 6000
+        public static final int HATCH_MID_POS = (int)(HATCH_LOW_POS + PORT_HEIGHT_DIFF / (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0); // 22500
+//        public static final int HATCH_MID_POS = 19500;
+        public static final int HATCH_HIGH_POS = (int)(HATCH_MID_POS + PORT_HEIGHT_DIFF / (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0); // 35000
+//        public static final int HATCH_HIGH_POS = 32000;
+        public static final int CARGO_COLLECT_POS = 15000;
+        public static final int CARGO_LOW_POS = (int)(HATCH_LOW_POS + HATCH_CARGO_HEIGHT_DIFF / (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0); // 13000
+//        public static final int CARGO_LOW_POS = 10000;
+        public static final int CARGO_MID_POS = (int)(HATCH_MID_POS + HATCH_CARGO_HEIGHT_DIFF / (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0); // 25500
+//        public static final int CARGO_MID_POS = 22500;
+        public static final int CARGO_HIGH_POS = (int)(HATCH_HIGH_POS + HATCH_CARGO_HEIGHT_DIFF / (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0); // 38000
+//        public static final int CARGO_HIGH_POS = 35000;
     }
+
     /*
     Steps to measure effective track width:
     1. Determine your effective wheel diameter

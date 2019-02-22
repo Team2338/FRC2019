@@ -7,6 +7,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import team.gif.lib.Odometry;
 import team.gif.robot.Constants;
 import team.gif.robot.RobotMap;
@@ -16,16 +17,16 @@ public class Drivetrain extends Subsystem {
 
     private static Drivetrain instance;
 
-    public final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
+    private final CANSparkMax leftMaster, leftSlave, rightMaster, rightSlave;
     private final PigeonIMU pigeon;
     private final TalonSRX leftEncoderTalon, rightEncoderTalon;
     private Odometry odometry;
 
     private Drivetrain() {
-        leftMaster = new CANSparkMax(RobotMap.LEFT_MASTER_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
-        leftSlave = new CANSparkMax(RobotMap.LEFT_SLAVE_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
-        rightMaster = new CANSparkMax(RobotMap.RIGHT_MASTER_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
-        rightSlave = new CANSparkMax(RobotMap.RIGHT_SLAVE_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        leftMaster = new CANSparkMax(RobotMap.DRIVE_LEFT_MASTER_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        leftSlave = new CANSparkMax(RobotMap.DRIVE_LEFT_SLAVE_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rightMaster = new CANSparkMax(RobotMap.DRIVE_RIGHT_MASTER_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        rightSlave = new CANSparkMax(RobotMap.DRIVE_RIGHT_SLAVE_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
         configNeo(leftMaster);
         configNeo(leftSlave);
         configNeo(rightMaster);

@@ -1,11 +1,10 @@
 package team.gif.robot.commands.elevator;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import team.gif.robot.Constants;
 import team.gif.robot.subsystems.Elevator;
 
 public class VoltageRamper extends Command {
@@ -13,32 +12,31 @@ public class VoltageRamper extends Command {
     private final Elevator elevator = Elevator.getInstance();
     private final ShuffleboardTab tab = Shuffleboard.getTab("Debug");
     private NetworkTableEntry voltage;
-    private NetworkTableEntry rps;
-    private double timeout;
+    private NetworkTableEntry velocity;
 
     public VoltageRamper(double timeout){
-        this.timeout = timeout;
         setTimeout(timeout);
         requires(elevator);
     }
 
     @Override
     protected void initialize() {
-        voltage = tab.add("ElevVoltage", 0.0).getEntry();
-        rps = tab.add("ElevRPS", 0.0).getEntry();
+        voltage = tab.add("Elevator Native Voltage", 0.0).getEntry();
+        velocity = tab.add("Elevator Native Velocity", 0.0).getEntry();
         Shuffleboard.startRecording();
     }
 
     @Override
     protected void execute() {
         elevator.setPercentOutput(timeSinceInitialized() * (0.25 / 12.0));
-        voltage.setDouble(elevator.getVoltage());
-        rps.setDouble(elevator.getVelocityRPS());
+        voltage.setDouble(elevator.getVoltage()/12.0*1024);
+        velocity.setDouble(elevator.getVelTPS()/10.0);
     }
 
     @Override
     protected boolean isFinished() {
-        return isTimedOut();
+//        return isTimedOut();
+        return elevator.getPosition() > Constants.Elevator.MAX_POS - 1000;
     }
 
     @Override

@@ -5,26 +5,30 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import team.gif.robot.Constants;
 import team.gif.robot.RobotMap;
+import team.gif.robot.commands.climber.RaiseAll;
 import team.gif.robot.commands.climber.RaiseFront;
 
 public class Climber extends Subsystem {
 
     private static Climber instance;
 
-    private final Solenoid frontRack, rearRack;
+    private final Solenoid frontRack;
+    private final DoubleSolenoid rearRack;
     private final TalonSRX climbDrive, climbWinch;
     private final PigeonIMU imu;
+    private boolean isDeployed = false;
 
     private Climber() {
-        frontRack = new Solenoid(RobotMap.FRONT_CLIMB_ID);
-        rearRack = new Solenoid(RobotMap.REAR_CLIMB_ID);
+        rearRack = new DoubleSolenoid(RobotMap.CLIMB_REAR_FWD_ID, RobotMap.CLIMB_REAR_REV_ID);
+        frontRack = new Solenoid(RobotMap.CLIMB_FRONT_ID);
 
         climbDrive = new TalonSRX(RobotMap.CLIMB_DRIVE_ID);
-        climbWinch = new TalonSRX(RobotMap.CLIMB_WINCH);
+        climbWinch = new TalonSRX(RobotMap.CLIMB_WINCH_ID);
         imu = new PigeonIMU(RobotMap.PIGEON_ID);
 
         climbDrive.configFactoryDefault();
@@ -53,7 +57,7 @@ public class Climber extends Subsystem {
      */
     public void setPistons(boolean front, boolean rear) {
         this.frontRack.set(front);
-        this.rearRack.set(rear);
+        this.rearRack.set(rear ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
     }
 
     /**
@@ -66,11 +70,15 @@ public class Climber extends Subsystem {
     }
 
     public void setWinchPercent(double percent) {
-        climbWinch.set(ControlMode.PercentOutput, percent, DemandType.ArbitraryFeedForward, Constants.Climber.PISTON_FEED_FORWARD);
+        climbWinch.set(ControlMode.PercentOutput, percent);
     }
 
     public void setWinchVel(double velocity) {
         climbWinch.set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward, Constants.Climber.PISTON_FEED_FORWARD);
+    }
+
+    public void setDeployed(boolean deployed) {
+        isDeployed = deployed;
     }
 
     public int getWinchPos() {
@@ -79,6 +87,10 @@ public class Climber extends Subsystem {
 
     public double getWinchCurrent() {
         return climbWinch.getOutputCurrent();
+    }
+
+    public boolean isDeployed() {
+        return isDeployed;
     }
 
     /**
@@ -99,12 +111,23 @@ public class Climber extends Subsystem {
         return new double[] {frontLeftError, rearLeftError, frontRightError, rearRightError};
     }
 
+    private void configureWinch(TalonSRX talon) {
+        talon.configFactoryDefault();
+        talon.enableVoltageCompensation(true);
+        talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        talon.config_kP(0, Constants.Climber.P);
+        talon.config_kI(0, Constants.Climber.I);
+        talon.config_kD(0, Constants.Climber.D);
+        talon.config_kF(0, Constants.Climber.F);
+
+    }
+
     TalonSRX getDriveEncoderTalon() {
         return climbDrive;
     }
 
     @Override
     protected void initDefaultCommand() {
-//        setDefaultCommand(new RaiseFront());
+        setDefaultCommand(new RaiseAll());
     }
 }

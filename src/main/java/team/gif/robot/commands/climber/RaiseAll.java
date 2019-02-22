@@ -15,13 +15,13 @@ public class RaiseAll extends Command {
 
     @Override
     protected void initialize() {
-
+        climber.setPistons(false, false);
+        climber.setWinchPercent(0.02);
     }
 
     @Override
     protected void execute() {
-        climber.setPistons(false, true);
-        climber.setWinchPercent(0.5);
+
     }
 
     @Override
@@ -31,6 +31,7 @@ public class RaiseAll extends Command {
 
     @Override
     protected void end() {
-
+        climber.setPistons(false, false);
+        climber.setWinchPercent(0.0);
     }
 }

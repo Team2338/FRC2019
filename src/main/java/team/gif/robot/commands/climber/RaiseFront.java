@@ -15,13 +15,12 @@ public class RaiseFront extends Command {
 
     @Override
     protected void initialize() {
-        climber.setWinchPercent(-0.12);
         climber.setPistons(false, true);
     }
 
     @Override
     protected void execute() {
-        climber.setDrive(5.0 * OI.getInstance().driver.getY(GenericHID.Hand.kLeft));
+        climber.setDrive(5.0 * -OI.getInstance().driver.getY(GenericHID.Hand.kLeft));
     }
 
     @Override
@@ -32,5 +31,6 @@ public class RaiseFront extends Command {
     @Override
     protected void end() {
         climber.setDrive(0.0);
+        climber.setPistons(false, false);
     }
 }

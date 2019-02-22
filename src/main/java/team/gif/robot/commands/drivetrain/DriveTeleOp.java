@@ -26,6 +26,8 @@ public class DriveTeleOp extends Command {
         double rotation = OI.getInstance().driver.getX(GenericHID.Hand.kRight);
         boolean quickTurn = OI.getInstance().dRT.get();
 
+        if (quickTurn) rotation *= 0.5;
+
         double[] outputs = controller.curvatureDrive(magnitude, rotation, quickTurn);
         drivetrain.setOutputs(outputs[0], outputs[1]);
     }

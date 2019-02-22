@@ -8,9 +8,11 @@ import team.gif.lib.oi.ComboButton;
 import team.gif.lib.oi.NotButton;
 import team.gif.robot.commands.claw.*;
 import team.gif.robot.commands.climber.Climb;
-import team.gif.robot.commands.climber.PauseClimb;
 import team.gif.robot.commands.climber.RaiseAll;
 import team.gif.robot.commands.climber.RaiseFront;
+import team.gif.robot.commands.elevator.SetElevatorPosition;
+import team.gif.robot.commands.elevator.SmartElevatorPosition;
+import team.gif.robot.commands.hatch_punch.PushOut;
 
 public class OI {
 
@@ -59,36 +61,41 @@ public class OI {
     public final ComboButton dFullStop = new ComboButton(dBack, dStart);
     public final ComboButton aFullStop = new ComboButton(aBack, aStart);
 
-    public final ComboButton elevHatchLow = new ComboButton(aDPadDown, new NotButton(aY));
-    public final ComboButton elevHatchMid = new ComboButton(aDPadRight, new NotButton(aY));
-    public final ComboButton elevHatchHigh = new ComboButton(aDPadUp, new NotButton(aY));
-    public final ComboButton elevCargoLow = new ComboButton(aDPadDown, aY);
-    public final ComboButton elevCargoMid = new ComboButton(aDPadDown, aY);
-    public final ComboButton elevCargoHigh = new ComboButton(aDPadDown, aY);
+    public final ComboButton elevHatchLow = new ComboButton(aDPadDown, new NotButton(aLB));
+    public final ComboButton elevHatchMid = new ComboButton(aDPadRight, new NotButton(aLB));
+    public final ComboButton elevHatchHigh = new ComboButton(aDPadUp, new NotButton(aLB));
+    public final ComboButton elevCargoLow = new ComboButton(aDPadDown, aLB);
+    public final ComboButton elevCargoMid = new ComboButton(aDPadRight, aLB);
+    public final ComboButton elevCargoHigh = new ComboButton(aDPadUp, aLB);
 
     private OI() {
         dLB.whileHeld(new SmartEject());
         dRB.whileHeld(new SmartCollect());
-        dA.whenPressed(new SetClawOpen(true));
-        dA.whenReleased(new SetClawOpen(false));
-        dY.whenPressed(new ToggleClawMode());
-//        dY.whenReleased(new ToggleClawMode());
-        dX.whenPressed(new ToggleDeploy());
 
-//        dB.whenPressed(new Climb());
-//        dY.whenPressed(new RaiseFront());
-//        dA.whileHeld(new RaiseAll());
-//        dX.whenPressed(new ToggleDeploy());
-//        dX.whenPressed(new PauseClimb());
+        aA.whenPressed(new SetClawOpen(true));
+        aA.whenReleased(new SetClawOpen(false));
+        aB.whileHeld(new PushOut(3.0));
+        aX.whenPressed(new ToggleDeploy());
+        aY.whenPressed(new ToggleClawMode());
+
+        aLB.whenPressed(new SetElevatorPosition(Constants.Elevator.MIN_POS));
+        aDPadLeft.whenPressed(new SetElevatorPosition(Constants.Elevator.CARGO_COLLECT_POS));
+        aDPadDown.whenPressed(new SmartElevatorPosition(SmartElevatorPosition.GenericPosition.LOW));
+        aDPadRight.whenPressed(new SmartElevatorPosition(SmartElevatorPosition.GenericPosition.MID));
+        aDPadUp.whenPressed(new SmartElevatorPosition(SmartElevatorPosition.GenericPosition.HIGH));
+
+//        aB.whenPressed(new Climb());
+//        aY.whenPressed(new RaiseFront());
+//        aA.whileHeld(new RaiseAll());
 
 //        aBack.whenPressed(new VoltageRamper(25.0));
+//        aDPadLeft.whenPressed(new SetElevatorPosition(Constants.Elevator.MIN_POS));
 //        elevHatchLow.whenPressed(new SetElevatorPosition(Constants.Elevator.HATCH_LOW_POS));
 //        elevHatchMid.whenPressed(new SetElevatorPosition(Constants.Elevator.HATCH_MID_POS));
 //        elevHatchHigh.whenPressed(new SetElevatorPosition(Constants.Elevator.HATCH_HIGH_POS));
 //        elevCargoLow.whenPressed(new SetElevatorPosition(Constants.Elevator.CARGO_LOW_POS));
 //        elevCargoMid.whenPressed(new SetElevatorPosition(Constants.Elevator.CARGO_MID_POS));
 //        elevCargoHigh.whenPressed(new SetElevatorPosition(Constants.Elevator.CARGO_HIGH_POS));
-
     }
 
     public static OI getInstance() {

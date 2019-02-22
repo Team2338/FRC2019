@@ -36,15 +36,19 @@ public class Elevator extends Subsystem {
         lift.set(ControlMode.MotionMagic, position, DemandType.ArbitraryFeedForward, Constants.Elevator.GRAV_FEED_FORWARD);
     }
 
+    public void setMotionVelocity(int ticksPer100ms) {
+        lift.configMotionCruiseVelocity(ticksPer100ms);
+    }
+
     public int getPosition() {
         return lift.getSelectedSensorPosition();
     }
 
-    public boolean getForwardLimit() {
+    public boolean getFwdLimit() {
         return lift.getSensorCollection().isFwdLimitSwitchClosed();
     }
 
-    public boolean getReverseLimit() {
+    public boolean getRevLimit() {
         return lift.getSensorCollection().isRevLimitSwitchClosed();
     }
 
@@ -56,8 +60,16 @@ public class Elevator extends Subsystem {
         return lift.getMotorOutputVoltage();
     }
 
-    public double getVelocityRPS() {
-        return lift.getSelectedSensorVelocity() * 10.0 * Constants.Drivetrain.TPS_TO_RPS;
+    public double getVelTPS() {
+        return lift.getSelectedSensorVelocity() * 10.0;
+    }
+
+    public double getVelRPS() {
+        return getVelTPS() * Constants.Drivetrain.TPS_TO_RPS;
+    }
+
+    public int getClosedLoopError() {
+        return lift.getClosedLoopError();
     }
 
     private void configLift(TalonSRX talon) {
@@ -78,6 +90,11 @@ public class Elevator extends Subsystem {
 
         talon.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
         talon.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+        talon.configForwardSoftLimitThreshold(Constants.Elevator.MAX_POS);
+        talon.configReverseSoftLimitThreshold(Constants.Elevator.MIN_POS);
+        talon.overrideLimitSwitchesEnable(false);
+        talon.configForwardSoftLimitEnable(true);
+        talon.configReverseSoftLimitEnable(true);
 //        talon.configClearPositionOnLimitR(true, 0);
     }
 

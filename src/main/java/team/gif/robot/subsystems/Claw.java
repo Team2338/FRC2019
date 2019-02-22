@@ -28,10 +28,10 @@ public class Claw extends Subsystem {
         clamp = new Solenoid(RobotMap.CLAW_CLAMP_ID);
         hooks = new Solenoid(RobotMap.CLAW_HOOKS_ID);
 
-        left = new Servo(RobotMap.LEFT_SERVO_ID);
-        right = new Servo(RobotMap.RIGHT_SERVO_ID);
+        left = new Servo(RobotMap.CLAW_LEFT_SERVO_ID);
+        right = new Servo(RobotMap.CLAW_RIGHT_SERVO_ID);
 
-        ballSensor = new AnalogInput(RobotMap.BALL_SENSOR_ID);
+        ballSensor = new AnalogInput(RobotMap.CLAW_BALL_SENSOR_ID);
 
         intake.configFactoryDefault();
     }

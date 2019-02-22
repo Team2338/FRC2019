@@ -10,11 +10,8 @@ public class SetElevatorPosition extends Command {
     private final double position;
 
     public SetElevatorPosition(double position) {
-        if (position > Constants.Elevator.MAX_POS) {
-            position = Constants.Elevator.MAX_POS;
-        } else if (position < Constants.Elevator.MIN_POS) {
-            position = Constants.Elevator.MIN_POS;
-        }
+        if (position > Constants.Elevator.MAX_POS) { position = Constants.Elevator.MAX_POS; }
+        if (position < Constants.Elevator.MIN_POS) { position = Constants.Elevator.MIN_POS; }
         this.position = position;
 
         requires(elevator);
@@ -27,7 +24,11 @@ public class SetElevatorPosition extends Command {
 
     @Override
     protected void execute() {
-
+        if (elevator.getFwdLimit() && elevator.getClosedLoopError() < 0) {
+            elevator.setMotionVelocity(400);
+        } else {
+            elevator.setMotionVelocity(Constants.Elevator.MAX_VELOCITY);
+        }
     }
 
     @Override

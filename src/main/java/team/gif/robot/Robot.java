@@ -8,10 +8,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.WPILibVersion;
-import jaci.pathfinder.Pathfinder;
-import jaci.pathfinder.Trajectory;
-import jaci.pathfinder.Waypoint;
-import jaci.pathfinder.modifiers.TankModifier;
 import team.gif.lib.AutoMode;
 import team.gif.lib.AutoPosition;
 import team.gif.lib.drivers.Limelight;
@@ -21,9 +17,6 @@ import team.gif.robot.subsystems.Claw;
 import team.gif.robot.subsystems.Climber;
 import team.gif.robot.subsystems.Drivetrain;
 import team.gif.robot.subsystems.Elevator;
-
-import java.io.File;
-import java.util.Arrays;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -77,6 +70,14 @@ public class Robot extends TimedRobot {
 //        drivetrain.beginOdometry();
 
         System.out.println("Robot Initialized. WPILib Version " + WPILibVersion.Version);
+
+        System.out.println("Hatch Low Pos: " + Constants.Elevator.HATCH_LOW_POS);
+        System.out.println("Hatch Mid Pos: " + Constants.Elevator.HATCH_MID_POS);
+        System.out.println("Hatch High Pos: " + Constants.Elevator.HATCH_HIGH_POS);
+        System.out.println("Cargo Low Pos: " + Constants.Elevator.CARGO_LOW_POS);
+        System.out.println("Cargo Mid Pos: " + Constants.Elevator.CARGO_MID_POS);
+        System.out.println("Cargo High Pos: " + Constants.Elevator.CARGO_HIGH_POS);
+
     }
 
     /**
@@ -89,13 +90,16 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-//        System.out.println("Pos: " + elevator.getPosition() + " Rev: " + elevator.getReverseLimit() + " Fwd: " + elevator.getForwardLimit());
+        System.out.println("Pos: " + elevator.getPosition() + " Rev: " + elevator.getRevLimit() + " Fwd: " + elevator.getFwdLimit());
 //        System.out.println(Arrays.toString(limelight.getCamTran()));
 //        System.out.println("Left" + claw.leftServoPos() + "Right" + claw.rightServoPos());
 //        System.out.println("WinchPos: " + climber.getWinchPos());
 //        System.out.println("LeftVel: " + drivetrain.getLeftVelTPS() + ", RightVel: " + drivetrain.getRightVelTPS() +
 //                ", LeftOutput: " + drivetrain.leftMaster.getAppliedOutput() + ", RightOutput: " + drivetrain.rightMaster.getAppliedOutput());
 //    System.out.println("Has Ball: " + claw.hasBall());
+        limelight.setLEDMode(1);
+        limelight.setCamMode(1);
+//        port.writeString("<e,c,165>");
     }
 
     @Override
@@ -148,7 +152,22 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-        elevator.setPercentOutput(-oi.aux.getY(GenericHID.Hand.kLeft));
+//        if (oi.dDPadUp.get()) {
+//            elevator.setPercentOutput(0.2);
+//        } else if (oi.dDPadDown.get()) {
+//            elevator.setPercentOutput(-0.4);
+//        } else {
+//            elevator.setPercentOutput(-0.02);
+//        }
+//        elevator.setPercentOutput(-oi.aux.getY(GenericHID.Hand.kLeft) - 0.02);
+
+//        if (oi.dY.get()) {
+//            climber.setPistons(true, false);
+//        } else if (oi.dA.get()) {
+//            climber.setPistons(false, true);
+//        } else {
+//            climber.setPistons(false, false);
+//        }
     }
 
     /**

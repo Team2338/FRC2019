@@ -11,7 +11,7 @@ public class Climb extends Command {
 
     private final Climber climber = Climber.getInstance();
     private final Drivetrain drivetrain = Drivetrain.getInstance();
-    private final double kP = Constants.Climber.GYRO_SENSITIVITY;
+    private final double P = Constants.Climber.GYRO_SENSITIVITY;
 
     public Climb() {
         requires(climber);
@@ -26,17 +26,13 @@ public class Climb extends Command {
     protected void execute() {
         double pitch = drivetrain.getYawPitchRoll()[1];
 
-//        if (climber.getWinchCurrent() > 5.0) {
         if (climber.getWinchPos() < 19000) {
-            climber.setWinchPercent(-(0.40 + kP * pitch));
+            climber.setWinchPercent(-(0.2 + P * pitch));
         } else {
-            climber.setWinchPercent(-0.12);
+            climber.setWinchPercent(0.15);
         }
-//        } else {
-//            climber.setWinchPercent(0.0);
-//        }
 
-        climber.setDrive(5.0 * OI.getInstance().driver.getY(GenericHID.Hand.kLeft));
+        climber.setDrive(5.0 * -OI.getInstance().driver.getY(GenericHID.Hand.kLeft));
     }
 
     @Override
@@ -46,7 +42,7 @@ public class Climb extends Command {
 
     @Override
     protected void end() {
-        climber.setWinchPercent(0.0);
+        climber.setWinchPercent(0.15);
         climber.setDrive(0.0);
     }
 }
