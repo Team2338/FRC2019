@@ -8,15 +8,22 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.util.WPILibVersion;
+import jaci.pathfinder.Pathfinder;
+import jaci.pathfinder.Trajectory;
+import jaci.pathfinder.Waypoint;
 import team.gif.lib.AutoMode;
 import team.gif.lib.AutoPosition;
+import team.gif.lib.TargetPosition;
 import team.gif.lib.drivers.Limelight;
 import team.gif.robot.commands.CommandGroupTemplate;
-import team.gif.robot.commands.auto.Mobility;
+import team.gif.robot.commands.auto.*;
+import team.gif.robot.commands.drivetrain.DriveTeleOp;
 import team.gif.robot.subsystems.Claw;
 import team.gif.robot.subsystems.Climber;
 import team.gif.robot.subsystems.Drivetrain;
 import team.gif.robot.subsystems.Elevator;
+
+import java.io.File;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -33,15 +40,25 @@ public class Robot extends TimedRobot {
     private Elevator elevator = Elevator.getInstance();
     private OI oi = OI.getInstance();
     private Limelight limelight = Limelight.getInstance();
+    private Compressor compressor = new Compressor();
 //    private SerialPort port = new SerialPort(9600, SerialPort.Port.kUSB);
 
     private final ShuffleboardTab autoTab = Shuffleboard.getTab("Auto");
     private final ShuffleboardTab teleopTab = Shuffleboard.getTab("TeleOp");
+    private final ShuffleboardTab debug = Shuffleboard.getTab("Debug");
     private final SendableChooser<AutoPosition> autoPositionChooser = new SendableChooser<>();
     private final SendableChooser<AutoMode> autoModeChooser = new SendableChooser<>();
     private AutoPosition selectedAutoPosition;
     private AutoMode selectedAutoMode;
     private Command auto;
+    private boolean autoCanceled = false;
+
+//    private final Trajectory backupAroundRocket = Pathfinder.generate(new Waypoint[] {
+//            TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, 0, true),
+//            TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4 - 24, 0, true),
+//            new Waypoint(229.125, -110, 0.0),
+//            TargetPosition.RIGHT_ROCKET_FAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4 - 24, 36, true)
+//    }, Constants.Drivetrain.config);
 
     /**
      * This function is run when the robot is first started up and should be
@@ -58,26 +75,20 @@ public class Robot extends TimedRobot {
 
         autoModeChooser.setDefaultOption("Mobility", AutoMode.MOBILITY);
         autoModeChooser.addOption("Double Rocket", AutoMode.DOUBLE_ROCKET);
-        autoModeChooser.addOption("Cargo Ship: Front", AutoMode.CARGO_SHIP_FRONT);
+        autoModeChooser.addOption("Cargo Ship: Front Left", AutoMode.CARGO_SHIP_FRONT_LEFT);
+        autoModeChooser.addOption("Cargo Ship: Front Right", AutoMode.CARGO_SHIP_FRONT_RIGHT);
         autoModeChooser.addOption("Cargo Ship: Near", AutoMode.CARGO_SHIP_NEAR);
         autoModeChooser.addOption("Cargo Ship: Mid", AutoMode.CARGO_SHIP_MID);
         autoModeChooser.addOption("Cargo Ship: Far", AutoMode.CARGO_SHIP_FAR);
-        autoTab.add("Auto ClawMode", autoModeChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
+        autoTab.add("Auto Mode", autoModeChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
 
         selectedAutoPosition = autoPositionChooser.getSelected();
         selectedAutoMode = autoModeChooser.getSelected();
 
+//        Pathfinder.writeToCSV(new File("C:\\Users\\Connor\\Desktop\\backupRocket.csv"), backupAroundRocket);
 //        drivetrain.beginOdometry();
 
         System.out.println("Robot Initialized. WPILib Version " + WPILibVersion.Version);
-
-        System.out.println("Hatch Low Pos: " + Constants.Elevator.HATCH_LOW_POS);
-        System.out.println("Hatch Mid Pos: " + Constants.Elevator.HATCH_MID_POS);
-        System.out.println("Hatch High Pos: " + Constants.Elevator.HATCH_HIGH_POS);
-        System.out.println("Cargo Low Pos: " + Constants.Elevator.CARGO_LOW_POS);
-        System.out.println("Cargo Mid Pos: " + Constants.Elevator.CARGO_MID_POS);
-        System.out.println("Cargo High Pos: " + Constants.Elevator.CARGO_HIGH_POS);
-
     }
 
     /**
@@ -90,21 +101,13 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        System.out.println("Pos: " + elevator.getPosition() + " Rev: " + elevator.getRevLimit() + " Fwd: " + elevator.getFwdLimit());
-//        System.out.println(Arrays.toString(limelight.getCamTran()));
-//        System.out.println("Left" + claw.leftServoPos() + "Right" + claw.rightServoPos());
-//        System.out.println("WinchPos: " + climber.getWinchPos());
-//        System.out.println("LeftVel: " + drivetrain.getLeftVelTPS() + ", RightVel: " + drivetrain.getRightVelTPS() +
-//                ", LeftOutput: " + drivetrain.leftMaster.getAppliedOutput() + ", RightOutput: " + drivetrain.rightMaster.getAppliedOutput());
-//    System.out.println("Has Ball: " + claw.hasBall());
-        limelight.setLEDMode(1);
-        limelight.setCamMode(1);
-//        port.writeString("<e,c,165>");
+//        System.out.println(drivetrain.getHeadingDegrees());
+//        leftVel.setDouble(drivetrain.getLeftVelRPS());
     }
 
     @Override
     public void disabledInit() {
-
+        drivetrain.setBrakeMode(false);
     }
 
     @Override
@@ -119,8 +122,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        updateSelectedAuto();
-
+        compressor.stop();
+        drivetrain.setBrakeMode(false);
         if (auto != null) {
             auto.start();
         }
@@ -132,6 +135,13 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
+
+        if (oi.dSpecial.get() || oi.aSpecial.get()){
+            Scheduler.getInstance().removeAll();
+//            teleopInit();
+//            new DriveTeleOp().start();
+        }
+
     }
 
     /**
@@ -143,6 +153,11 @@ public class Robot extends TimedRobot {
             auto.cancel();
         }
 
+        compressor.start();
+        drivetrain.setBrakeMode(true);
+        limelight.setCamMode(1);
+        limelight.setLEDMode(1);
+
         Shuffleboard.selectTab("TeleOp");
     }
 
@@ -152,22 +167,11 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-//        if (oi.dDPadUp.get()) {
-//            elevator.setPercentOutput(0.2);
-//        } else if (oi.dDPadDown.get()) {
-//            elevator.setPercentOutput(-0.4);
-//        } else {
-//            elevator.setPercentOutput(-0.02);
-//        }
-//        elevator.setPercentOutput(-oi.aux.getY(GenericHID.Hand.kLeft) - 0.02);
-
-//        if (oi.dY.get()) {
-//            climber.setPistons(true, false);
-//        } else if (oi.dA.get()) {
-//            climber.setPistons(false, true);
-//        } else {
-//            climber.setPistons(false, false);
-//        }
+//        System.out.println("Heading: " + drivetrain.getHeadingDegrees());
+//        System.out.println("LeftDistInches: " + drivetrain.getLeftPosInches());
+//        System.out.println("RightDistInches: " + drivetrain.getRightPosInches());
+//        System.out.println("Has Target: " + limelight.hasTarget());
+//        System.out.println("Offset: " + limelight.getXOffset());
     }
 
     /**
@@ -180,23 +184,49 @@ public class Robot extends TimedRobot {
     private void updateSelectedAuto() {
         selectedAutoPosition = autoPositionChooser.getSelected();
         selectedAutoMode = autoModeChooser.getSelected();
-        System.out.println("Position: " + selectedAutoPosition + ", ClawMode: " + selectedAutoMode);
+        System.out.println("Position: " + selectedAutoPosition + ", Mode: " + selectedAutoMode);
 
         if (selectedAutoMode == AutoMode.MOBILITY) {
             auto = new Mobility(selectedAutoPosition);
         } else if (selectedAutoMode == AutoMode.DOUBLE_ROCKET) {
             if (selectedAutoPosition == AutoPosition.L1_LEFT) {
-                auto = new CommandGroupTemplate();
-            } else if (selectedAutoPosition == AutoPosition.L1_CENTER) {
-                auto = new Mobility(selectedAutoPosition);
-                System.out.println("[WARNING]: This combination does not have an auto command.");
+                auto = new LeftDoubleRocket();
             } else if (selectedAutoPosition == AutoPosition.L1_RIGHT) {
-                auto = new CommandGroupTemplate();
-            } else if (selectedAutoPosition == AutoPosition.L2_LEFT) {
-                auto = new CommandGroupTemplate();
-            } else if (selectedAutoPosition == AutoPosition.L2_RIGHT) {
-                auto = new CommandGroupTemplate();
+                auto = new RightDoubleRocket();
+            } else {
+                auto = new Mobility(selectedAutoPosition);
+                DriverStation.reportError("This combination does not have an auto command.", false);
+                System.out.println("WARNING: This combination does not have an auto command.");
             }
+        } else if (selectedAutoMode == AutoMode.CARGO_SHIP_FRONT_LEFT) {
+            if (selectedAutoPosition == AutoPosition.L1_LEFT) {
+                auto = new LeftFrontShip();
+            } else if (selectedAutoPosition == AutoPosition.L1_CENTER) {
+                auto = new CenterFrontLeftShip();
+            } else {
+                auto = new Mobility(selectedAutoPosition);
+                System.out.println("WARNING: This combination does not have an auto command.");
+            }
+        } else if (selectedAutoMode == AutoMode.CARGO_SHIP_FRONT_RIGHT) {
+            if (selectedAutoPosition == AutoPosition.L1_CENTER) {
+                auto = new CenterFrontRightShip();
+            } else if (selectedAutoPosition == AutoPosition.L1_RIGHT) {
+                auto = new RightFrontShip();
+            } else {
+                auto = new Mobility(selectedAutoPosition);
+                System.out.println("WARNING: This combination does not have an auto command.");
+            }
+        } else if (selectedAutoMode == AutoMode.CARGO_SHIP_NEAR) {
+            if (selectedAutoPosition == AutoPosition.L1_LEFT) {
+                auto = new LeftNearShipHatch();
+            }
+        } else if (selectedAutoMode == AutoMode.CARGO_SHIP_MID) {
+
+        } else if (selectedAutoMode == AutoMode.CARGO_SHIP_FAR) {
+
+        } else {
+            auto = new Mobility(selectedAutoPosition);
+            System.out.println("[WARNING]: This combination does not have an auto command.");
         }
 
         System.out.println("Selected Auto: " + auto);

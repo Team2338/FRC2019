@@ -24,7 +24,7 @@ public class SetElevatorPosition extends Command {
 
     @Override
     protected void execute() {
-        if (elevator.getFwdLimit() && elevator.getClosedLoopError() < 0) {
+        if (!elevator.getFwdLimit() && elevator.getClosedLoopError() < 0) {
             elevator.setMotionVelocity(400);
         } else {
             elevator.setMotionVelocity(Constants.Elevator.MAX_VELOCITY);

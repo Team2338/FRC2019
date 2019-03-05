@@ -1,20 +1,20 @@
-package team.gif.robot.commands.hatch_punch;
+package team.gif.robot.commands.backhatch;
 
 import edu.wpi.first.wpilibj.command.Command;
-import team.gif.robot.subsystems.HatchPunch;
+import team.gif.robot.subsystems.BackHatch;
 
-public class PushOut extends Command {
+public class BackEject extends Command {
 
-    private final HatchPunch pusher = HatchPunch.getInstance();
+    private final BackHatch backHatch = BackHatch.getInstance();
 
-    public PushOut(double timeout) {
+    public BackEject(double timeout) {
         setTimeout(timeout);
-        requires(pusher);
+        requires(backHatch);
     }
 
     @Override
     protected void initialize() {
-        pusher.setPunch(true);
+        backHatch.set(true);
     }
 
     @Override
@@ -29,6 +29,6 @@ public class PushOut extends Command {
 
     @Override
     protected void end() {
-        pusher.setPunch(false);
+        backHatch.set(false);
     }
 }

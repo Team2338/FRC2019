@@ -5,18 +5,20 @@ import edu.wpi.first.wpilibj.command.Command;
 import team.gif.robot.OI;
 import team.gif.robot.subsystems.Climber;
 
-public class RaiseAll extends Command {
+public class RaiseRear extends Command {
 
-    private Climber climber = Climber.getInstance();
+    private final Climber climber = Climber.getInstance();
 
-    public RaiseAll() {
+    public RaiseRear() {
         requires(climber);
     }
 
     @Override
     protected void initialize() {
-        climber.setPistons(false, false);
-        climber.setWinchPercent(0.02);
+        climber.setRearRack(false);
+        climber.setWinchPercent(0.1);
+        climber.setDeployed(false);
+        climber.setWinchCurrentLimit(10);
     }
 
     @Override
@@ -31,7 +33,7 @@ public class RaiseAll extends Command {
 
     @Override
     protected void end() {
-        climber.setPistons(false, false);
+        climber.setRearRack(false);
         climber.setWinchPercent(0.0);
     }
 }

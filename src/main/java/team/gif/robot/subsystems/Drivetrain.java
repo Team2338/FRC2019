@@ -41,6 +41,7 @@ public class Drivetrain extends Subsystem {
         rightEncoderTalon = Climber.getInstance().getDriveEncoderTalon();
         configDriveEncoder(leftEncoderTalon);
         configDriveEncoder(rightEncoderTalon);
+        rightEncoderTalon.setSensorPhase(true);
 
         leftMaster.setInverted(false);
         rightMaster.setInverted(true);
@@ -65,6 +66,15 @@ public class Drivetrain extends Subsystem {
     public void setOutputs(double left, double right) {
         leftMaster.set(left);
         rightMaster.set(right);
+    }
+
+    public void setYaw(double yaw) {
+        pigeon.setYaw(yaw);
+    }
+
+    public void setBrakeMode(boolean on) {
+        leftMaster.setIdleMode(on ? CANSparkMax.IdleMode.kBrake : CANSparkMax.IdleMode.kCoast);
+        rightMaster.setIdleMode(on ? CANSparkMax.IdleMode.kBrake : CANSparkMax.IdleMode.kCoast);
     }
 
     /**
@@ -123,6 +133,10 @@ public class Drivetrain extends Subsystem {
         return getRightVelTPS() * Constants.Drivetrain.TPS_TO_RPS;
     }
 
+    public double[] getOutputVoltage() {
+        return new double[]{ leftMaster.getAppliedOutput() * leftMaster.getBusVoltage(),
+        rightMaster.getAppliedOutput() * rightMaster.getBusVoltage() };
+    }
     /**
      * @return array containing yaw[0], pitch[1], and roll[2] in degrees
      */
@@ -163,7 +177,7 @@ public class Drivetrain extends Subsystem {
         spark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         spark.enableVoltageCompensation(12.0);
         spark.setSmartCurrentLimit(80);
-        spark.setOpenLoopRampRate(0.2);
+//        spark.setOpenLoopRampRate(0.3);
     }
 
     /**

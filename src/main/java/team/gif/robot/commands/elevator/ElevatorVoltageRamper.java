@@ -7,15 +7,15 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import team.gif.robot.Constants;
 import team.gif.robot.subsystems.Elevator;
 
-public class VoltageRamper extends Command {
+public class ElevatorVoltageRamper extends Command {
 
     private final Elevator elevator = Elevator.getInstance();
     private final ShuffleboardTab tab = Shuffleboard.getTab("Debug");
     private NetworkTableEntry voltage;
     private NetworkTableEntry velocity;
 
-    public VoltageRamper(double timeout){
-        setTimeout(timeout);
+    public ElevatorVoltageRamper(double timeout){
+//        setTimeout(timeout);
         requires(elevator);
     }
 
@@ -29,14 +29,14 @@ public class VoltageRamper extends Command {
     @Override
     protected void execute() {
         elevator.setPercentOutput(timeSinceInitialized() * (0.25 / 12.0));
-        voltage.setDouble(elevator.getVoltage()/12.0*1024);
-        velocity.setDouble(elevator.getVelTPS()/10.0);
+        voltage.setDouble(elevator.getOutputVoltage() / 12.0 * 1024);
+        velocity.setDouble(elevator.getVelTPS() / 10.0);
     }
 
     @Override
     protected boolean isFinished() {
 //        return isTimedOut();
-        return elevator.getPosition() > Constants.Elevator.MAX_POS - 1000;
+        return !elevator.getFwdLimit();
     }
 
     @Override

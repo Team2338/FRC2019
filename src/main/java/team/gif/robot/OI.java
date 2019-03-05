@@ -3,16 +3,21 @@ package team.gif.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.POVButton;
+import team.gif.lib.AutoPosition;
 import team.gif.lib.oi.AxisButton;
 import team.gif.lib.oi.ComboButton;
 import team.gif.lib.oi.NotButton;
+import team.gif.robot.commands.auto.Mobility;
+import team.gif.robot.commands.auto.RightDoubleRocket;
 import team.gif.robot.commands.claw.*;
 import team.gif.robot.commands.climber.Climb;
-import team.gif.robot.commands.climber.RaiseAll;
+import team.gif.robot.commands.climber.ClimberStandby;
 import team.gif.robot.commands.climber.RaiseFront;
-import team.gif.robot.commands.elevator.SetElevatorPosition;
+import team.gif.robot.commands.climber.RaiseRear;
+import team.gif.robot.commands.drivetrain.DriveVoltageStepTest;
+import team.gif.robot.commands.drivetrain.VisionTurnTest;
 import team.gif.robot.commands.elevator.SmartElevatorPosition;
-import team.gif.robot.commands.hatch_punch.PushOut;
+import team.gif.robot.commands.backhatch.BackEject;
 
 public class OI {
 
@@ -43,10 +48,10 @@ public class OI {
     public final JoystickButton aLS = new JoystickButton(aux, 9);
     public final JoystickButton aRS = new JoystickButton(aux, 10);
 
-    public final AxisButton dLT = new AxisButton(driver, 2, 0.05);
-    public final AxisButton dRT = new AxisButton(driver, 3, 0.05);
-    public final AxisButton aLT = new AxisButton(aux, 2, 0.05);
-    public final AxisButton aRT = new AxisButton(aux, 3, 0.05);
+    public final AxisButton dLT = new AxisButton(driver, 2, 0.1);
+    public final AxisButton dRT = new AxisButton(driver, 3, 0.1);
+    public final AxisButton aLT = new AxisButton(aux, 2, 0.1);
+    public final AxisButton aRT = new AxisButton(aux, 3, 0.1);
 
     public final POVButton dDPadUp = new POVButton(driver, 0);
     public final POVButton dDPadRight = new POVButton(driver, 90);
@@ -58,8 +63,9 @@ public class OI {
     public final POVButton aDPadLeft = new POVButton(aux, 270);
 
     // Special Buttons
-    public final ComboButton dFullStop = new ComboButton(dBack, dStart);
-    public final ComboButton aFullStop = new ComboButton(aBack, aStart);
+    public final ComboButton dSpecial = new ComboButton(dBack, dStart);
+    public final ComboButton aSpecial = new ComboButton(aBack, aStart);
+    public final ComboButton aTriggers = new ComboButton(aLT, aRT);
 
     public final ComboButton elevHatchLow = new ComboButton(aDPadDown, new NotButton(aLB));
     public final ComboButton elevHatchMid = new ComboButton(aDPadRight, new NotButton(aLB));
@@ -72,23 +78,23 @@ public class OI {
         dLB.whileHeld(new SmartEject());
         dRB.whileHeld(new SmartCollect());
 
-        aA.whenPressed(new SetClawOpen(true));
-        aA.whenReleased(new SetClawOpen(false));
-        aB.whileHeld(new PushOut(3.0));
+        aB.whileHeld(new BackEject(10.0));
         aX.whenPressed(new ToggleDeploy());
         aY.whenPressed(new ToggleClawMode());
 
-        aLB.whenPressed(new SetElevatorPosition(Constants.Elevator.MIN_POS));
-        aDPadLeft.whenPressed(new SetElevatorPosition(Constants.Elevator.CARGO_COLLECT_POS));
+        aLB.whenPressed(new SmartElevatorPosition(SmartElevatorPosition.GenericPosition.COLLECT));
+        aDPadLeft.whenPressed(new SmartElevatorPosition(SmartElevatorPosition.GenericPosition.LOAD));
         aDPadDown.whenPressed(new SmartElevatorPosition(SmartElevatorPosition.GenericPosition.LOW));
         aDPadRight.whenPressed(new SmartElevatorPosition(SmartElevatorPosition.GenericPosition.MID));
         aDPadUp.whenPressed(new SmartElevatorPosition(SmartElevatorPosition.GenericPosition.HIGH));
 
-//        aB.whenPressed(new Climb());
-//        aY.whenPressed(new RaiseFront());
-//        aA.whileHeld(new RaiseAll());
+        aRT.whileHeld(new VisionTurnTest());
 
-//        aBack.whenPressed(new VoltageRamper(25.0));
+        aTriggers.whenPressed(new Climb());
+        aB.whenPressed(new RaiseFront());
+        aA.whileHeld(new RaiseRear());
+
+//        aBack.whenPressed(new Mobility(AutoPosition.L1_CENTER));
 //        aDPadLeft.whenPressed(new SetElevatorPosition(Constants.Elevator.MIN_POS));
 //        elevHatchLow.whenPressed(new SetElevatorPosition(Constants.Elevator.HATCH_LOW_POS));
 //        elevHatchMid.whenPressed(new SetElevatorPosition(Constants.Elevator.HATCH_MID_POS));

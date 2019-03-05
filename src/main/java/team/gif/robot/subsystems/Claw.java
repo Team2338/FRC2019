@@ -3,6 +3,7 @@ package team.gif.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -14,7 +15,8 @@ public class Claw extends Subsystem {
     private static Claw instance;
 
     private final TalonSRX intake;
-    private final Solenoid deploy, clamp, hooks;
+    private final Solenoid deploy, clamp;
+    private final DoubleSolenoid hooks;
     private final Servo left, right;
 
     public final AnalogInput ballSensor;
@@ -26,7 +28,7 @@ public class Claw extends Subsystem {
 
         deploy = new Solenoid(RobotMap.CLAW_DEPLOY_ID);
         clamp = new Solenoid(RobotMap.CLAW_CLAMP_ID);
-        hooks = new Solenoid(RobotMap.CLAW_HOOKS_ID);
+        hooks = new DoubleSolenoid(RobotMap.CLAW_HOOKS_FWD_ID, RobotMap.CLAW_HOOKS_REV_ID);
 
         left = new Servo(RobotMap.CLAW_LEFT_SERVO_ID);
         right = new Servo(RobotMap.CLAW_RIGHT_SERVO_ID);
@@ -56,7 +58,7 @@ public class Claw extends Subsystem {
     }
 
     public void deployHooks(boolean out) {
-        hooks.set(out);
+        hooks.set(out ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
     }
 
     public void engageServoBrakes(boolean engaged) {

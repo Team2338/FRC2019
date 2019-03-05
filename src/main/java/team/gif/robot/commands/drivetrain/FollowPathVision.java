@@ -7,24 +7,33 @@ import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.followers.EncoderFollower;
 import jaci.pathfinder.modifiers.TankModifier;
 import team.gif.lib.MiniPID;
+import team.gif.lib.drivers.Limelight;
 import team.gif.robot.Constants;
+import team.gif.robot.OI;
 import team.gif.robot.subsystems.Drivetrain;
 
-public class FollowPath extends Command implements Runnable {
+import java.nio.file.Path;
+
+public class FollowPathVision extends Command implements Runnable {
 
     private final Drivetrain drivetrain = Drivetrain.getInstance();
+    private final Limelight limelight = Limelight.getInstance();
     private final TankModifier modifier;
     private final EncoderFollower leftFollower;
     private final EncoderFollower rightFollower;
     private final MiniPID rotatePID;
     private final Notifier notifier;
+    private final double switchTime;
+    private final Trajectory.Segment finalSegment;
 
-    public FollowPath(Trajectory trajectory) {
+    public FollowPathVision(Trajectory trajectory, double switchTime) {
         modifier = new TankModifier(trajectory).modify(Constants.Drivetrain.TRACK_WIDTH);
         leftFollower = new EncoderFollower(modifier.getLeftTrajectory());
         rightFollower = new EncoderFollower(modifier.getRightTrajectory());
         rotatePID = new MiniPID(Constants.Drivetrain.ROTATE_P, Constants.Drivetrain.ROTATE_I, Constants.Drivetrain.ROTATE_D);
         notifier = new Notifier(this);
+        this.switchTime = switchTime;
+        this.finalSegment = trajectory.get(trajectory.length() - 1);
 
         leftFollower.configurePIDVA(Constants.Drivetrain.DRIVE_P, Constants.Drivetrain.DRIVE_I,
                 Constants.Drivetrain.DRIVE_D, Constants.Drivetrain.V_LEFT_FWD, Constants.Drivetrain.A_LEFT);
@@ -40,7 +49,7 @@ public class FollowPath extends Command implements Runnable {
                 Constants.Drivetrain.WHEEL_DIAMETER);
         rightFollower.configureEncoder(drivetrain.getRightPosTicks(), Constants.Drivetrain.TICKS_PER_REV,
                 Constants.Drivetrain.WHEEL_DIAMETER);
-        drivetrain.setBrakeMode(false);
+
         notifier.startPeriodic(0.01);
     }
 
@@ -56,7 +65,13 @@ public class FollowPath extends Command implements Runnable {
         double headingTarget = Pathfinder.boundHalfDegrees(Math.toDegrees(leftFollower.getHeading()));
         double turn = rotatePID.getOutput(heading, headingTarget);
 
-        System.out.println(headingTarget - heading);
+        if (timeSinceInitialized() > switchTime) {
+            limelight.setLEDMode(3);
+            limelight.setCamMode(0);
+            turn -= limelight.getXOffset() * 0.003;
+            System.out.println("Offset: " + limelight.getXOffset());
+            System.out.println("Turn: " + turn);
+        }
 
         drivetrain.setOutputs(leftOutput - turn, rightOutput + turn);
     }
@@ -68,14 +83,18 @@ public class FollowPath extends Command implements Runnable {
 
     @Override
     protected boolean isFinished() {
-        return leftFollower.isFinished() && rightFollower.isFinished();
+        return (leftFollower.isFinished() && rightFollower.isFinished()) || OI.getInstance().dB.get();
     }
 
     @Override
     protected void end() {
+        limelight.setLEDMode(1);
+        limelight.setCamMode(1);
         notifier.stop();
         notifier.close();
-        drivetrain.setBrakeMode(true);
+
+        System.out.println("I am done with vision.");
+
         drivetrain.setOutputs(0.0, 0.0);
     }
 

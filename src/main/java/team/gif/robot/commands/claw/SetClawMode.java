@@ -24,7 +24,7 @@ public class SetClawMode extends Command {
 
     @Override
     protected void execute() {
-        if (timeSinceInitialized() > 0.5) {
+        if (timeSinceInitialized() > 0.4) {
             isFinished = true;
         } else if (timeSinceInitialized() > 0.1) {
             claw.engageServoBrakes(!hatchMode);

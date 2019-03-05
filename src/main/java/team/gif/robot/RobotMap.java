@@ -25,13 +25,14 @@ public abstract class RobotMap {
     // Solenoids (PCM)
     public static final int CLAW_DEPLOY_ID = 0;
     public static final int CLAW_CLAMP_ID = 1;
-    public static final int CLAW_HOOKS_ID = 2;
+    public static final int CLAW_HOOKS_FWD_ID = 2;
+    public static final int CLAW_HOOKS_REV_ID = 3;
 
     public static final int CLIMB_FRONT_ID = 6;
     public static final int CLIMB_REAR_FWD_ID = 4;
     public static final int CLIMB_REAR_REV_ID = 5;
 
-    public static final int HATCH_PUNCH_ID = 7;
+    public static final int BACK_HATCH_ID = 7;
 
     // Sensors
     public static final int PIGEON_ID = 0; // CAN

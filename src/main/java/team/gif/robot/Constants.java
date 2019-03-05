@@ -1,5 +1,7 @@
 package team.gif.robot;
 
+import jaci.pathfinder.Trajectory;
+
 import static java.lang.Math.*;
 
 public abstract class Constants {
@@ -36,10 +38,10 @@ public abstract class Constants {
     }
 
     public static class Claw {
-        public static final double LEFT_BRAKE_POS = 0.2;
-        public static final double LEFT_NEUTRAL_POS = 1.0;
-        public static final double RIGHT_BRAKE_POS = 0.65;
-        public static final double RIGHT_NEUTRAL_POS = 0.0;
+        public static final double LEFT_BRAKE_POS = 0.22;
+        public static final double LEFT_NEUTRAL_POS = 0.70;
+        public static final double RIGHT_BRAKE_POS = 0.55;
+        public static final double RIGHT_NEUTRAL_POS = 0.05;
     }
 
     public static class Climber {
@@ -54,64 +56,82 @@ public abstract class Constants {
 
     public static class Drivetrain {
         // Physical Stuff
-        public static final double WHEEL_DIAMETER = 5.0;
-        public static final double TRACK_WIDTH = 25.0;
+        public static final double WHEEL_DIAMETER = 5.05; // 5.05
+        public static final double TRACK_WIDTH = 29.5; // 29.5
         public static final int TICKS_PER_REV = 4096;
         public static final double TICKS_TO_INCHES = (1.0 / TICKS_PER_REV) * (WHEEL_DIAMETER*PI);
         public static final double TPS_TO_RPS = (1.0 / TICKS_PER_REV) * (2 * PI);
+        public static final double BUMPER_WIDTH = 36.0;
+        public static final double BUMPER_LENGTH = 36.0;
 
         public static final double INPUT_DEADBAND = 0.02;
         public static final double QUICK_STOP_THRESHOLD = 0.2;
         public static final double QUICK_STOP_ALPHA = 0.1;
 
+        public static final double ANGLE_TOLERANCE = 3.0;
+
         // Tuned Stuff
-        public static final double DRIVE_P = 0.0;
+        public static final double DRIVE_P = 0.001;
         public static final double DRIVE_I = 0.0;
         public static final double DRIVE_D = 0.0;
-        public static final double ROTATE_P = 0.0;
+        public static final double ROTATE_P = 0.015;
         public static final double ROTATE_I = 0.0;
         public static final double ROTATE_D = 0.0;
-        public static final double V_LEFT = 1.0 / (9.75 * WHEEL_DIAMETER / 2.0);
-        public static final double V_RIGHT = 1.0 / (9.75 * WHEEL_DIAMETER / 2.0);
-        public static final double V_INTERCEPT_LEFT = 0.0;
-        public static final double V_INTERCEPT_RIGHT = 0.0;
-        public static final double A_LEFT = 1.0 / (50.0 * WHEEL_DIAMETER / 2.0);
-        public static final double A_RIGHT = 1.0 / (50.0 * WHEEL_DIAMETER / 2.0);
+        public static final double V_LEFT_FWD = 0.0698 / (WHEEL_DIAMETER * PI);
+        public static final double V_LEFT_REV = 0.0700 / (WHEEL_DIAMETER * PI);
+        public static final double V_RIGHT_FWD = 0.0706 / (WHEEL_DIAMETER * PI);
+        public static final double V_RIGHT_REV = 0.0696 / (WHEEL_DIAMETER * PI);
+        public static final double V_INTERCEPT_LEFT_FWD = 0.0164;
+        public static final double V_INTERCEPT_LEFT_REV = 0.0176;
+        public static final double V_INTERCEPT_RIGHT_FWD = 0.0164;
+        public static final double V_INTERCEPT_RIGHT_REV = 0.0176;
+        public static final double A_LEFT = 0.008 / (WHEEL_DIAMETER * PI);
+        public static final double A_RIGHT = 0.008 / (WHEEL_DIAMETER * PI);
+
+        public static final Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
+                Trajectory.Config.SAMPLES_FAST, 0.01, 72.0, 60.0, 9999.0);
+
+        public static final Trajectory.Config slowConfig = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
+                Trajectory.Config.SAMPLES_FAST, 0.01, 48.0, 48.0, 9999.0);
+
     }
 
     public static class Elevator {
-        public static final double P = 10.0;
+        public static final double P = 2.0;
         public static final double I = 0.0;
         public static final double D = 0.0;
+        public static final double F = 0.365;
 //        public static final double F = 0.615;
-        public static final double GRAV_FEED_FORWARD = 3.58 / 12.0; // Percent constant to counteract gravity
-        private static final double VOLTS_PER_RAD_PER_SEC = .33;
-        public static final double F = (VOLTS_PER_RAD_PER_SEC * (1023.0 / (12.0 - 12.0*GRAV_FEED_FORWARD)) * (2*Math.PI/4096) * (10));
+        public static final double GRAV_FEED_FORWARD = 360.0 / 1023.0; // Percent constant to counteract gravity
+//        private static final double VOLTS_PER_RAD_PER_SEC = .33;
+//        public static final double F = (VOLTS_PER_RAD_PER_SEC * (1023.0 / (12.0 - 12.0*GRAV_FEED_FORWARD)) * (2*Math.PI/4096) * (10));
+
 
         public static final int ALLOWABLE_ERROR = 100; // Error to allow move command to end
-        public static final int MAX_VELOCITY = 1500; // Elevator velocity (ticks/100ms)
-        public static final int MAX_ACCELERATION = 3000; // Elevator acceleration (ticks/100ms/s)
+        public static final int MAX_VELOCITY = 1700; // Elevator velocity (ticks/100ms)
+        public static final int MAX_ACCELERATION = 5100; // Elevator acceleration (ticks/100ms/s)
 
         private static final double DIAMETRICAL_PITCH = 1.432;
         private static final double PORT_HEIGHT_DIFF = 28.0;
         private static final double HATCH_CARGO_HEIGHT_DIFF = 8.5;
+        private static final double CARGO_LOAD_HEIGHT_DIFF = 25.125;
         private static final int TICKS_PER_REV = 4096;
-        private static final int BOTTOM_POS = 3000;
 
-        public static final int MIN_POS = 1400; // Minimum soft limit 4500
-        public static final int MAX_POS = 37000; // Maximum soft limit
-        public static final int HATCH_LOW_POS = 6000; // C: 9000 P: 6000
-        public static final int HATCH_MID_POS = (int)(HATCH_LOW_POS + PORT_HEIGHT_DIFF / (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0); // 22500
-//        public static final int HATCH_MID_POS = 19500;
-        public static final int HATCH_HIGH_POS = (int)(HATCH_MID_POS + PORT_HEIGHT_DIFF / (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0); // 35000
-//        public static final int HATCH_HIGH_POS = 32000;
-        public static final int CARGO_COLLECT_POS = 15000;
-        public static final int CARGO_LOW_POS = (int)(HATCH_LOW_POS + HATCH_CARGO_HEIGHT_DIFF / (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0); // 13000
-//        public static final int CARGO_LOW_POS = 10000;
-        public static final int CARGO_MID_POS = (int)(HATCH_MID_POS + HATCH_CARGO_HEIGHT_DIFF / (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0); // 25500
-//        public static final int CARGO_MID_POS = 22500;
-        public static final int CARGO_HIGH_POS = (int)(HATCH_HIGH_POS + HATCH_CARGO_HEIGHT_DIFF / (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0); // 38000
-//        public static final int CARGO_HIGH_POS = 35000;
+        public static final int MIN_POS = 1000; // C: 4500 P: 1000
+        public static final int MAX_POS = 36000; // C: ??? P: 36000
+        public static final int HATCH_LOW_POS = 6100; // C: 9000 P: 6100
+        public static final int HATCH_MID_POS = (int)(HATCH_LOW_POS + PORT_HEIGHT_DIFF /
+                (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0);
+        public static final int HATCH_HIGH_POS = (int)(HATCH_MID_POS + PORT_HEIGHT_DIFF /
+                (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0);
+        public static final int CARGO_LOAD_POS = (int)(HATCH_LOW_POS + CARGO_LOAD_HEIGHT_DIFF /
+                (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0);
+        public static final int CARGO_LOW_POS = (int)(HATCH_LOW_POS + HATCH_CARGO_HEIGHT_DIFF /
+                (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0);
+        public static final int CARGO_MID_POS = (int)(HATCH_MID_POS + HATCH_CARGO_HEIGHT_DIFF /
+                (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0);
+        public static final int CARGO_HIGH_POS = (int)(HATCH_HIGH_POS + HATCH_CARGO_HEIGHT_DIFF /
+                (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0);
     }
 
     /*

@@ -32,8 +32,9 @@ public enum TargetPosition {
         return position;
     }
 
-    public Waypoint getRobotWaypoint(double robotDepth) {
-        return new Waypoint(position.x + (robotDepth/2) * Math.cos(position.angle),
-                position.y + Math.sin(position.angle), position.angle);
+    public Waypoint getRobotWaypoint(double depthOffset, double horizOffset, boolean invert) {
+        return new Waypoint(position.x + depthOffset * Math.cos(position.angle) + horizOffset * Math.sin(position.angle),
+                position.y + depthOffset * Math.sin(position.angle) - horizOffset * Math.cos(position.angle),
+                invert ? Math.PI + position.angle : position.angle);
     }
 }

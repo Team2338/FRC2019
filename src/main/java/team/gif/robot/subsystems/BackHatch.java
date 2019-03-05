@@ -4,24 +4,24 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import team.gif.robot.RobotMap;
 
-public class HatchPunch extends Subsystem {
+public class BackHatch extends Subsystem {
 
-    private static HatchPunch instance;
+    private static BackHatch instance;
 
     private final Solenoid punch;
 
-    private HatchPunch() {
-        punch = new Solenoid(RobotMap.HATCH_PUNCH_ID);
+    private BackHatch() {
+        punch = new Solenoid(RobotMap.BACK_HATCH_ID);
     }
 
-    public static HatchPunch getInstance() {
+    public static BackHatch getInstance() {
         if (instance == null) {
-            instance = new HatchPunch();
+            instance = new BackHatch();
         }
         return instance;
     }
 
-    public void setPunch(boolean out) {
+    public void set(boolean out) {
         punch.set(out);
     }
 

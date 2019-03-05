@@ -9,6 +9,8 @@ import team.gif.robot.subsystems.Elevator;
 public class SmartElevatorPosition extends Command {
 
     public enum GenericPosition {
+        COLLECT,
+        LOAD,
         LOW,
         MID,
         HIGH;
@@ -26,20 +28,26 @@ public class SmartElevatorPosition extends Command {
     @Override
     protected void initialize() {
         boolean isHatchMode = claw.isHatchMode();
-        if (claw.isDeployed()) {
-            switch (position) {
-                case LOW:
-                    new SetElevatorPosition(isHatchMode ? Constants.Elevator.HATCH_LOW_POS :
-                            Constants.Elevator.CARGO_LOW_POS).start();
-                    break;
-                case MID:
-                    new SetElevatorPosition(isHatchMode ? Constants.Elevator.HATCH_MID_POS :
-                            Constants.Elevator.CARGO_MID_POS).start();
-                    break;
-                case HIGH:
-                    new SetElevatorPosition(isHatchMode ? Constants.Elevator.HATCH_HIGH_POS :
-                            Constants.Elevator.CARGO_HIGH_POS).start();
-            }
+        switch (position) {
+            case COLLECT:
+                new SetElevatorPosition(isHatchMode ? Constants.Elevator.MIN_POS:
+                        Constants.Elevator.MIN_POS).start();
+                break;
+            case LOAD:
+                new SetElevatorPosition(isHatchMode ? Constants.Elevator.HATCH_LOW_POS:
+                        Constants.Elevator.CARGO_LOAD_POS).start();
+                break;
+            case LOW:
+                new SetElevatorPosition(isHatchMode ? Constants.Elevator.HATCH_LOW_POS :
+                        Constants.Elevator.CARGO_LOW_POS).start();
+                break;
+            case MID:
+                new SetElevatorPosition(isHatchMode ? Constants.Elevator.HATCH_MID_POS :
+                        Constants.Elevator.CARGO_MID_POS).start();
+                break;
+            case HIGH:
+                new SetElevatorPosition(isHatchMode ? Constants.Elevator.HATCH_HIGH_POS :
+                        Constants.Elevator.CARGO_HIGH_POS).start();
         }
     }
 

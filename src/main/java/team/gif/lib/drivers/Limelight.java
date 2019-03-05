@@ -27,28 +27,28 @@ public class Limelight {
 
     /**
      * Sets the mode of the limelight's LED array.
-     * ClawMode 0 uses LED mode in current pipeline (see {@link this#setPipeline(int)}
-     * ClawMode 1 is 'force off'
-     * ClawMode 2 is 'force blink'
-     * ClawMode 3 is 'force on'
+     * mode 0 uses LED mode in current pipeline (see {@link this#setPipeline(int)}
+     * mode 1 is 'force off'
+     * mode 2 is 'force blink'
+     * mode 3 is 'force on'
      *
      * @param mode desired LED mode
      */
     public void setLEDMode(int mode) {
-        if (0 <= mode && mode <= 3) {
+        if (mode >= 0 && mode <= 3) {
             table.getEntry("ledMode").setNumber(mode);
         }
     }
 
     /**
      * Sets the limelight's mode of operation.
-     * ClawMode 0 activates vision processing (decreased exposure)
-     * ClawMode 1 activates driver vision (increased exposure, no processing)
+     * mode 0 activates vision processing (decreased exposure)
+     * mode 1 activates driver vision (increased exposure, no processing)
      *
      * @param mode desired camera mode
      */
     public void setCamMode(int mode) {
-        if (0 <= mode && mode <= 1) {
+        if (mode >= 0 && mode <= 1) {
             table.getEntry("camMode").setNumber(mode);
         }
     }
@@ -60,34 +60,34 @@ public class Limelight {
      * @param pipeline desired vision pipeline
      */
     public void setPipeline(int pipeline) {
-        if (0 <= pipeline && pipeline <= 9) {
+        if (pipeline >= 0 && pipeline <= 9) {
             table.getEntry("pipeline").setNumber(pipeline);
         }
     }
 
     /**
      * Sets the limelight's streaming mode.
-     * ClawMode 0 is "Standard - Side-by-side streams if a webcam is attached to Limelight"
-     * ClawMode 1 is "PiP Main - The secondary camera stream is placed in the lower-right corner of the primary camera stream"
-     * ClawMode 2 is "PiP Secondary - The primary camera stream is placed in the lower-right corner of the secondary camera stream"
+     * mode 0 is "Standard - Side-by-side streams if a webcam is attached to Limelight"
+     * mode 1 is "PiP Main - The secondary camera stream is placed in the lower-right corner of the primary camera stream"
+     * mode 2 is "PiP Secondary - The primary camera stream is placed in the lower-right corner of the secondary camera stream"
      *
      * @param mode desired streaming mode
      */
     public void setStreamMode(int mode) {
-        if (0 <= mode && mode <= 2) {
+        if (mode >= 0 && mode <= 2) {
             table.getEntry("stream").setNumber(mode);
         }
     }
 
     /**
      * Sets the limelight's snapshot mode. The limelight allows for taking pictures throughout a match.
-     * ClawMode 0 stops taking snapshots
-     * ClawMode 1 takes two snapshots per second.
+     * mode 0 stops taking snapshots
+     * mode 1 takes two snapshots per second.
      *
      * @param mode desired snapshot mode
      */
     public void setSnapshotMode(int mode) {
-        if (0 <= mode && mode <= 1) {
+        if (mode >= 0 && mode <= 1) {
             table.getEntry("snapshot").setNumber(mode);
         }
     }
@@ -98,7 +98,7 @@ public class Limelight {
      * @return true if has target, false if not
      */
     public boolean hasTarget() {
-        return table.getEntry("tv").getNumber(0).equals(1);
+        return (double) (table.getEntry("tv").getNumber(0)) == 1;
     }
 
     /**
@@ -122,7 +122,7 @@ public class Limelight {
     /**
      * Returns the percentage of screen area that the target fills.
      *
-     * @return percentage of image (0-100)
+     * @return percentage of image (0 to 100)
      */
     public double getArea() {
         return table.getEntry("ta").getDouble(0.0);

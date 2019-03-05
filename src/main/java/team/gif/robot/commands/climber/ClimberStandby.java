@@ -5,31 +5,37 @@ import edu.wpi.first.wpilibj.command.Command;
 import team.gif.robot.OI;
 import team.gif.robot.subsystems.Climber;
 
-public class RaiseFront extends Command {
+public class ClimberStandby extends Command {
 
     private Climber climber = Climber.getInstance();
 
-    public RaiseFront() {
+    public ClimberStandby() {
         requires(climber);
     }
 
     @Override
     protected void initialize() {
-        climber.setFrontRack(false);
+
     }
 
     @Override
     protected void execute() {
-
+        if (climber.isDeployed()) {
+            climber.setWinchPercent(0.15);
+            climber.setDrive(5.0 * -OI.getInstance().driver.getY(GenericHID.Hand.kLeft));
+        } else {
+            climber.setWinchPercent(0.0);
+            climber.setDrive(0.0);
+        }
     }
 
     @Override
     protected boolean isFinished() {
-        return true;
+        return false;
     }
 
     @Override
     protected void end() {
-
+        climber.setDrive(0.0);
     }
 }

@@ -29,7 +29,8 @@ public class Elevator extends Subsystem {
     }
 
     public void setPercentOutput(double percent) {
-        lift.set(ControlMode.PercentOutput, percent, DemandType.ArbitraryFeedForward, Constants.Elevator.GRAV_FEED_FORWARD);
+//        lift.set(ControlMode.PercentOutput, percent, DemandType.ArbitraryFeedForward, Constants.Elevator.GRAV_FEED_FORWARD);
+        lift.set(ControlMode.PercentOutput, percent);
     }
 
     public void setMotionMagic(double position) {
@@ -56,7 +57,7 @@ public class Elevator extends Subsystem {
         return Math.abs(lift.getClosedLoopError()) < Constants.Elevator.ALLOWABLE_ERROR;
     }
 
-    public double getVoltage() {
+    public double getOutputVoltage() {
         return lift.getMotorOutputVoltage();
     }
 

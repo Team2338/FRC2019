@@ -1,5 +1,6 @@
 package team.gif.robot.commands.drivetrain;
 
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.command.Command;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
@@ -9,25 +10,26 @@ import team.gif.lib.MiniPID;
 import team.gif.robot.Constants;
 import team.gif.robot.subsystems.Drivetrain;
 
-public class FollowPathReverse extends Command {
+public class FollowPathReverse extends Command implements Runnable {
 
-    private Drivetrain drivetrain;
-    private TankModifier modifier;
-    private EncoderFollower leftFollower;
-    private EncoderFollower rightFollower;
-    private MiniPID rotatePID;
+    private final Drivetrain drivetrain = Drivetrain.getInstance();
+    private final TankModifier modifier;
+    private final EncoderFollower leftFollower;
+    private final EncoderFollower rightFollower;
+    private final MiniPID rotatePID;
+    private final Notifier notifier;
 
     public FollowPathReverse(Trajectory trajectory) {
-        drivetrain = Drivetrain.getInstance();
         modifier = new TankModifier(trajectory).modify(Constants.Drivetrain.TRACK_WIDTH);
         leftFollower = new EncoderFollower(modifier.getRightTrajectory());
         rightFollower = new EncoderFollower(modifier.getLeftTrajectory());
         rotatePID = new MiniPID(Constants.Drivetrain.ROTATE_P, Constants.Drivetrain.ROTATE_I, Constants.Drivetrain.ROTATE_D);
+        notifier = new Notifier(this);
 
         leftFollower.configurePIDVA(Constants.Drivetrain.DRIVE_P, Constants.Drivetrain.DRIVE_I,
-                Constants.Drivetrain.DRIVE_D, Constants.Drivetrain.V_LEFT, Constants.Drivetrain.A_LEFT);
+                Constants.Drivetrain.DRIVE_D, Constants.Drivetrain.V_LEFT_REV, Constants.Drivetrain.A_LEFT);
         rightFollower.configurePIDVA(Constants.Drivetrain.DRIVE_P, Constants.Drivetrain.DRIVE_I,
-                Constants.Drivetrain.DRIVE_D, Constants.Drivetrain.V_RIGHT, Constants.Drivetrain.A_RIGHT);
+                Constants.Drivetrain.DRIVE_D, Constants.Drivetrain.V_RIGHT_REV, Constants.Drivetrain.A_RIGHT);
 
         requires(drivetrain);
     }
@@ -38,21 +40,28 @@ public class FollowPathReverse extends Command {
                 Constants.Drivetrain.WHEEL_DIAMETER);
         rightFollower.configureEncoder(-drivetrain.getRightPosTicks(), Constants.Drivetrain.TICKS_PER_REV,
                 Constants.Drivetrain.WHEEL_DIAMETER);
+        drivetrain.setBrakeMode(false);
+        notifier.startPeriodic(0.01);
+    }
+
+    @Override
+    public void run() {
+        double leftOutput = leftFollower.calculate(-drivetrain.getLeftPosTicks());
+        double rightOutput = rightFollower.calculate(-drivetrain.getRightPosTicks());
+
+        if (Math.abs(leftOutput) > 0.01) leftOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_LEFT_REV, leftOutput);
+        if (Math.abs(rightOutput) > 0.01) rightOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_RIGHT_REV, rightOutput);
+
+        double heading = Pathfinder.boundHalfDegrees(180 + drivetrain.getHeadingDegrees());
+        double headingTarget = Pathfinder.boundHalfDegrees(Math.toDegrees(leftFollower.getHeading()));
+        double turn = rotatePID.getOutput(heading, headingTarget);
+
+        drivetrain.setOutputs(-(leftOutput + turn), -(rightOutput - turn));
     }
 
     @Override
     protected void execute() {
-        double leftOutput = leftFollower.calculate(-drivetrain.getLeftPosTicks());
-        double rightOutput = rightFollower.calculate(-drivetrain.getRightPosTicks());
 
-        if (Math.abs(leftOutput) > 0.01) leftOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_LEFT, leftOutput);
-        if (Math.abs(rightOutput) > 0.01) rightOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_RIGHT, rightOutput);
-
-        double heading = Pathfinder.boundHalfDegrees(drivetrain.getHeadingDegrees());
-        double headingTarget = Math.toDegrees(-leftFollower.getHeading()); //TODO: Check if both followers yield same heading.
-        double turn = rotatePID.getOutput(heading, headingTarget);
-
-        drivetrain.setOutputs(-(leftOutput + turn), -(rightOutput - turn));
     }
 
     @Override
@@ -62,6 +71,9 @@ public class FollowPathReverse extends Command {
 
     @Override
     protected void end() {
+        notifier.stop();
+        notifier.close();
+        drivetrain.setBrakeMode(true);
         drivetrain.setOutputs(0.0, 0.0);
     }
 }

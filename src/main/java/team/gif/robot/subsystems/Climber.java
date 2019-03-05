@@ -6,12 +6,13 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import team.gif.robot.Constants;
 import team.gif.robot.RobotMap;
-import team.gif.robot.commands.climber.RaiseAll;
-import team.gif.robot.commands.climber.RaiseFront;
+import team.gif.robot.commands.climber.ClimberStandby;
+import team.gif.robot.commands.climber.RaiseRear;
 
 public class Climber extends Subsystem {
 
@@ -49,15 +50,12 @@ public class Climber extends Subsystem {
         return instance;
     }
 
-    /**
-     * Sets the duty cycle for each climber piston. This method must be called in a loop to update {@param time}.
-     *
-     * @param rear output percent (-1.0 to +1.0)
-     * @param rear output percent (-1.0 to +1.0)
-     */
-    public void setPistons(boolean front, boolean rear) {
-        this.frontRack.set(front);
-        this.rearRack.set(rear ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+    public void setFrontRack(boolean deploy) {
+        frontRack.set(deploy);
+    }
+
+    public void setRearRack(boolean deploy) {
+        rearRack.set(deploy ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
     }
 
     /**
@@ -71,6 +69,11 @@ public class Climber extends Subsystem {
 
     public void setWinchPercent(double percent) {
         climbWinch.set(ControlMode.PercentOutput, percent);
+    }
+
+    public void setWinchCurrentLimit(int amps) {
+        climbWinch.enableCurrentLimit(true);
+        climbWinch.configContinuousCurrentLimit(amps);
     }
 
     public void setWinchVel(double velocity) {
@@ -128,6 +131,6 @@ public class Climber extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new RaiseAll());
+        setDefaultCommand(new ClimberStandby());
     }
 }

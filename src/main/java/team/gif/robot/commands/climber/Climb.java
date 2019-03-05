@@ -19,7 +19,10 @@ public class Climb extends Command {
 
     @Override
     protected void initialize() {
-        climber.setPistons(true, true);
+        climber.setFrontRack(true);
+        climber.setRearRack(true);
+        climber.setDeployed(true);
+        climber.setWinchCurrentLimit(40);
     }
 
     @Override
@@ -37,7 +40,7 @@ public class Climb extends Command {
 
     @Override
     protected boolean isFinished() {
-        return false;
+        return climber.getWinchPos() > 19000;
     }
 
     @Override
