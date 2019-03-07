@@ -3,19 +3,13 @@ package team.gif.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.POVButton;
-import team.gif.lib.AutoPosition;
 import team.gif.lib.oi.AxisButton;
 import team.gif.lib.oi.ComboButton;
 import team.gif.lib.oi.NotButton;
-import team.gif.robot.commands.auto.Mobility;
-import team.gif.robot.commands.auto.RightDoubleRocket;
 import team.gif.robot.commands.claw.*;
 import team.gif.robot.commands.climber.Climb;
-import team.gif.robot.commands.climber.ClimberStandby;
 import team.gif.robot.commands.climber.RaiseFront;
 import team.gif.robot.commands.climber.RaiseRear;
-import team.gif.robot.commands.drivetrain.DriveVoltageStepTest;
-import team.gif.robot.commands.drivetrain.VisionTurnTest;
 import team.gif.robot.commands.elevator.SmartElevatorPosition;
 import team.gif.robot.commands.backhatch.BackEject;
 
@@ -88,7 +82,7 @@ public class OI {
         aDPadRight.whenPressed(new SmartElevatorPosition(SmartElevatorPosition.GenericPosition.MID));
         aDPadUp.whenPressed(new SmartElevatorPosition(SmartElevatorPosition.GenericPosition.HIGH));
 
-        aRT.whileHeld(new VisionTurnTest());
+//        aRT.whileHeld(new VisionTurnTest());
 
         aTriggers.whenPressed(new Climb());
         aB.whenPressed(new RaiseFront());

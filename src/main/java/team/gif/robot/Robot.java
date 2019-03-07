@@ -15,9 +15,8 @@ import team.gif.lib.AutoMode;
 import team.gif.lib.AutoPosition;
 import team.gif.lib.TargetPosition;
 import team.gif.lib.drivers.Limelight;
-import team.gif.robot.commands.CommandGroupTemplate;
+import team.gif.robot.commands.CommandTemplate;
 import team.gif.robot.commands.auto.*;
-import team.gif.robot.commands.drivetrain.DriveTeleOp;
 import team.gif.robot.subsystems.Claw;
 import team.gif.robot.subsystems.Climber;
 import team.gif.robot.subsystems.Drivetrain;
@@ -34,13 +33,13 @@ import java.io.File;
  */
 public class Robot extends TimedRobot {
 
-    private Claw claw = Claw.getInstance();
-    private Climber climber = Climber.getInstance();
-    private Drivetrain drivetrain = Drivetrain.getInstance();
-    private Elevator elevator = Elevator.getInstance();
-    private OI oi = OI.getInstance();
-    private Limelight limelight = Limelight.getInstance();
-    private Compressor compressor = new Compressor();
+    private final Claw claw = Claw.getInstance();
+    private final Climber climber = Climber.getInstance();
+    private final Drivetrain drivetrain = Drivetrain.getInstance();
+    private final Elevator elevator = Elevator.getInstance();
+    private final OI oi = OI.getInstance();
+    private final Limelight limelight = Limelight.getInstance();
+    private final Compressor compressor = new Compressor();
 //    private SerialPort port = new SerialPort(9600, SerialPort.Port.kUSB);
 
     private final ShuffleboardTab autoTab = Shuffleboard.getTab("Auto");
@@ -51,14 +50,6 @@ public class Robot extends TimedRobot {
     private AutoPosition selectedAutoPosition;
     private AutoMode selectedAutoMode;
     private Command auto;
-    private boolean autoCanceled = false;
-
-//    private final Trajectory backupAroundRocket = Pathfinder.generate(new Waypoint[] {
-//            TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, 0, true),
-//            TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4 - 24, 0, true),
-//            new Waypoint(229.125, -110, 0.0),
-//            TargetPosition.RIGHT_ROCKET_FAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4 - 24, 36, true)
-//    }, Constants.Drivetrain.config);
 
     /**
      * This function is run when the robot is first started up and should be
@@ -80,13 +71,13 @@ public class Robot extends TimedRobot {
         autoModeChooser.addOption("Cargo Ship: Near", AutoMode.CARGO_SHIP_NEAR);
         autoModeChooser.addOption("Cargo Ship: Mid", AutoMode.CARGO_SHIP_MID);
         autoModeChooser.addOption("Cargo Ship: Far", AutoMode.CARGO_SHIP_FAR);
+        autoModeChooser.addOption("Manual Control", AutoMode.MANUAL);
         autoTab.add("Auto Mode", autoModeChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
 
         selectedAutoPosition = autoPositionChooser.getSelected();
         selectedAutoMode = autoModeChooser.getSelected();
 
-//        Pathfinder.writeToCSV(new File("C:\\Users\\Connor\\Desktop\\backupRocket.csv"), backupAroundRocket);
-//        drivetrain.beginOdometry();
+        compressor.clearAllPCMStickyFaults();
 
         System.out.println("Robot Initialized. WPILib Version " + WPILibVersion.Version);
     }
@@ -107,7 +98,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-        drivetrain.setBrakeMode(false);
+//        drivetrain.setBrakeMode(false);
     }
 
     @Override
@@ -115,6 +106,8 @@ public class Robot extends TimedRobot {
         if (!selectedAutoPosition.equals(autoPositionChooser.getSelected()) || !selectedAutoMode.equals(autoModeChooser.getSelected())) {
             updateSelectedAuto();
         }
+        limelight.setCamMode(1);
+        limelight.setLEDMode(1);
     }
 
     /**
@@ -122,8 +115,11 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        compressor.stop();
-        drivetrain.setBrakeMode(false);
+        if (selectedAutoMode != AutoMode.MANUAL) {
+            compressor.stop();
+            drivetrain.setBrakeMode(false);
+        }
+
         if (auto != null) {
             auto.start();
         }
@@ -138,10 +134,7 @@ public class Robot extends TimedRobot {
 
         if (oi.dSpecial.get() || oi.aSpecial.get()){
             Scheduler.getInstance().removeAll();
-//            teleopInit();
-//            new DriveTeleOp().start();
         }
-
     }
 
     /**
@@ -157,7 +150,6 @@ public class Robot extends TimedRobot {
         drivetrain.setBrakeMode(true);
         limelight.setCamMode(1);
         limelight.setLEDMode(1);
-
         Shuffleboard.selectTab("TeleOp");
     }
 
@@ -190,43 +182,56 @@ public class Robot extends TimedRobot {
             auto = new Mobility(selectedAutoPosition);
         } else if (selectedAutoMode == AutoMode.DOUBLE_ROCKET) {
             if (selectedAutoPosition == AutoPosition.L1_LEFT) {
-                auto = new LeftDoubleRocket();
+                auto = new LeftRocketDouble();
             } else if (selectedAutoPosition == AutoPosition.L1_RIGHT) {
-                auto = new RightDoubleRocket();
+                auto = new RightRocketDouble();
             } else {
                 auto = new Mobility(selectedAutoPosition);
                 DriverStation.reportError("This combination does not have an auto command.", false);
-                System.out.println("WARNING: This combination does not have an auto command.");
             }
         } else if (selectedAutoMode == AutoMode.CARGO_SHIP_FRONT_LEFT) {
             if (selectedAutoPosition == AutoPosition.L1_LEFT) {
-                auto = new LeftFrontShip();
+                auto = new LeftShipFront();
             } else if (selectedAutoPosition == AutoPosition.L1_CENTER) {
-                auto = new CenterFrontLeftShip();
+                auto = new CenterLeftShipFront();
+            } else if (selectedAutoPosition == AutoPosition.L1_RIGHT) {
+                auto = new RightShipFront();
             } else {
                 auto = new Mobility(selectedAutoPosition);
-                System.out.println("WARNING: This combination does not have an auto command.");
+                DriverStation.reportError("This combination does not have an auto command.", false);
             }
         } else if (selectedAutoMode == AutoMode.CARGO_SHIP_FRONT_RIGHT) {
-            if (selectedAutoPosition == AutoPosition.L1_CENTER) {
-                auto = new CenterFrontRightShip();
+            if (selectedAutoPosition == AutoPosition.L1_LEFT) {
+                auto = new LeftShipFront();
+            } else if (selectedAutoPosition == AutoPosition.L1_CENTER) {
+                auto = new CenterRightShipFront();
             } else if (selectedAutoPosition == AutoPosition.L1_RIGHT) {
-                auto = new RightFrontShip();
+                auto = new RightShipFront();
             } else {
                 auto = new Mobility(selectedAutoPosition);
-                System.out.println("WARNING: This combination does not have an auto command.");
+                DriverStation.reportError("This combination does not have an auto command.", false);
             }
         } else if (selectedAutoMode == AutoMode.CARGO_SHIP_NEAR) {
             if (selectedAutoPosition == AutoPosition.L1_LEFT) {
-                auto = new LeftNearShipHatch();
+                auto = new LeftShipNearHatch();
+            } else if (selectedAutoPosition == AutoPosition.L1_RIGHT) {
+                auto = new RightShipNearHatch();
+            } else {
+                auto = new Mobility(selectedAutoPosition);
+                DriverStation.reportError("This combination does not have an auto command.", false);
             }
         } else if (selectedAutoMode == AutoMode.CARGO_SHIP_MID) {
-
+            auto = new Mobility(selectedAutoPosition);
+            DriverStation.reportError("This combination does not have an auto command.", false);
         } else if (selectedAutoMode == AutoMode.CARGO_SHIP_FAR) {
-
+            auto = new Mobility(selectedAutoPosition);
+            DriverStation.reportError("This combination does not have an auto command.", false);
+        } else if (selectedAutoMode == AutoMode.MANUAL) {
+            auto = new CommandTemplate();
+            DriverStation.reportError("No auto command will run during sandstorm.", false);
         } else {
             auto = new Mobility(selectedAutoPosition);
-            System.out.println("[WARNING]: This combination does not have an auto command.");
+            DriverStation.reportError("This combination does not have an auto command.", false);
         }
 
         System.out.println("Selected Auto: " + auto);

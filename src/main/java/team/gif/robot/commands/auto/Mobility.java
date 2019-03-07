@@ -8,18 +8,19 @@ import team.gif.lib.AutoPosition;
 import team.gif.robot.Constants;
 import team.gif.robot.commands.CommandTemplate;
 import team.gif.robot.commands.drivetrain.FollowPath;
+import team.gif.robot.commands.drivetrain.FollowPathReverse;
 import team.gif.robot.subsystems.Drivetrain;
 
 public class Mobility extends CommandGroup {
 
-    private final Trajectory forwards = Pathfinder.generate(new Waypoint[] {
-            new Waypoint(0, 0, 0),
-            new Waypoint(191.5, 0, 0)
+    private final Trajectory mobility = Pathfinder.generate(new Waypoint[] {
+            new Waypoint(48 + Constants.Drivetrain.BUMPER_LENGTH / 2, 0, 0),
+            new Waypoint(48 + Constants.Drivetrain.BUMPER_LENGTH / 2 + 60, 0, 0),
     }, Constants.Drivetrain.config);
 
     public Mobility(AutoPosition position) {
         if (position.getLevel() == 1) {
-            addSequential(new FollowPath(forwards));
+                addSequential(new FollowPathReverse(mobility));
         } else {
             addSequential(new CommandTemplate());
         }
@@ -27,6 +28,6 @@ public class Mobility extends CommandGroup {
 
     @Override
     protected void initialize() {
-        Drivetrain.getInstance().setYaw(0.0);
+        Drivetrain.getInstance().setYaw(180.0);
     }
 }

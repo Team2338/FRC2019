@@ -38,9 +38,9 @@ public abstract class Constants {
     }
 
     public static class Claw {
-        public static final double LEFT_BRAKE_POS = 0.22;
+        public static final double LEFT_BRAKE_POS = 0.01;
         public static final double LEFT_NEUTRAL_POS = 0.70;
-        public static final double RIGHT_BRAKE_POS = 0.55;
+        public static final double RIGHT_BRAKE_POS = 0.60;
         public static final double RIGHT_NEUTRAL_POS = 0.05;
     }
 

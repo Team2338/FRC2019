@@ -3,7 +3,6 @@ package team.gif.lib;
 import jaci.pathfinder.Waypoint;
 
 public enum TargetPosition {
-
     LEFT_ROCKET_NEAR(new Waypoint(214.491, 142.885, Math.toRadians(28.767))),
     LEFT_ROCKET_MID(new Waypoint(229.125, 133.558, Math.toRadians(90.0))),
     LEFT_ROCKET_FAR(new Waypoint(243.759, 142.885, Math.toRadians(151.233))),
