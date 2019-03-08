@@ -159,7 +159,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-//        System.out.println("Heading: " + drivetrain.getHeadingDegrees());
+        System.out.println("Heading: " + climber.getWinchPos());
 //        System.out.println("LeftDistInches: " + drivetrain.getLeftPosInches());
 //        System.out.println("RightDistInches: " + drivetrain.getRightPosInches());
 //        System.out.println("Has Target: " + limelight.hasTarget());

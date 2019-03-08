@@ -36,6 +36,7 @@ public class Claw extends Subsystem {
         ballSensor = new AnalogInput(RobotMap.CLAW_BALL_SENSOR_ID);
 
         intake.configFactoryDefault();
+        intake.setInverted(true);
     }
 
     public static Claw getInstance() {

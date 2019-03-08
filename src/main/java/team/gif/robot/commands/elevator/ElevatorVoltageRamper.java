@@ -14,8 +14,7 @@ public class ElevatorVoltageRamper extends Command {
     private NetworkTableEntry voltage;
     private NetworkTableEntry velocity;
 
-    public ElevatorVoltageRamper(double timeout){
-//        setTimeout(timeout);
+    public ElevatorVoltageRamper(){
         requires(elevator);
     }
 
@@ -35,7 +34,6 @@ public class ElevatorVoltageRamper extends Command {
 
     @Override
     protected boolean isFinished() {
-//        return isTimedOut();
         return !elevator.getFwdLimit();
     }
 

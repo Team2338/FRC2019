@@ -16,7 +16,7 @@ public class RaiseRear extends Command {
     @Override
     protected void initialize() {
         climber.setRearRack(false);
-        climber.setWinchPercent(0.1);
+        climber.setWinchPercent(0.7); // Rate of climb retract
         climber.setDeployed(false);
         climber.setWinchCurrentLimit(10);
     }

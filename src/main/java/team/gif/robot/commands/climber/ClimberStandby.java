@@ -22,9 +22,10 @@ public class ClimberStandby extends Command {
     protected void execute() {
         if (climber.isDeployed()) {
             climber.setWinchPercent(0.15);
-            climber.setDrive(5.0 * -OI.getInstance().driver.getY(GenericHID.Hand.kLeft));
+            climber.setDrive(4.0 * OI.getInstance().driver.getY(GenericHID.Hand.kLeft));
         } else {
-            climber.setWinchPercent(0.0);
+            climber.setWinchPercent(0.05);
+            climber.setWinchCurrentLimit(10);
             climber.setDrive(0.0);
         }
     }

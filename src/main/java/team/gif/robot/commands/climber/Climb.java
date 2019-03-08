@@ -22,17 +22,17 @@ public class Climb extends Command {
         climber.setFrontRack(true);
         climber.setRearRack(true);
         climber.setDeployed(true);
-        climber.setWinchCurrentLimit(40);
+        climber.setWinchCurrentLimit(0);
     }
 
     @Override
     protected void execute() {
         double pitch = drivetrain.getYawPitchRoll()[1];
 
-        if (climber.getWinchPos() < 19000) {
-            climber.setWinchPercent(-(0.2 + P * pitch));
+        if (climber.getWinchPos() < 21000) {
+            climber.setWinchPercent(-(0.225 + P * pitch)); // Rate of climb
         } else {
-            climber.setWinchPercent(0.15);
+            climber.setWinchPercent(0.1);
         }
 
         climber.setDrive(5.0 * -OI.getInstance().driver.getY(GenericHID.Hand.kLeft));
@@ -40,7 +40,7 @@ public class Climb extends Command {
 
     @Override
     protected boolean isFinished() {
-        return climber.getWinchPos() > 19000;
+        return climber.getWinchPos() > 21000;
     }
 
     @Override

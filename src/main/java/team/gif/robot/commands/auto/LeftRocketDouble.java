@@ -24,7 +24,8 @@ public class LeftRocketDouble extends CommandGroup {
     private final Trajectory reverseApproach = Pathfinder.generate(new Waypoint[] {
             AutoPosition.L1_LEFT.getWaypoint(),
             new Waypoint(AutoPosition.L1_LEFT.getWaypoint().x + 48.275, AutoPosition.L1_LEFT.getWaypoint().y, 0.0),
-            TargetPosition.LEFT_ROCKET_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, 0, false)
+            TargetPosition.LEFT_ROCKET_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 24, -8, false),
+            TargetPosition.LEFT_ROCKET_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 6, -8, false) // C: +0 -18 P: +4 +0
     }, Constants.Drivetrain.slowConfig);
 
     private final Trajectory loadingStation = Pathfinder.generate(new Waypoint[] {
@@ -45,7 +46,7 @@ public class LeftRocketDouble extends CommandGroup {
         addSequential(new SetDeploy(true));
         addParallel(new SetElevatorPosition(Constants.Elevator.HATCH_LOW_POS));
         addSequential(new BackEject(1.0));
-        addSequential(new FollowPath(loadingStation));
+//        addSequential(new FollowPath(loadingStation));
     }
 
     @Override

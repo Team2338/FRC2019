@@ -25,7 +25,8 @@ public class RightRocketDouble extends CommandGroup {
     private final Trajectory reverseApproach = Pathfinder.generate(new Waypoint[] {
             AutoPosition.L1_RIGHT.getWaypoint(),
             new Waypoint(AutoPosition.L1_RIGHT.getWaypoint().x + 48.275, AutoPosition.L1_RIGHT.getWaypoint().y, 0.0),
-            TargetPosition.RIGHT_ROCKET_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, 0, false)
+            TargetPosition.RIGHT_ROCKET_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 24, -24, false),
+            TargetPosition.RIGHT_ROCKET_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, -24, false)
     }, Constants.Drivetrain.slowConfig);
 
     private final Trajectory loadingStation = Pathfinder.generate(new Waypoint[] {
@@ -46,11 +47,11 @@ public class RightRocketDouble extends CommandGroup {
         addSequential(new SetDeploy(true));
         addParallel(new SetElevatorPosition(Constants.Elevator.HATCH_LOW_POS));
         addSequential(new BackEject(1.0));
-        addSequential(new FollowPathVision(loadingStation, 2.0));
+//        addSequential(new FollowPathVision(loadingStation, 2.0));
 //        addSequential(new FollowPath(loadingStation));
-        addParallel(new SmartCollect());
-        addSequential(new WaitCommand(0.35));
-        addSequential(new FollowPathReverse(backupAroundRocket));
+//        addParallel(new SmartCollect());
+//        addSequential(new WaitCommand(0.35));
+//        addSequential(new FollowPathReverse(backupAroundRocket));
     }
 
     @Override

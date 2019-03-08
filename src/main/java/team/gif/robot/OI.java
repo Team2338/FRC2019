@@ -10,6 +10,8 @@ import team.gif.robot.commands.claw.*;
 import team.gif.robot.commands.climber.Climb;
 import team.gif.robot.commands.climber.RaiseFront;
 import team.gif.robot.commands.climber.RaiseRear;
+import team.gif.robot.commands.drivetrain.DriveVoltageRampTest;
+import team.gif.robot.commands.elevator.ElevatorVoltageRamper;
 import team.gif.robot.commands.elevator.SmartElevatorPosition;
 import team.gif.robot.commands.backhatch.BackEject;
 
@@ -85,8 +87,11 @@ public class OI {
 //        aRT.whileHeld(new VisionTurnTest());
 
         aTriggers.whenPressed(new Climb());
-        aB.whenPressed(new RaiseFront());
+        aRB.whenPressed(new RaiseFront());
         aA.whileHeld(new RaiseRear());
+
+        dA.whenPressed(new ElevatorVoltageRamper());
+        dB.whenPressed(new DriveVoltageRampTest(11.0));
 
 //        aBack.whenPressed(new Mobility(AutoPosition.L1_CENTER));
 //        aDPadLeft.whenPressed(new SetElevatorPosition(Constants.Elevator.MIN_POS));

@@ -177,7 +177,7 @@ public class Drivetrain extends Subsystem {
         spark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         spark.enableVoltageCompensation(12.0);
         spark.setSmartCurrentLimit(80);
-//        spark.setOpenLoopRampRate(0.3);
+        spark.setOpenLoopRampRate(0.1);
     }
 
     /**

@@ -39,14 +39,14 @@ public abstract class Constants {
 
     public static class Claw {
         public static final double LEFT_BRAKE_POS = 0.01;
-        public static final double LEFT_NEUTRAL_POS = 0.70;
-        public static final double RIGHT_BRAKE_POS = 0.60;
-        public static final double RIGHT_NEUTRAL_POS = 0.05;
+        public static final double LEFT_NEUTRAL_POS = 0.50;
+        public static final double RIGHT_BRAKE_POS = 0.625;
+        public static final double RIGHT_NEUTRAL_POS = 0.125;
     }
 
     public static class Climber {
         public static final double VARIABLE_RATE_PISTON_PERIOD = 0.2; // Resolution of the solenoid PWM in seconds
-        public static final double GYRO_SENSITIVITY = 0.1;
+        public static final double GYRO_SENSITIVITY = 0.05;
         public static final double P = 0.0;
         public static final double I = 0.0;
         public static final double D = 0.0;
@@ -74,19 +74,19 @@ public abstract class Constants {
         public static final double DRIVE_P = 0.001;
         public static final double DRIVE_I = 0.0;
         public static final double DRIVE_D = 0.0;
-        public static final double ROTATE_P = 0.015;
+        public static final double ROTATE_P = 0.013; // 0.015
         public static final double ROTATE_I = 0.0;
         public static final double ROTATE_D = 0.0;
-        public static final double V_LEFT_FWD = 0.0698 / (WHEEL_DIAMETER * PI);
-        public static final double V_LEFT_REV = 0.0700 / (WHEEL_DIAMETER * PI);
-        public static final double V_RIGHT_FWD = 0.0706 / (WHEEL_DIAMETER * PI);
-        public static final double V_RIGHT_REV = 0.0696 / (WHEEL_DIAMETER * PI);
-        public static final double V_INTERCEPT_LEFT_FWD = 0.0164;
-        public static final double V_INTERCEPT_LEFT_REV = 0.0176;
-        public static final double V_INTERCEPT_RIGHT_FWD = 0.0164;
-        public static final double V_INTERCEPT_RIGHT_REV = 0.0176;
-        public static final double A_LEFT = 0.008 / (WHEEL_DIAMETER * PI);
-        public static final double A_RIGHT = 0.008 / (WHEEL_DIAMETER * PI);
+        public static final double V_LEFT_FWD = 0.0734 / (WHEEL_DIAMETER * PI); // 0.0698
+        public static final double V_LEFT_REV = 0.0721 / (WHEEL_DIAMETER * PI); // 0.0700
+        public static final double V_RIGHT_FWD = 0.0727 / (WHEEL_DIAMETER * PI); // 0.0706
+        public static final double V_RIGHT_REV = 0.0735 / (WHEEL_DIAMETER * PI); // 0.0696
+        public static final double V_INTERCEPT_LEFT_FWD = 0.0193; // 0.0164
+        public static final double V_INTERCEPT_LEFT_REV = 0.0211; // 0.0176
+        public static final double V_INTERCEPT_RIGHT_FWD = 0.0208; // 0.0164
+        public static final double V_INTERCEPT_RIGHT_REV = 0.0193; // 0.0176
+        public static final double A_LEFT = 0.008 / (WHEEL_DIAMETER * PI); // 0.008
+        public static final double A_RIGHT = 0.008 / (WHEEL_DIAMETER * PI); // 0.008
 
         public static final Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
                 Trajectory.Config.SAMPLES_FAST, 0.01, 72.0, 60.0, 9999.0);
@@ -117,9 +117,9 @@ public abstract class Constants {
         private static final double CARGO_LOAD_HEIGHT_DIFF = 25.125;
         private static final int TICKS_PER_REV = 4096;
 
-        public static final int MIN_POS = 1000; // C: 4500 P: 1000
-        public static final int MAX_POS = 36000; // C: ??? P: 36000
-        public static final int HATCH_LOW_POS = 6100; // C: 9000 P: 6100
+        public static final int MIN_POS = 4000; // C: 4000 P: 1000
+        public static final int MAX_POS = 39000; // C: 39000 P: 36000
+        public static final int HATCH_LOW_POS = 9100; // C: 9100 P: 6100
         public static final int HATCH_MID_POS = (int)(HATCH_LOW_POS + PORT_HEIGHT_DIFF /
                 (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0);
         public static final int HATCH_HIGH_POS = (int)(HATCH_MID_POS + PORT_HEIGHT_DIFF /
