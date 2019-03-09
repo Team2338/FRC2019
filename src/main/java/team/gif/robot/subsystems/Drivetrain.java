@@ -41,7 +41,7 @@ public class Drivetrain extends Subsystem {
         rightEncoderTalon = Climber.getInstance().getDriveEncoderTalon();
         configDriveEncoder(leftEncoderTalon);
         configDriveEncoder(rightEncoderTalon);
-        rightEncoderTalon.setSensorPhase(true);
+        rightEncoderTalon.setSensorPhase(false); // P: true C: false
 
         leftMaster.setInverted(false);
         rightMaster.setInverted(true);
@@ -75,6 +75,13 @@ public class Drivetrain extends Subsystem {
     public void setBrakeMode(boolean on) {
         leftMaster.setIdleMode(on ? CANSparkMax.IdleMode.kBrake : CANSparkMax.IdleMode.kCoast);
         rightMaster.setIdleMode(on ? CANSparkMax.IdleMode.kBrake : CANSparkMax.IdleMode.kCoast);
+    }
+
+    public void setRampRate(double seconds) {
+        leftMaster.setOpenLoopRampRate(seconds);
+        rightMaster.setOpenLoopRampRate(seconds);
+        leftSlave.setOpenLoopRampRate(seconds);
+        rightSlave.setOpenLoopRampRate(seconds);
     }
 
     /**
@@ -177,7 +184,7 @@ public class Drivetrain extends Subsystem {
         spark.setIdleMode(CANSparkMax.IdleMode.kBrake);
         spark.enableVoltageCompensation(12.0);
         spark.setSmartCurrentLimit(80);
-        spark.setOpenLoopRampRate(0.1);
+        spark.setOpenLoopRampRate(0.15);
     }
 
     /**

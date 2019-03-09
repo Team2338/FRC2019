@@ -12,8 +12,6 @@ import team.gif.robot.Constants;
 import team.gif.robot.OI;
 import team.gif.robot.subsystems.Drivetrain;
 
-import java.nio.file.Path;
-
 public class FollowPathVision extends Command implements Runnable {
 
     private final Drivetrain drivetrain = Drivetrain.getInstance();
@@ -23,17 +21,16 @@ public class FollowPathVision extends Command implements Runnable {
     private final EncoderFollower rightFollower;
     private final MiniPID rotatePID;
     private final Notifier notifier;
-    private final double switchTime;
-    private final Trajectory.Segment finalSegment;
+    private final double visionDist;
+    private  double initDist;
 
-    public FollowPathVision(Trajectory trajectory, double switchTime) {
+    public FollowPathVision(Trajectory trajectory, double visionDist) {
         modifier = new TankModifier(trajectory).modify(Constants.Drivetrain.TRACK_WIDTH);
         leftFollower = new EncoderFollower(modifier.getLeftTrajectory());
         rightFollower = new EncoderFollower(modifier.getRightTrajectory());
         rotatePID = new MiniPID(Constants.Drivetrain.ROTATE_P, Constants.Drivetrain.ROTATE_I, Constants.Drivetrain.ROTATE_D);
         notifier = new Notifier(this);
-        this.switchTime = switchTime;
-        this.finalSegment = trajectory.get(trajectory.length() - 1);
+        this.visionDist = Math.max(trajectory.get(trajectory.length() - 1).position - visionDist, 0);
 
         leftFollower.configurePIDVA(Constants.Drivetrain.DRIVE_P, Constants.Drivetrain.DRIVE_I,
                 Constants.Drivetrain.DRIVE_D, Constants.Drivetrain.V_LEFT_FWD, Constants.Drivetrain.A_LEFT);
@@ -50,6 +47,8 @@ public class FollowPathVision extends Command implements Runnable {
         rightFollower.configureEncoder(drivetrain.getRightPosTicks(), Constants.Drivetrain.TICKS_PER_REV,
                 Constants.Drivetrain.WHEEL_DIAMETER);
 
+        initDist = (drivetrain.getLeftPosInches() + drivetrain.getRightPosInches()) / 2;
+
         notifier.startPeriodic(0.01);
     }
 
@@ -65,7 +64,7 @@ public class FollowPathVision extends Command implements Runnable {
         double headingTarget = Pathfinder.boundHalfDegrees(Math.toDegrees(leftFollower.getHeading()));
         double turn = rotatePID.getOutput(heading, headingTarget);
 
-        if (timeSinceInitialized() > switchTime) {
+        if ((drivetrain.getLeftPosInches() + drivetrain.getRightPosInches()) / 2 - initDist > visionDist) {
             limelight.setLEDMode(3);
             limelight.setCamMode(0);
             turn -= limelight.getXOffset() * 0.003;

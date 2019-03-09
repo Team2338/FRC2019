@@ -1,21 +1,15 @@
 package team.gif.robot.commands.auto;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.WaitCommand;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;
 import team.gif.lib.AutoPosition;
 import team.gif.lib.TargetPosition;
-import team.gif.lib.drivers.Limelight;
 import team.gif.robot.Constants;
 import team.gif.robot.commands.backhatch.BackEject;
-import team.gif.robot.commands.claw.SetClawMode;
 import team.gif.robot.commands.claw.SetDeploy;
-import team.gif.robot.commands.claw.SmartCollect;
-import team.gif.robot.commands.drivetrain.FollowPath;
 import team.gif.robot.commands.drivetrain.FollowPathReverse;
-import team.gif.robot.commands.drivetrain.FollowPathVision;
 import team.gif.robot.commands.elevator.SetElevatorPosition;
 import team.gif.robot.subsystems.Drivetrain;
 
@@ -24,8 +18,16 @@ public class LeftRocketDouble extends CommandGroup {
     private final Trajectory reverseApproach = Pathfinder.generate(new Waypoint[] {
             AutoPosition.L1_LEFT.getWaypoint(),
             new Waypoint(AutoPosition.L1_LEFT.getWaypoint().x + 48.275, AutoPosition.L1_LEFT.getWaypoint().y, 0.0),
-            TargetPosition.LEFT_ROCKET_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 24, -8, false),
-            TargetPosition.LEFT_ROCKET_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 6, -8, false) // C: +0 -18 P: +4 +0
+            TargetPosition.LEFT_ROCKET_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 24, -6, false),
+            TargetPosition.LEFT_ROCKET_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2, -6, false),
+    }, Constants.Drivetrain.slowConfig);
+
+    private final Trajectory weirdApproach = Pathfinder.generate(new Waypoint[] {
+            AutoPosition.L1_LEFT.getWaypoint(),
+//            new Waypoint(AutoPosition.L1_LEFT.getWaypoint().x + 48.275, AutoPosition.L1_LEFT.getWaypoint().y, 0.0),
+            new Waypoint(AutoPosition.L1_LEFT.getWaypoint().x + 12.0, AutoPosition.L1_LEFT.getWaypoint().y, 0.0),
+            TargetPosition.LEFT_ROCKET_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 30, -17, false),
+//            TargetPosition.LEFT_ROCKET_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 8, -8, false) // C: +0 -18 P: +4 +0
     }, Constants.Drivetrain.slowConfig);
 
     private final Trajectory loadingStation = Pathfinder.generate(new Waypoint[] {

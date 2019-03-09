@@ -1,5 +1,6 @@
 package team.gif.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.POVButton;
@@ -91,7 +92,7 @@ public class OI {
         aA.whileHeld(new RaiseRear());
 
         dA.whenPressed(new ElevatorVoltageRamper());
-        dB.whenPressed(new DriveVoltageRampTest(11.0));
+        dB.whenPressed(new DriveVoltageRampTest(12.0));
 
 //        aBack.whenPressed(new Mobility(AutoPosition.L1_CENTER));
 //        aDPadLeft.whenPressed(new SetElevatorPosition(Constants.Elevator.MIN_POS));
@@ -108,6 +109,13 @@ public class OI {
             instance = new OI();
         }
         return instance;
+    }
+
+    public void setRumble(boolean rumble) {
+        driver.setRumble(GenericHID.RumbleType.kLeftRumble, rumble ? 1.0 : 0.0);
+        driver.setRumble(GenericHID.RumbleType.kRightRumble, rumble ? 1.0: 0.0);
+        aux.setRumble(GenericHID.RumbleType.kLeftRumble, rumble ? 1.0 : 0.0);
+        aux.setRumble(GenericHID.RumbleType.kRightRumble, rumble ? 1.0: 0.0);
     }
 
 }

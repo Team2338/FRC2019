@@ -23,6 +23,7 @@ import team.gif.robot.subsystems.Drivetrain;
 import team.gif.robot.subsystems.Elevator;
 
 import java.io.File;
+import java.sql.Driver;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -40,6 +41,7 @@ public class Robot extends TimedRobot {
     private final OI oi = OI.getInstance();
     private final Limelight limelight = Limelight.getInstance();
     private final Compressor compressor = new Compressor();
+//    private final PowerDistributionPanel pdp = new PowerDistributionPanel();
 //    private SerialPort port = new SerialPort(9600, SerialPort.Port.kUSB);
 
     private final ShuffleboardTab autoTab = Shuffleboard.getTab("Auto");
@@ -77,7 +79,8 @@ public class Robot extends TimedRobot {
         selectedAutoPosition = autoPositionChooser.getSelected();
         selectedAutoMode = autoModeChooser.getSelected();
 
-        compressor.clearAllPCMStickyFaults();
+//        compressor.clearAllPCMStickyFaults();
+//        pdp.clearStickyFaults();
 
         System.out.println("Robot Initialized. WPILib Version " + WPILibVersion.Version);
     }
@@ -98,7 +101,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
-//        drivetrain.setBrakeMode(false);
+        drivetrain.setBrakeMode(false);
     }
 
     @Override
@@ -108,6 +111,9 @@ public class Robot extends TimedRobot {
         }
         limelight.setCamMode(1);
         limelight.setLEDMode(1);
+
+//        System.out.println("Left Pos: " + drivetrain.getLeftPosTicks());
+//        System.out.println("Right Pos: " + drivetrain.getRightPosTicks());
     }
 
     /**
@@ -115,9 +121,14 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        if (selectedAutoMode != AutoMode.MANUAL) {
+        if (selectedAutoMode == AutoMode.MANUAL) {
+            compressor.start();
+            drivetrain.setBrakeMode(true);
+            drivetrain.setRampRate(0.15);
+        } else {
             compressor.stop();
             drivetrain.setBrakeMode(false);
+            drivetrain.setRampRate(0.0);
         }
 
         if (auto != null) {
@@ -148,6 +159,7 @@ public class Robot extends TimedRobot {
 
         compressor.start();
         drivetrain.setBrakeMode(true);
+        drivetrain.setRampRate(0.15);
         limelight.setCamMode(1);
         limelight.setLEDMode(1);
         Shuffleboard.selectTab("TeleOp");
@@ -159,7 +171,11 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-        System.out.println("Heading: " + climber.getWinchPos());
+
+        double matchTime = DriverStation.getInstance().getMatchTime();
+        oi.setRumble(matchTime > 44.5 && matchTime < 45.0);
+
+//        System.out.println("Heading: " + climber.getWinchPos());
 //        System.out.println("LeftDistInches: " + drivetrain.getLeftPosInches());
 //        System.out.println("RightDistInches: " + drivetrain.getRightPosInches());
 //        System.out.println("Has Target: " + limelight.hasTarget());
@@ -187,7 +203,7 @@ public class Robot extends TimedRobot {
                 auto = new RightRocketDouble();
             } else {
                 auto = new Mobility(selectedAutoPosition);
-                DriverStation.reportError("This combination does not have an auto command.", false);
+                DriverStation.reportWarning("This combination does not have an auto command.", false);
             }
         } else if (selectedAutoMode == AutoMode.CARGO_SHIP_FRONT_LEFT) {
             if (selectedAutoPosition == AutoPosition.L1_LEFT) {
@@ -198,7 +214,7 @@ public class Robot extends TimedRobot {
                 auto = new RightShipFront();
             } else {
                 auto = new Mobility(selectedAutoPosition);
-                DriverStation.reportError("This combination does not have an auto command.", false);
+                DriverStation.reportWarning("This combination does not have an auto command.", false);
             }
         } else if (selectedAutoMode == AutoMode.CARGO_SHIP_FRONT_RIGHT) {
             if (selectedAutoPosition == AutoPosition.L1_LEFT) {
@@ -209,7 +225,7 @@ public class Robot extends TimedRobot {
                 auto = new RightShipFront();
             } else {
                 auto = new Mobility(selectedAutoPosition);
-                DriverStation.reportError("This combination does not have an auto command.", false);
+                DriverStation.reportWarning("This combination does not have an auto command.", false);
             }
         } else if (selectedAutoMode == AutoMode.CARGO_SHIP_NEAR) {
             if (selectedAutoPosition == AutoPosition.L1_LEFT) {
@@ -218,20 +234,20 @@ public class Robot extends TimedRobot {
                 auto = new RightShipNearHatch();
             } else {
                 auto = new Mobility(selectedAutoPosition);
-                DriverStation.reportError("This combination does not have an auto command.", false);
+                DriverStation.reportWarning("This combination does not have an auto command.", false);
             }
         } else if (selectedAutoMode == AutoMode.CARGO_SHIP_MID) {
             auto = new Mobility(selectedAutoPosition);
-            DriverStation.reportError("This combination does not have an auto command.", false);
+            DriverStation.reportWarning("This combination does not have an auto command.", false);
         } else if (selectedAutoMode == AutoMode.CARGO_SHIP_FAR) {
             auto = new Mobility(selectedAutoPosition);
-            DriverStation.reportError("This combination does not have an auto command.", false);
+            DriverStation.reportWarning("This combination does not have an auto command.", false);
         } else if (selectedAutoMode == AutoMode.MANUAL) {
             auto = new CommandTemplate();
-            DriverStation.reportError("No auto command will run during sandstorm.", false);
+            DriverStation.reportWarning("No auto command will run during sandstorm.", false);
         } else {
             auto = new Mobility(selectedAutoPosition);
-            DriverStation.reportError("This combination does not have an auto command.", false);
+            DriverStation.reportWarning("This combination does not have an auto command.", false);
         }
 
         System.out.println("Selected Auto: " + auto);
