@@ -173,7 +173,7 @@ public class Robot extends TimedRobot {
         Scheduler.getInstance().run();
 
         double matchTime = DriverStation.getInstance().getMatchTime();
-        oi.setRumble(matchTime > 44.5 && matchTime < 45.0);
+        oi.setRumble(matchTime > 44.5 && matchTime < 45.5);
 
 //        System.out.println("Heading: " + climber.getWinchPos());
 //        System.out.println("LeftDistInches: " + drivetrain.getLeftPosInches());

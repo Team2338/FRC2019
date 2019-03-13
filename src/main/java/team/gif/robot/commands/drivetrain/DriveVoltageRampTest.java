@@ -32,7 +32,7 @@ public class DriveVoltageRampTest extends Command {
 
     @Override
     protected void execute() {
-        double percentOutput = timeSinceInitialized() * (0.25 / 12.0);
+        double percentOutput = timeSinceInitialized() * -(0.25 / 12.0);
         drivetrain.setOutputs(percentOutput, percentOutput);
         leftVoltage.setDouble(drivetrain.getOutputVoltage()[0] / 12.0);
         rightVoltage.setDouble(drivetrain.getOutputVoltage()[1] / 12.0);

@@ -40,7 +40,7 @@ public abstract class Constants {
     public static class Claw {
         public static final double LEFT_BRAKE_POS = 0.01;
         public static final double LEFT_NEUTRAL_POS = 0.50;
-        public static final double RIGHT_BRAKE_POS = 0.625;
+        public static final double RIGHT_BRAKE_POS = 0.615; // 0.625
         public static final double RIGHT_NEUTRAL_POS = 0.125;
     }
 
@@ -74,7 +74,7 @@ public abstract class Constants {
         public static final double DRIVE_P = 0.001;
         public static final double DRIVE_I = 0.0;
         public static final double DRIVE_D = 0.0;
-        public static final double ROTATE_P = 0.013; // 0.015
+        public static final double ROTATE_P = 0.014; // 0.015
         public static final double ROTATE_I = 0.0;
         public static final double ROTATE_D = 0.0;
         public static final double V_LEFT_FWD = 0.0734 / (WHEEL_DIAMETER * PI); // 0.0698
@@ -117,9 +117,9 @@ public abstract class Constants {
         private static final double CARGO_LOAD_HEIGHT_DIFF = 25.125;
         private static final int TICKS_PER_REV = 4096;
 
-        public static final int MIN_POS = 4000; // C: 4000 P: 1000
+        public static final int MIN_POS = 3900; // C: 4000 P: 1000
         public static final int MAX_POS = 39000; // C: 39000 P: 36000
-        public static final int HATCH_LOW_POS = 9100; // C: 9100 P: 6100
+        public static final int HATCH_LOW_POS = 9000; // C: 9100 P: 6100
         public static final int HATCH_MID_POS = (int)(HATCH_LOW_POS + PORT_HEIGHT_DIFF /
                 (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0);
         public static final int HATCH_HIGH_POS = (int)(HATCH_MID_POS + PORT_HEIGHT_DIFF /
