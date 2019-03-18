@@ -26,7 +26,7 @@ public class ClimberStandby extends Command {
         } else {
             climber.setWinchPercent(0.05);
             climber.setWinchCurrentLimit(10);
-            climber.setDrive(0.0);
+            climber.setDrive(climber.getWinchPos() > 10000 ? 4.0 * OI.getInstance().driver.getY(GenericHID.Hand.kLeft) : 0.0);
         }
     }
 

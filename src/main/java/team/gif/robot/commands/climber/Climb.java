@@ -30,7 +30,7 @@ public class Climb extends Command {
         double pitch = drivetrain.getYawPitchRoll()[1];
 
         if (climber.getWinchPos() < 21000) {
-            climber.setWinchPercent(-(0.225 + P * pitch)); // Rate of climb
+            climber.setWinchPercent(-(0.225 + P * pitch)); // Rate of climb 0.225
         } else {
             climber.setWinchPercent(0.1);
         }

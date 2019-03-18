@@ -56,7 +56,7 @@ public class FollowPath extends Command implements Runnable {
         double headingTarget = Pathfinder.boundHalfDegrees(Math.toDegrees(leftFollower.getHeading()));
         double turn = rotatePID.getOutput(heading, headingTarget);
 
-        System.out.println(headingTarget - heading);
+//        System.out.println(headingTarget - heading);
 
         drivetrain.setOutputs(leftOutput - turn, rightOutput + turn);
     }

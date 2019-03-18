@@ -7,8 +7,8 @@ import static java.lang.Math.*;
 public abstract class Constants {
 
     public static class Camera {
-        public static final double POS_X = 6.0; // X lens displacement from wheelbase center (in)
-        public static final double POS_Y = 6.0; // Y lens displacement from wheelbase center (in)
+        public static final double POS_X = -2.5; // X lens displacement from wheelbase center (in)
+        public static final double POS_Y = 4.0; // Y lens displacement from wheelbase center (in)
         public static final double POS_Z = 8.75; // Ground to lens height (in)
         public static final double ANGLE_OFFSET = toRadians(-25.0); // Angle of camera to ground (radians)
         public static final double HORIZ_FOV = toRadians(59.6); // Horizontal FOV (radians)
@@ -38,10 +38,10 @@ public abstract class Constants {
     }
 
     public static class Claw {
-        public static final double LEFT_BRAKE_POS = 0.01;
-        public static final double LEFT_NEUTRAL_POS = 0.50;
-        public static final double RIGHT_BRAKE_POS = 0.615; // 0.625
-        public static final double RIGHT_NEUTRAL_POS = 0.125;
+        public static final double LEFT_BRAKE_POS = Robot.isCompBot ? 0.01: 0.22;
+        public static final double LEFT_NEUTRAL_POS = Robot.isCompBot ? 0.50 : 0.7;
+        public static final double RIGHT_BRAKE_POS = Robot.isCompBot ? 0.615 : 0.52; // 0.625
+        public static final double RIGHT_NEUTRAL_POS = Robot.isCompBot ? 0.125: 0.0;
     }
 
     public static class Climber {
@@ -56,7 +56,7 @@ public abstract class Constants {
 
     public static class Drivetrain {
         // Physical Stuff
-        public static final double WHEEL_DIAMETER = 5.05; // 5.05
+        public static final double WHEEL_DIAMETER = 4.97; // 5.05
         public static final double TRACK_WIDTH = 29.5; // 29.5
         public static final int TICKS_PER_REV = 4096;
         public static final double TICKS_TO_INCHES = (1.0 / TICKS_PER_REV) * (WHEEL_DIAMETER*PI);
@@ -71,25 +71,26 @@ public abstract class Constants {
         public static final double ANGLE_TOLERANCE = 3.0;
 
         // Tuned Stuff
-        public static final double DRIVE_P = 0.001;
+        public static final double DRIVE_P = 0.0; // 0.02
         public static final double DRIVE_I = 0.0;
         public static final double DRIVE_D = 0.0;
-        public static final double ROTATE_P = 0.014; // 0.015
+        public static final double ROTATE_P = 0.02; // 0.014
         public static final double ROTATE_I = 0.0;
         public static final double ROTATE_D = 0.0;
-        public static final double V_LEFT_FWD = 0.0734 / (WHEEL_DIAMETER * PI); // 0.0698
-        public static final double V_LEFT_REV = 0.0721 / (WHEEL_DIAMETER * PI); // 0.0700
-        public static final double V_RIGHT_FWD = 0.0727 / (WHEEL_DIAMETER * PI); // 0.0706
-        public static final double V_RIGHT_REV = 0.0735 / (WHEEL_DIAMETER * PI); // 0.0696
-        public static final double V_INTERCEPT_LEFT_FWD = 0.0193; // 0.0164
-        public static final double V_INTERCEPT_LEFT_REV = 0.0211; // 0.0176
-        public static final double V_INTERCEPT_RIGHT_FWD = 0.0208; // 0.0164
-        public static final double V_INTERCEPT_RIGHT_REV = 0.0193; // 0.0176
-        public static final double A_LEFT = 0.008 / (WHEEL_DIAMETER * PI); // 0.008
-        public static final double A_RIGHT = 0.008 / (WHEEL_DIAMETER * PI); // 0.008
+        public static final double VISION_P = 0.003;
+        public static final double V_LEFT_FWD = (Robot.isCompBot ? 0.0734 : 0.0704) / (WHEEL_DIAMETER * PI); // 0.0698
+        public static final double V_LEFT_REV = (Robot.isCompBot ? 0.0721 : 0.0704) / (WHEEL_DIAMETER * PI); // 0.0700
+        public static final double V_RIGHT_FWD = (Robot.isCompBot ? 0.0727 : 0.0705) / (WHEEL_DIAMETER * PI); // 0.0706
+        public static final double V_RIGHT_REV = (Robot.isCompBot ? 0.0735 : 0.0703) / (WHEEL_DIAMETER * PI); // 0.0696
+        public static final double V_INTERCEPT_LEFT_FWD = Robot.isCompBot ? 0.0193 : 0.0157; // 0.0164
+        public static final double V_INTERCEPT_LEFT_REV = Robot.isCompBot ? 0.0211 : 0.0145; // 0.0176
+        public static final double V_INTERCEPT_RIGHT_FWD = Robot.isCompBot ? 0.0208 : 0.0155; // 0.0164
+        public static final double V_INTERCEPT_RIGHT_REV = Robot.isCompBot ? 0.0193 : 0.0151; // 0.0176
+        public static final double A_LEFT = 0.006 / (WHEEL_DIAMETER * PI); // 0.008
+        public static final double A_RIGHT = 0.006 / (WHEEL_DIAMETER * PI); // 0.008
 
         public static final Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
-                Trajectory.Config.SAMPLES_FAST, 0.01, 72.0, 60.0, 9999.0);
+                Trajectory.Config.SAMPLES_FAST, 0.01, 72.0, 96.0, 9999.0);
 
         public static final Trajectory.Config slowConfig = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
                 Trajectory.Config.SAMPLES_FAST, 0.01, 48.0, 48.0, 9999.0);
@@ -117,9 +118,9 @@ public abstract class Constants {
         private static final double CARGO_LOAD_HEIGHT_DIFF = 25.125;
         private static final int TICKS_PER_REV = 4096;
 
-        public static final int MIN_POS = 3900; // C: 4000 P: 1000
-        public static final int MAX_POS = 39000; // C: 39000 P: 36000
-        public static final int HATCH_LOW_POS = 9000; // C: 9100 P: 6100
+        public static final int MIN_POS = Robot.isCompBot ? 3900 : 1100; // C: 3900 P: 1000
+        public static final int MAX_POS = Robot.isCompBot ? 39000 : 36000; // C: 39000 P: 36000
+        public static final int HATCH_LOW_POS = Robot.isCompBot ? 9000 : 6100; // C: 9100 P: 6100
         public static final int HATCH_MID_POS = (int)(HATCH_LOW_POS + PORT_HEIGHT_DIFF /
                 (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0);
         public static final int HATCH_HIGH_POS = (int)(HATCH_MID_POS + PORT_HEIGHT_DIFF /

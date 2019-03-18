@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import team.gif.lib.Odometry;
 import team.gif.robot.Constants;
+import team.gif.robot.Robot;
 import team.gif.robot.RobotMap;
 import team.gif.robot.commands.drivetrain.DriveTeleOp;
 
@@ -41,7 +42,8 @@ public class Drivetrain extends Subsystem {
         rightEncoderTalon = Climber.getInstance().getDriveEncoderTalon();
         configDriveEncoder(leftEncoderTalon);
         configDriveEncoder(rightEncoderTalon);
-        rightEncoderTalon.setSensorPhase(false); // P: true C: false
+        leftEncoderTalon.setSensorPhase(!Robot.isCompBot);
+        rightEncoderTalon.setSensorPhase(!Robot.isCompBot); // P: true C: false
 
         leftMaster.setInverted(false);
         rightMaster.setInverted(true);
@@ -82,6 +84,11 @@ public class Drivetrain extends Subsystem {
         rightMaster.setOpenLoopRampRate(seconds);
         leftSlave.setOpenLoopRampRate(seconds);
         rightSlave.setOpenLoopRampRate(seconds);
+    }
+
+    public void resetEncoders() {
+        leftEncoderTalon.setSelectedSensorPosition(0);
+        rightEncoderTalon.setSelectedSensorPosition(0);
     }
 
     /**

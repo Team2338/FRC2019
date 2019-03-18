@@ -1,54 +1,60 @@
 package team.gif.robot.commands.drivetrain;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import team.gif.robot.Constants;
+import team.gif.lib.math.LinearRegression;
 import team.gif.robot.subsystems.Drivetrain;
 
 public class DriveVoltageRampTest extends Command {
 
     private final Drivetrain drivetrain = Drivetrain.getInstance();
-    private final ShuffleboardTab tab = Shuffleboard.getTab("Debug");
-    private NetworkTableEntry leftVoltage;
-    private NetworkTableEntry rightVoltage;
-    private NetworkTableEntry leftVelocity;
-    private NetworkTableEntry rightVelocity;
+    private LinearRegression leftRegression, rightRegression;
+    private double[] leftVoltage, rightVoltage, leftVelocity, rightVelocity;
+    private int totalFrames;
+    private int currentFrame;
+    private boolean reverse;
+    private int trim;
 
-    public DriveVoltageRampTest(double timeout){
-        setTimeout(timeout);
+    public DriveVoltageRampTest(double timeout, boolean reverse, int trim){
         requires(drivetrain);
+        this.reverse = reverse;
+        this.trim = trim;
+        totalFrames = (int)timeout * 50 - trim;
     }
 
     @Override
     protected void initialize() {
-        leftVoltage = tab.add("Left Drive Voltage", 0.0).getEntry();
-        rightVoltage = tab.add("Right Drive Voltage", 0.0).getEntry();
-        leftVelocity = tab.add("Left Drive Velocity", 0.0).getEntry();
-        rightVelocity = tab.add("Right Drive Velocity", 0.0).getEntry();
-        Shuffleboard.startRecording();
+        leftVoltage = new double[totalFrames];
+        rightVoltage = new double[totalFrames];
+        leftVelocity = new double[totalFrames];
+        rightVelocity = new double[totalFrames];
+        currentFrame = -trim;
     }
 
     @Override
     protected void execute() {
-        double percentOutput = timeSinceInitialized() * -(0.25 / 12.0);
+        double percentOutput = (reverse ? -1 : 1) * timeSinceInitialized() * (0.25 / 12.0);
         drivetrain.setOutputs(percentOutput, percentOutput);
-        leftVoltage.setDouble(drivetrain.getOutputVoltage()[0] / 12.0);
-        rightVoltage.setDouble(drivetrain.getOutputVoltage()[1] / 12.0);
-        leftVelocity.setDouble(drivetrain.getLeftVelTPS() / 4096.0);
-        rightVelocity.setDouble(drivetrain.getRightVelTPS() / 4096.0);
+        if (currentFrame < totalFrames && currentFrame >= 0) {
+            leftVoltage[currentFrame] = drivetrain.getOutputVoltage()[0] / 12;
+            rightVoltage[currentFrame] = drivetrain.getOutputVoltage()[1] / 12;
+            leftVelocity[currentFrame] = drivetrain.getLeftVelTPS() / 4096;
+            rightVelocity[currentFrame] = drivetrain.getRightVelTPS() / 4096;
+        }
+        currentFrame++;
     }
 
     @Override
     protected boolean isFinished() {
-        return isTimedOut();
+        return !(currentFrame < totalFrames);
     }
 
     @Override
     protected void end() {
-        Shuffleboard.stopRecording();
         drivetrain.setOutputs(0.0, 0.0);
+        leftRegression = new LinearRegression(leftVelocity, leftVoltage);
+        rightRegression = new LinearRegression(rightVelocity, rightVoltage);
+        System.out.println("Left Result: " + leftRegression.toString());
+        System.out.println("Right Result: " + rightRegression.toString());
     }
 
 }

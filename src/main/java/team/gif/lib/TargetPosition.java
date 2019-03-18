@@ -31,6 +31,13 @@ public enum TargetPosition {
         return position;
     }
 
+    /**
+     * thing
+     * @param depthOffset
+     * @param horizOffset right is positive, left is negggg
+     * @param invert
+     * @return
+     */
     public Waypoint getRobotWaypoint(double depthOffset, double horizOffset, boolean invert) {
         return new Waypoint(position.x + depthOffset * Math.cos(position.angle) + horizOffset * Math.sin(position.angle),
                 position.y + depthOffset * Math.sin(position.angle) - horizOffset * Math.cos(position.angle),

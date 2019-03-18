@@ -15,7 +15,7 @@ public class Mobility extends CommandGroup {
 
     private final Trajectory mobility = Pathfinder.generate(new Waypoint[] {
             new Waypoint(48 + Constants.Drivetrain.BUMPER_LENGTH / 2, 0, 0),
-            new Waypoint(48 + Constants.Drivetrain.BUMPER_LENGTH / 2 + 60, 0, 0),
+            new Waypoint(48 + Constants.Drivetrain.BUMPER_LENGTH / 2 + 120, 0, 0),
     }, Constants.Drivetrain.config);
 
     public Mobility(AutoPosition position) {
@@ -29,5 +29,6 @@ public class Mobility extends CommandGroup {
     @Override
     protected void initialize() {
         Drivetrain.getInstance().setYaw(180.0);
+        Drivetrain.getInstance().resetEncoders();
     }
 }

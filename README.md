@@ -1,5 +1,5 @@
 # FRC2019
-The code for Gear it Forward's 2019 robot, Milk.
+The code for Gear it Forward's 2019 robot, "Milk, but also Vanguard".
 
 ## Drivetrain
 Single-speed drop-center drivetrain with 2 REV NEOs per gearbox.

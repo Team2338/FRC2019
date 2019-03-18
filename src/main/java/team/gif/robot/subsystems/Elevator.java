@@ -75,8 +75,8 @@ public class Elevator extends Subsystem {
 
     private void configLift(TalonSRX talon) {
         talon.configFactoryDefault();
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
+//        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
+//        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
         talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         talon.enableVoltageCompensation(true);
         talon.setSensorPhase(true);

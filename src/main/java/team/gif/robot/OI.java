@@ -4,15 +4,20 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.POVButton;
+import team.gif.lib.AutoPosition;
 import team.gif.lib.oi.AxisButton;
 import team.gif.lib.oi.ComboButton;
 import team.gif.lib.oi.NotButton;
+import team.gif.robot.commands.auto.Mobility;
 import team.gif.robot.commands.claw.*;
 import team.gif.robot.commands.climber.Climb;
 import team.gif.robot.commands.climber.RaiseFront;
 import team.gif.robot.commands.climber.RaiseRear;
+import team.gif.robot.commands.drivetrain.DriveTeleOp;
 import team.gif.robot.commands.drivetrain.DriveVoltageRampTest;
-import team.gif.robot.commands.elevator.ElevatorVoltageRamper;
+import team.gif.robot.commands.drivetrain.DriveVoltageStepTest;
+import team.gif.robot.commands.drivetrain.VisionApproach;
+import team.gif.robot.commands.elevator.ElevatorVoltageRampTest;
 import team.gif.robot.commands.elevator.SmartElevatorPosition;
 import team.gif.robot.commands.backhatch.BackEject;
 
@@ -45,10 +50,10 @@ public class OI {
     public final JoystickButton aLS = new JoystickButton(aux, 9);
     public final JoystickButton aRS = new JoystickButton(aux, 10);
 
-    public final AxisButton dLT = new AxisButton(driver, 2, 0.1);
-    public final AxisButton dRT = new AxisButton(driver, 3, 0.1);
-    public final AxisButton aLT = new AxisButton(aux, 2, 0.1);
-    public final AxisButton aRT = new AxisButton(aux, 3, 0.1);
+    public final AxisButton dLT = new AxisButton(driver, 2, 0.25);
+    public final AxisButton dRT = new AxisButton(driver, 3, 0.25);
+    public final AxisButton aLT = new AxisButton(aux, 2, 0.25);
+    public final AxisButton aRT = new AxisButton(aux, 3, 0.25);
 
     public final POVButton dDPadUp = new POVButton(driver, 0);
     public final POVButton dDPadRight = new POVButton(driver, 90);
@@ -85,14 +90,16 @@ public class OI {
         aDPadRight.whenPressed(new SmartElevatorPosition(SmartElevatorPosition.GenericPosition.MID));
         aDPadUp.whenPressed(new SmartElevatorPosition(SmartElevatorPosition.GenericPosition.HIGH));
 
-//        aRT.whileHeld(new VisionTurnTest());
+        dLT.whenPressed(new VisionApproach());
 
         aTriggers.whenPressed(new Climb());
         aRB.whenPressed(new RaiseFront());
         aA.whileHeld(new RaiseRear());
 
-        dA.whenPressed(new ElevatorVoltageRamper());
-        dB.whenPressed(new DriveVoltageRampTest(12.0));
+        dY.whenPressed(new Mobility(AutoPosition.L1_CENTER));
+
+        dA.whenPressed(new DriveVoltageRampTest(12.0, false, 5));
+        dB.whenPressed(new DriveVoltageRampTest(12.0, true, 5));
 
 //        aBack.whenPressed(new Mobility(AutoPosition.L1_CENTER));
 //        aDPadLeft.whenPressed(new SetElevatorPosition(Constants.Elevator.MIN_POS));
@@ -112,10 +119,10 @@ public class OI {
     }
 
     public void setRumble(boolean rumble) {
-        driver.setRumble(GenericHID.RumbleType.kLeftRumble, rumble ? 1.0 : 0.0);
-        driver.setRumble(GenericHID.RumbleType.kRightRumble, rumble ? 1.0: 0.0);
         aux.setRumble(GenericHID.RumbleType.kLeftRumble, rumble ? 1.0 : 0.0);
         aux.setRumble(GenericHID.RumbleType.kRightRumble, rumble ? 1.0: 0.0);
+        driver.setRumble(GenericHID.RumbleType.kLeftRumble, rumble ? 1.0 : 0.0);
+        driver.setRumble(GenericHID.RumbleType.kRightRumble, rumble ? 1.0: 0.0);
     }
 
 }

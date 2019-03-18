@@ -1,5 +1,7 @@
 package team.gif.robot;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -24,6 +26,7 @@ import team.gif.robot.subsystems.Elevator;
 
 import java.io.File;
 import java.sql.Driver;
+import java.util.Arrays;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -52,6 +55,14 @@ public class Robot extends TimedRobot {
     private AutoPosition selectedAutoPosition;
     private AutoMode selectedAutoMode;
     private Command auto;
+
+//    private final NetworkTableEntry leftVel = debug.add("LeftVel", 0.0).getEntry();
+//    private final NetworkTableEntry rightVel = debug.add("RightVel", 0.0).getEntry();
+//    private final NetworkTableEntry leftPos = debug.add("LeftPos", 0.0).getEntry();
+//    private final NetworkTableEntry rightPos = debug.add("RightPos", 0.0).getEntry();
+//    private final NetworkTableEntry matchTimeEntry = teleopTab.add("Match Time", 0.0).getEntry();
+
+    public static final boolean isCompBot = false;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -97,6 +108,8 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
 //        System.out.println(drivetrain.getHeadingDegrees());
 //        leftVel.setDouble(drivetrain.getLeftVelRPS());
+//        System.out.println(Arrays.toString(limelight.getCamTran()));
+//        System.out.println(elevator.getPosition());
     }
 
     @Override
@@ -109,9 +122,10 @@ public class Robot extends TimedRobot {
         if (!selectedAutoPosition.equals(autoPositionChooser.getSelected()) || !selectedAutoMode.equals(autoModeChooser.getSelected())) {
             updateSelectedAuto();
         }
-        limelight.setCamMode(1);
-        limelight.setLEDMode(1);
-
+//        limelight.setCamMode(1);
+//        limelight.setPipeline(9);
+//        limelight.setLEDMode(1);
+//        oi.setRumble(false);
 //        System.out.println("Left Pos: " + drivetrain.getLeftPosTicks());
 //        System.out.println("Right Pos: " + drivetrain.getRightPosTicks());
     }
@@ -160,7 +174,8 @@ public class Robot extends TimedRobot {
         compressor.start();
         drivetrain.setBrakeMode(true);
         drivetrain.setRampRate(0.15);
-        limelight.setCamMode(1);
+//        limelight.setCamMode(1);
+        limelight.setPipeline(9);
         limelight.setLEDMode(1);
         Shuffleboard.selectTab("TeleOp");
     }
@@ -173,9 +188,19 @@ public class Robot extends TimedRobot {
         Scheduler.getInstance().run();
 
         double matchTime = DriverStation.getInstance().getMatchTime();
-        oi.setRumble(matchTime > 44.5 && matchTime < 45.5);
+        oi.setRumble(matchTime > 44.0 && matchTime < 46.0);
+//        oi.setRumble(true);
+//        matchTimeEntry.setNumber(matchTime);
 
-//        System.out.println("Heading: " + climber.getWinchPos());
+//        leftVel.setDouble(drivetrain.getLeftVelRPS());
+//        rightVel.setDouble(drivetrain.getRightVelRPS());
+
+//        leftVel.setNumber(drivetrain.getLeftVelRPS());
+//        rightVel.setNumber(drivetrain.getRightVelRPS());
+//        leftPos.setNumber(drivetrain.getLeftPosInches());
+//        rightPos.setNumber(drivetrain.getRightPosInches());
+
+//        System.out.println("Winch Pos: " + climber.getWinchPos());
 //        System.out.println("LeftDistInches: " + drivetrain.getLeftPosInches());
 //        System.out.println("RightDistInches: " + drivetrain.getRightPosInches());
 //        System.out.println("Has Target: " + limelight.hasTarget());
