@@ -21,12 +21,13 @@ public class ClimberStandby extends Command {
     @Override
     protected void execute() {
         if (climber.isDeployed()) {
-            climber.setWinchPercent(0.15);
+            climber.setWinchPercent((21000 - climber.getWinchPos()) / 4096 * -0.15);
             climber.setDrive(4.0 * OI.getInstance().driver.getY(GenericHID.Hand.kLeft));
         } else {
             climber.setWinchPercent(0.05);
             climber.setWinchCurrentLimit(10);
             climber.setDrive(climber.getWinchPos() > 10000 ? 4.0 * OI.getInstance().driver.getY(GenericHID.Hand.kLeft) : 0.0);
+
         }
     }
 

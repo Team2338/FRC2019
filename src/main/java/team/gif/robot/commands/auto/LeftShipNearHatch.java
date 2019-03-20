@@ -28,7 +28,7 @@ public class LeftShipNearHatch extends CommandGroup {
             TargetPosition.LEFT_SHIP_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2, 0, true),
             new Waypoint(AutoPosition.L1_LEFT.getWaypoint().x + 158.275, 100.0, 180.0),
             TargetPosition.LEFT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 24, 0, false)
-    }, Constants.Drivetrain.config);
+    }, Constants.Drivetrain.normalConfig);
 
 
     public LeftShipNearHatch() {

@@ -74,10 +74,10 @@ public abstract class Constants {
         public static final double DRIVE_P = 0.0; // 0.02
         public static final double DRIVE_I = 0.0;
         public static final double DRIVE_D = 0.0;
-        public static final double ROTATE_P = 0.02; // 0.014
+        public static final double ROTATE_P = 0.017; // 0.014
         public static final double ROTATE_I = 0.0;
         public static final double ROTATE_D = 0.0;
-        public static final double VISION_P = 0.003;
+        public static final double VISION_P = 0.008;
         public static final double V_LEFT_FWD = (Robot.isCompBot ? 0.0734 : 0.0704) / (WHEEL_DIAMETER * PI); // 0.0698
         public static final double V_LEFT_REV = (Robot.isCompBot ? 0.0721 : 0.0704) / (WHEEL_DIAMETER * PI); // 0.0700
         public static final double V_RIGHT_FWD = (Robot.isCompBot ? 0.0727 : 0.0705) / (WHEEL_DIAMETER * PI); // 0.0706
@@ -89,7 +89,10 @@ public abstract class Constants {
         public static final double A_LEFT = 0.006 / (WHEEL_DIAMETER * PI); // 0.008
         public static final double A_RIGHT = 0.006 / (WHEEL_DIAMETER * PI); // 0.008
 
-        public static final Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
+        public static final Trajectory.Config fastConfig = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
+                Trajectory.Config.SAMPLES_FAST, 0.01, 84.0, 96.0, 9999.0);
+
+        public static final Trajectory.Config normalConfig = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
                 Trajectory.Config.SAMPLES_FAST, 0.01, 72.0, 96.0, 9999.0);
 
         public static final Trajectory.Config slowConfig = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
@@ -118,8 +121,8 @@ public abstract class Constants {
         private static final double CARGO_LOAD_HEIGHT_DIFF = 25.125;
         private static final int TICKS_PER_REV = 4096;
 
-        public static final int MIN_POS = Robot.isCompBot ? 3900 : 1100; // C: 3900 P: 1000
-        public static final int MAX_POS = Robot.isCompBot ? 39000 : 36000; // C: 39000 P: 36000
+        public static final int MIN_POS = Robot.isCompBot ? 3900 : 900; // C: 3900 P: 1000
+        public static final int MAX_POS = Robot.isCompBot ? 37500 : 34500; // C: 39000 P: 36000
         public static final int HATCH_LOW_POS = Robot.isCompBot ? 9000 : 6100; // C: 9100 P: 6100
         public static final int HATCH_MID_POS = (int)(HATCH_LOW_POS + PORT_HEIGHT_DIFF /
                 (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0);

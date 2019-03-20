@@ -25,7 +25,7 @@ public class CenterLeftShipFront extends CommandGroup {
     private final Trajectory backup = Pathfinder.generate(new Waypoint[] {
             TargetPosition.LEFT_SHIP_FRONT.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2, 0, true),
             TargetPosition.LEFT_SHIP_FRONT.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 24, 0, true),
-    }, Constants.Drivetrain.config);
+    }, Constants.Drivetrain.normalConfig);
 
     public CenterLeftShipFront() {
         addSequential(new FollowPathReverse(reverseApproach));

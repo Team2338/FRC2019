@@ -1,21 +1,16 @@
 package team.gif.robot.commands.auto;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.WaitCommand;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;
 import team.gif.lib.AutoPosition;
 import team.gif.lib.TargetPosition;
 import team.gif.robot.Constants;
-import team.gif.robot.commands.CommandTemplate;
 import team.gif.robot.commands.backhatch.BackEject;
-import team.gif.robot.commands.claw.SetClawMode;
 import team.gif.robot.commands.claw.SetDeploy;
-import team.gif.robot.commands.claw.SmartCollect;
 import team.gif.robot.commands.drivetrain.FollowPath;
 import team.gif.robot.commands.drivetrain.FollowPathReverse;
-import team.gif.robot.commands.drivetrain.FollowPathVision;
 import team.gif.robot.commands.elevator.SetElevatorPosition;
 import team.gif.robot.subsystems.Drivetrain;
 
@@ -32,7 +27,7 @@ public class RightShipNearHatch extends CommandGroup {
             TargetPosition.RIGHT_SHIP_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2, 0, true),
             new Waypoint(AutoPosition.L1_RIGHT.getWaypoint().x + 158.275, -100.0, 180.0),
             TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 24, 0, false)
-    }, Constants.Drivetrain.config);
+    }, Constants.Drivetrain.normalConfig);
 
 
     public RightShipNearHatch() {

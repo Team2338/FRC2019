@@ -25,7 +25,7 @@ public class RightShipFront extends CommandGroup {
     private final Trajectory loadingStation = Pathfinder.generate(new Waypoint[] {
             TargetPosition.RIGHT_SHIP_FRONT.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2, 0,true),
             TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 24, -6, false),
-    }, Constants.Drivetrain.config);
+    }, Constants.Drivetrain.normalConfig);
 
     public RightShipFront() {
         addSequential(new FollowPathReverse(reverseApproach));

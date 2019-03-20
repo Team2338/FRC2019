@@ -93,6 +93,7 @@ public class VisionApproach extends Command implements Runnable {
     @Override
     protected void end() {
         notifier.stop();
+        notifier.close();
 
         System.out.println("I am done with vision.");
 

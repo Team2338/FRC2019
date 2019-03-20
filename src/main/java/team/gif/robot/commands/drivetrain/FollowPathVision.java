@@ -49,6 +49,8 @@ public class FollowPathVision extends Command implements Runnable {
 
         initDist = (drivetrain.getLeftPosInches() + drivetrain.getRightPosInches()) / 2;
 
+        limelight.setPipeline(0);
+        limelight.setLEDMode(3);
         notifier.startPeriodic(0.01);
     }
 
@@ -62,14 +64,16 @@ public class FollowPathVision extends Command implements Runnable {
 
         double heading = Pathfinder.boundHalfDegrees(drivetrain.getHeadingDegrees());
         double headingTarget = Pathfinder.boundHalfDegrees(Math.toDegrees(leftFollower.getHeading()));
-        double turn = rotatePID.getOutput(heading, headingTarget);
+        if (Math.abs(headingTarget - heading) > 180)  {
+            if (heading < 0) heading += 360;
+            if (heading > 0) heading -= 360;
+        }
 
+        double turn = rotatePID.getOutput(heading, headingTarget);
         if ((drivetrain.getLeftPosInches() + drivetrain.getRightPosInches()) / 2 - initDist > visionDist) {
-            limelight.setLEDMode(3);
-            limelight.setCamMode(0);
-            turn -= limelight.getXOffset() * Constants.Drivetrain.VISION_P;
-            System.out.println("Offset: " + limelight.getXOffset());
-            System.out.println("Turn: " + turn);
+            turn = -limelight.getXOffset() * Constants.Drivetrain.VISION_P;
+//            System.out.println("Offset: " + limelight.getXOffset());
+//            System.out.println("Turn: " + turn);
         }
 
         drivetrain.setOutputs(leftOutput - turn, rightOutput + turn);
@@ -89,6 +93,7 @@ public class FollowPathVision extends Command implements Runnable {
     protected void end() {
 //        limelight.setLEDMode(1);
 //        limelight.setCamMode(1);
+//        limelight.setPipeline(9);
         notifier.stop();
         notifier.close();
 

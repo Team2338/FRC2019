@@ -41,7 +41,7 @@ public class RightRocketDouble extends CommandGroup {
             TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4 - 24, 0, true),
             new Waypoint(229.125, -110, 0.0),
             TargetPosition.RIGHT_ROCKET_FAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4 - 24, 0, true)
-    }, Constants.Drivetrain.config);
+    }, Constants.Drivetrain.normalConfig);
 
     public RightRocketDouble() {
         addSequential(new FollowPathReverse(reverseApproach));

@@ -54,6 +54,11 @@ public class FollowPath extends Command implements Runnable {
 
         double heading = Pathfinder.boundHalfDegrees(drivetrain.getHeadingDegrees());
         double headingTarget = Pathfinder.boundHalfDegrees(Math.toDegrees(leftFollower.getHeading()));
+//        heading = Math.copySign((headingTarget - heading) % 360, -heading);
+        if (Math.abs(headingTarget - heading) > 180)  {
+            if (heading < 0) heading += 360;
+            if (heading > 0) heading -= 360;
+        }
         double turn = rotatePID.getOutput(heading, headingTarget);
 
 //        System.out.println(headingTarget - heading);
@@ -75,8 +80,8 @@ public class FollowPath extends Command implements Runnable {
     protected void end() {
         notifier.stop();
         notifier.close();
-        drivetrain.setBrakeMode(true);
         drivetrain.setOutputs(0.0, 0.0);
+        drivetrain.setBrakeMode(true);
     }
 
 }

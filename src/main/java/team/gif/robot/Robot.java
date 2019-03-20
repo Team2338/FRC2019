@@ -128,6 +128,7 @@ public class Robot extends TimedRobot {
 //        oi.setRumble(false);
 //        System.out.println("Left Pos: " + drivetrain.getLeftPosTicks());
 //        System.out.println("Right Pos: " + drivetrain.getRightPosTicks());
+//        System.out.println("ElevPos: " + elevator.getPosition());
     }
 
     /**

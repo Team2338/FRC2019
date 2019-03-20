@@ -41,6 +41,8 @@ public class FollowPathReverse extends Command implements Runnable {
         rightFollower.configureEncoder(-drivetrain.getRightPosTicks(), Constants.Drivetrain.TICKS_PER_REV,
                 Constants.Drivetrain.WHEEL_DIAMETER);
         drivetrain.setBrakeMode(false);
+
+        System.out.println("Starting reverse path");
         notifier.startPeriodic(0.01);
     }
 
@@ -52,7 +54,7 @@ public class FollowPathReverse extends Command implements Runnable {
         if (Math.abs(leftOutput) > 0.01) leftOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_LEFT_REV, leftOutput);
         if (Math.abs(rightOutput) > 0.01) rightOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_RIGHT_REV, rightOutput);
 
-        double heading = Pathfinder.boundHalfDegrees(180 + drivetrain.getHeadingDegrees());
+        double heading = Pathfinder.boundHalfDegrees(drivetrain.getHeadingDegrees() + 180);
         double headingTarget = Pathfinder.boundHalfDegrees(Math.toDegrees(leftFollower.getHeading()));
         double turn = rotatePID.getOutput(heading, headingTarget);
 
@@ -73,7 +75,7 @@ public class FollowPathReverse extends Command implements Runnable {
     protected void end() {
         notifier.stop();
         notifier.close();
-        drivetrain.setBrakeMode(true);
         drivetrain.setOutputs(0.0, 0.0);
+        drivetrain.setBrakeMode(true);
     }
 }
