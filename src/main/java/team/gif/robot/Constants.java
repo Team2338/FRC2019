@@ -74,10 +74,10 @@ public abstract class Constants {
         public static final double DRIVE_P = 0.0; // 0.02
         public static final double DRIVE_I = 0.0;
         public static final double DRIVE_D = 0.0;
-        public static final double ROTATE_P = 0.017; // 0.014
+        public static final double ROTATE_P = 0.015; // 0.014
         public static final double ROTATE_I = 0.0;
         public static final double ROTATE_D = 0.0;
-        public static final double VISION_P = 0.008;
+        public static final double VISION_P = 0.004;
         public static final double V_LEFT_FWD = (Robot.isCompBot ? 0.0734 : 0.0704) / (WHEEL_DIAMETER * PI); // 0.0698
         public static final double V_LEFT_REV = (Robot.isCompBot ? 0.0721 : 0.0704) / (WHEEL_DIAMETER * PI); // 0.0700
         public static final double V_RIGHT_FWD = (Robot.isCompBot ? 0.0727 : 0.0705) / (WHEEL_DIAMETER * PI); // 0.0706
@@ -90,7 +90,7 @@ public abstract class Constants {
         public static final double A_RIGHT = 0.006 / (WHEEL_DIAMETER * PI); // 0.008
 
         public static final Trajectory.Config fastConfig = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
-                Trajectory.Config.SAMPLES_FAST, 0.01, 84.0, 96.0, 9999.0);
+                Trajectory.Config.SAMPLES_FAST, 0.01, 96.0, 96.0, 9999.0);
 
         public static final Trajectory.Config normalConfig = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC,
                 Trajectory.Config.SAMPLES_FAST, 0.01, 72.0, 96.0, 9999.0);
@@ -101,19 +101,22 @@ public abstract class Constants {
     }
 
     public static class Elevator {
-        public static final double P = 2.0;
+        public static final double P = 4.0;
         public static final double I = 0.0;
         public static final double D = 0.0;
-        public static final double F = 0.365;
+        public static final double F = 0.425; // 0.39
+        public static final double REV_F = 0.38; // 0.38
 //        public static final double F = 0.615;
-        public static final double GRAV_FEED_FORWARD = 360.0 / 1023.0; // Percent constant to counteract gravity
+        public static final double GRAV_FEED_FORWARD = 300 / 1023.0; // Percent constant to counteract gravity
+        public static final double REV_GRAV_FEED_FORWARD = 50 / 1023.0;
 //        private static final double VOLTS_PER_RAD_PER_SEC = .33;
 //        public static final double F = (VOLTS_PER_RAD_PER_SEC * (1023.0 / (12.0 - 12.0*GRAV_FEED_FORWARD)) * (2*Math.PI/4096) * (10));
 
 
         public static final int ALLOWABLE_ERROR = 100; // Error to allow move command to end
         public static final int MAX_VELOCITY = 1700; // Elevator velocity (ticks/100ms)
-        public static final int MAX_ACCELERATION = 5100; // Elevator acceleration (ticks/100ms/s)
+        public static final int REV_MAX_VELOCITY = 2800;
+        public static final int MAX_ACCELERATION = 8000; // Elevator acceleration (ticks/100ms/s)
 
         private static final double DIAMETRICAL_PITCH = 1.432;
         private static final double PORT_HEIGHT_DIFF = 28.0;
@@ -122,8 +125,8 @@ public abstract class Constants {
         private static final int TICKS_PER_REV = 4096;
 
         public static final int MIN_POS = Robot.isCompBot ? 3900 : 900; // C: 3900 P: 1000
-        public static final int MAX_POS = Robot.isCompBot ? 37500 : 34500; // C: 39000 P: 36000
-        public static final int HATCH_LOW_POS = Robot.isCompBot ? 9000 : 6100; // C: 9100 P: 6100
+        public static final int MAX_POS = Robot.isCompBot ? 37400 : 34400; // C: 39000 P: 36000
+        public static final int HATCH_LOW_POS = Robot.isCompBot ? 9100 : 6100; // C: 9100 P: 6100
         public static final int HATCH_MID_POS = (int)(HATCH_LOW_POS + PORT_HEIGHT_DIFF /
                 (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0);
         public static final int HATCH_HIGH_POS = (int)(HATCH_MID_POS + PORT_HEIGHT_DIFF /

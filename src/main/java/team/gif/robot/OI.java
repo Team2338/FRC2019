@@ -4,7 +4,12 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.POVButton;
+import edu.wpi.first.wpilibj.command.ConditionalCommand;
+import jaci.pathfinder.Pathfinder;
+import jaci.pathfinder.Trajectory;
+import jaci.pathfinder.Waypoint;
 import team.gif.lib.AutoPosition;
+import team.gif.lib.TargetPosition;
 import team.gif.lib.oi.AxisButton;
 import team.gif.lib.oi.ComboButton;
 import team.gif.lib.oi.NotButton;
@@ -13,10 +18,7 @@ import team.gif.robot.commands.claw.*;
 import team.gif.robot.commands.climber.Climb;
 import team.gif.robot.commands.climber.RaiseFront;
 import team.gif.robot.commands.climber.RaiseRear;
-import team.gif.robot.commands.drivetrain.DriveTeleOp;
-import team.gif.robot.commands.drivetrain.DriveVoltageRampTest;
-import team.gif.robot.commands.drivetrain.DriveVoltageStepTest;
-import team.gif.robot.commands.drivetrain.VisionApproach;
+import team.gif.robot.commands.drivetrain.*;
 import team.gif.robot.commands.elevator.ElevatorVoltageRampTest;
 import team.gif.robot.commands.elevator.SmartElevatorPosition;
 import team.gif.robot.commands.backhatch.BackEject;
@@ -65,16 +67,23 @@ public class OI {
     public final POVButton aDPadLeft = new POVButton(aux, 270);
 
     // Special Buttons
-    public final ComboButton dSpecial = new ComboButton(dBack, dStart);
-    public final ComboButton aSpecial = new ComboButton(aBack, aStart);
+    public final ComboButton dMenuButtons = new ComboButton(dBack, dStart);
+    public final ComboButton aMenuButtons = new ComboButton(aBack, aStart);
     public final ComboButton aTriggers = new ComboButton(aLT, aRT);
 
-    public final ComboButton elevHatchLow = new ComboButton(aDPadDown, new NotButton(aLB));
-    public final ComboButton elevHatchMid = new ComboButton(aDPadRight, new NotButton(aLB));
-    public final ComboButton elevHatchHigh = new ComboButton(aDPadUp, new NotButton(aLB));
-    public final ComboButton elevCargoLow = new ComboButton(aDPadDown, aLB);
-    public final ComboButton elevCargoMid = new ComboButton(aDPadRight, aLB);
-    public final ComboButton elevCargoHigh = new ComboButton(aDPadUp, aLB);
+    private final Trajectory backupAroundLeftRocket = Pathfinder.generate(new Waypoint[] {
+            TargetPosition.LEFT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, 0, true),
+            TargetPosition.LEFT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4 - 24, 0, true),
+            TargetPosition.LEFT_ROCKET_MID.getRelativeWaypoint(-Constants.Drivetrain.BUMPER_WIDTH / 2 - 8, 0, 0),
+            TargetPosition.LEFT_ROCKET_FAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4 - 32, -7, true)
+    }, Constants.Drivetrain.fastConfig);
+
+    private final Trajectory backupAroundRightRocket = Pathfinder.generate(new Waypoint[] {
+            TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, 0, true),
+            TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4 - 24, 0, true),
+            TargetPosition.RIGHT_ROCKET_MID.getRelativeWaypoint(-Constants.Drivetrain.BUMPER_WIDTH / 2 - 8, 0, 0),
+            TargetPosition.RIGHT_ROCKET_FAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4 - 32, -7, true)
+    }, Constants.Drivetrain.fastConfig);
 
     private OI() {
         dLB.whileHeld(new SmartEject());
@@ -96,19 +105,16 @@ public class OI {
         aRB.whenPressed(new RaiseFront());
         aA.whileHeld(new RaiseRear());
 
+        dY.whenPressed(new ElevatorVoltageRampTest(35, false, 1300));
+        dA.whenPressed(new ElevatorVoltageRampTest(11.5, true, 150));
+
+//        dX.whenPressed(new FollowPathReverse(backupAroundLeftRocket));
+//        dB.whenPressed(new FollowPathReverse(backupAroundRightRocket));
+
 //        dY.whenPressed(new Mobility(AutoPosition.L1_CENTER));
 //
 //        dA.whenPressed(new DriveVoltageRampTest(12.0, false, 5));
 //        dB.whenPressed(new DriveVoltageRampTest(12.0, true, 5));
-
-//        aBack.whenPressed(new Mobility(AutoPosition.L1_CENTER));
-//        aDPadLeft.whenPressed(new SetElevatorPosition(Constants.Elevator.MIN_POS));
-//        elevHatchLow.whenPressed(new SetElevatorPosition(Constants.Elevator.HATCH_LOW_POS));
-//        elevHatchMid.whenPressed(new SetElevatorPosition(Constants.Elevator.HATCH_MID_POS));
-//        elevHatchHigh.whenPressed(new SetElevatorPosition(Constants.Elevator.HATCH_HIGH_POS));
-//        elevCargoLow.whenPressed(new SetElevatorPosition(Constants.Elevator.CARGO_LOW_POS));
-//        elevCargoMid.whenPressed(new SetElevatorPosition(Constants.Elevator.CARGO_MID_POS));
-//        elevCargoHigh.whenPressed(new SetElevatorPosition(Constants.Elevator.CARGO_HIGH_POS));
     }
 
     public static OI getInstance() {
@@ -119,10 +125,10 @@ public class OI {
     }
 
     public void setRumble(boolean rumble) {
-        aux.setRumble(GenericHID.RumbleType.kLeftRumble, rumble ? 1.0 : 0.0);
-        aux.setRumble(GenericHID.RumbleType.kRightRumble, rumble ? 1.0: 0.0);
         driver.setRumble(GenericHID.RumbleType.kLeftRumble, rumble ? 1.0 : 0.0);
         driver.setRumble(GenericHID.RumbleType.kRightRumble, rumble ? 1.0: 0.0);
+        aux.setRumble(GenericHID.RumbleType.kLeftRumble, rumble ? 1.0 : 0.0);
+        aux.setRumble(GenericHID.RumbleType.kRightRumble, rumble ? 1.0: 0.0);
     }
 
 }

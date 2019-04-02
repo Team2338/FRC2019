@@ -8,6 +8,7 @@ import team.gif.lib.AutoPosition;
 import team.gif.lib.TargetPosition;
 import team.gif.robot.Constants;
 import team.gif.robot.commands.backhatch.BackEject;
+import team.gif.robot.commands.claw.SetClawMode;
 import team.gif.robot.commands.claw.SetDeploy;
 import team.gif.robot.commands.drivetrain.FollowPath;
 import team.gif.robot.commands.drivetrain.FollowPathReverse;
@@ -17,8 +18,8 @@ import team.gif.robot.subsystems.Drivetrain;
 public class CenterLeftShipFront extends CommandGroup {
 
     private final Trajectory reverseApproach = Pathfinder.generate(new Waypoint[] {
-            AutoPosition.L1_CENTER.getWaypoint(),
-            new Waypoint(AutoPosition.L1_CENTER.getWaypoint().x + 48.275, AutoPosition.L1_CENTER.getWaypoint().y, 0.0),
+            AutoPosition.L1_CENTER.getRobotWaypoint(0),
+            AutoPosition.L1_CENTER.getRobotWaypoint(48.275),
             TargetPosition.LEFT_SHIP_FRONT.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2, 0, false)
     }, Constants.Drivetrain.slowConfig);
 
@@ -30,6 +31,7 @@ public class CenterLeftShipFront extends CommandGroup {
     public CenterLeftShipFront() {
         addSequential(new FollowPathReverse(reverseApproach));
         addSequential(new SetDeploy(true));
+        addParallel(new SetClawMode(true));
         addParallel(new SetElevatorPosition(Constants.Elevator.HATCH_LOW_POS));
         addSequential(new BackEject(1.0));
         addSequential(new FollowPath(backup));

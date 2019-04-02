@@ -9,20 +9,20 @@ public class Limelight {
 
     private NetworkTable table;
 
-    private Limelight() {
-        table = NetworkTableInstance.getDefault().getTable("limelight");
+    /**
+     * Create a new limelight object.
+     *
+     * @param key NetworkTable key specified in limelight web config
+     */
+    public Limelight(String key) {
+        table = NetworkTableInstance.getDefault().getTable(key);
     }
 
     /**
-     * Construct and/or retrieve the singleton Limelight instance.
-     *
-     * @return limelight instance
+     * Create a new limelight object with default key.
      */
-    public static Limelight getInstance() {
-        if (instance == null) {
-            instance = new Limelight();
-        }
-        return instance;
+    public Limelight() {
+        this("limelight");
     }
 
     /**

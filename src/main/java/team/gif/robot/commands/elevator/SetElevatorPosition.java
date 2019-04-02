@@ -19,16 +19,25 @@ public class SetElevatorPosition extends Command {
 
     @Override
     protected void initialize() {
-        elevator.setMotionMagic(position);
+        if (position > elevator.getPosition()) {
+            elevator.setCruiseVelocity(Constants.Elevator.MAX_VELOCITY);
+            elevator.configF(Constants.Elevator.F);
+            elevator.setMotionMagic(position, Constants.Elevator.GRAV_FEED_FORWARD);
+        } else {
+            elevator.setCruiseVelocity(Constants.Elevator.REV_MAX_VELOCITY);
+            elevator.configF(Constants.Elevator.REV_F);
+            elevator.setMotionMagic(position, Constants.Elevator.REV_GRAV_FEED_FORWARD);
+        }
+
     }
 
     @Override
     protected void execute() {
-        if (!elevator.getFwdLimit() && elevator.getClosedLoopError() < 0) {
-            elevator.setMotionVelocity(400);
-        } else {
-            elevator.setMotionVelocity(Constants.Elevator.MAX_VELOCITY);
-        }
+//        if (!elevator.getFwdLimit() && elevator.getClosedLoopError() < 0) {
+//            elevator.setCruiseVelocity(400);
+//        } else {
+//            elevator.setCruiseVelocity(Constants.Elevator.MAX_VELOCITY);
+//        }
     }
 
     @Override

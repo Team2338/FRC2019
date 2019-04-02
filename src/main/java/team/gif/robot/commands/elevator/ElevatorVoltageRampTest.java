@@ -4,43 +4,61 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import team.gif.lib.math.LinearRegression;
 import team.gif.robot.Constants;
 import team.gif.robot.subsystems.Elevator;
 
 public class ElevatorVoltageRampTest extends Command {
 
     private final Elevator elevator = Elevator.getInstance();
+    private LinearRegression regression;
+    private double[] voltage, velocity;
+    private int totalFrames;
+    private int currentFrame;
+    private boolean reverse;
+    private int trim;
+
 //    private final ShuffleboardTab tab = Shuffleboard.getTab("Debug");
 //    private NetworkTableEntry voltage;
 //    private NetworkTableEntry velocity;
 
-    public ElevatorVoltageRampTest(){
+    public ElevatorVoltageRampTest(double timeout, boolean reverse, int trim){
         requires(elevator);
+        this.reverse = reverse;
+        this.trim = trim;
+        totalFrames = (int)timeout * 50 - trim;
     }
 
     @Override
     protected void initialize() {
-//        voltage = tab.add("Elevator Native Voltage", 0.0).getEntry();
-//        velocity = tab.add("Elevator Native Velocity", 0.0).getEntry();
-//        Shuffleboard.startRecording();
+        voltage = new double[totalFrames];
+        velocity = new double[totalFrames];
+        currentFrame = -trim;
     }
 
     @Override
     protected void execute() {
-        elevator.setPercentOutput(timeSinceInitialized() * (0.25 / 12.0));
-//        voltage.setDouble(elevator.getOutputVoltage() / 12.0 * 1024);
-//        velocity.setDouble(elevator.getVelTPS() / 10.0);
+        double percentOutput = (reverse ? -1 : 1) * timeSinceInitialized() * (0.25 / 12.0);
+//        double percentOutput = timeSinceInitialized() * -(0.25 / 12.0);
+        elevator.setPercentOutput(percentOutput);
+        if (currentFrame < totalFrames && currentFrame >= 0) {
+            voltage[currentFrame] = elevator.getOutputVoltage() / 12 * 1023;
+            velocity[currentFrame] = elevator.getVelTPS() / 10;
+        }
+        System.out.println("Frame: " + currentFrame + ", Voltage: " + elevator.getOutputVoltage() + ", Velocity: " + elevator.getVelTPS());
+        currentFrame++;
     }
 
     @Override
     protected boolean isFinished() {
-        return !elevator.getFwdLimit();
+        return !(currentFrame < totalFrames);
     }
 
     @Override
     protected void end() {
-//        Shuffleboard.stopRecording();
-        elevator.setPercentOutput(0);
+        elevator.setPercentOutput(0.0);
+        regression = new LinearRegression(velocity, voltage);
+        System.out.println("Elev Result: " + regression.toString());
     }
 
 }

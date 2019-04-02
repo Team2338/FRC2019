@@ -9,14 +9,13 @@ import jaci.pathfinder.modifiers.TankModifier;
 import team.gif.lib.MiniPID;
 import team.gif.lib.drivers.Limelight;
 import team.gif.robot.Constants;
-import team.gif.robot.OI;
+import team.gif.robot.Robot;
 import team.gif.robot.subsystems.Drivetrain;
 
 public class FollowPathVision extends Command implements Runnable {
 
     private final Drivetrain drivetrain = Drivetrain.getInstance();
-    private final Limelight limelight = Limelight.getInstance();
-    private final TankModifier modifier;
+    private final Limelight limelight = Robot.limelight;
     private final EncoderFollower leftFollower;
     private final EncoderFollower rightFollower;
     private final MiniPID rotatePID;
@@ -25,7 +24,7 @@ public class FollowPathVision extends Command implements Runnable {
     private double initDist;
 
     public FollowPathVision(Trajectory trajectory, double visionDist) {
-        modifier = new TankModifier(trajectory).modify(Constants.Drivetrain.TRACK_WIDTH);
+        TankModifier modifier = new TankModifier(trajectory).modify(Constants.Drivetrain.TRACK_WIDTH);
         leftFollower = new EncoderFollower(modifier.getLeftTrajectory());
         rightFollower = new EncoderFollower(modifier.getRightTrajectory());
         rotatePID = new MiniPID(Constants.Drivetrain.ROTATE_P, Constants.Drivetrain.ROTATE_I, Constants.Drivetrain.ROTATE_D);
@@ -59,29 +58,28 @@ public class FollowPathVision extends Command implements Runnable {
         double leftOutput = leftFollower.calculate(drivetrain.getLeftPosTicks());
         double rightOutput = rightFollower.calculate(drivetrain.getRightPosTicks());
 
-        if (Math.abs(leftOutput) > 0.01) leftOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_LEFT_FWD, leftOutput);
-        if (Math.abs(rightOutput) > 0.01) rightOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_RIGHT_FWD, rightOutput);
+        if (Math.abs(leftOutput) > 0.01) { leftOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_LEFT_FWD, leftOutput); }
+        if (Math.abs(rightOutput) > 0.01) { rightOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_RIGHT_FWD, rightOutput); }
 
         double heading = Pathfinder.boundHalfDegrees(drivetrain.getHeadingDegrees());
         double headingTarget = Pathfinder.boundHalfDegrees(Math.toDegrees(leftFollower.getHeading()));
-        if (Math.abs(headingTarget - heading) > 180)  {
-            if (heading < 0) heading += 360;
-            if (heading > 0) heading -= 360;
+        double error = headingTarget - heading;
+        if (Math.abs(error) > 180) {
+            if (error > 0) {
+                error -= 360;
+            } else {
+                error += 360;
+            }
         }
 
-        double turn = rotatePID.getOutput(heading, headingTarget);
+        double turn = rotatePID.getOutput(-error, 0);
         if ((drivetrain.getLeftPosInches() + drivetrain.getRightPosInches()) / 2 - initDist > visionDist) {
-            turn = -limelight.getXOffset() * Constants.Drivetrain.VISION_P;
-//            System.out.println("Offset: " + limelight.getXOffset());
-//            System.out.println("Turn: " + turn);
+            if (limelight.hasTarget()) turn += -Constants.Drivetrain.VISION_P * limelight.getXOffset();
         }
+
+//        System.out.println("Heading: " + heading + ", Vision: " + limelight.getXOffset());
 
         drivetrain.setOutputs(leftOutput - turn, rightOutput + turn);
-    }
-
-    @Override
-    protected void execute() {
-
     }
 
     @Override
@@ -91,14 +89,8 @@ public class FollowPathVision extends Command implements Runnable {
 
     @Override
     protected void end() {
-//        limelight.setLEDMode(1);
-//        limelight.setCamMode(1);
-//        limelight.setPipeline(9);
         notifier.stop();
         notifier.close();
-
-        System.out.println("I am done with vision.");
-
         drivetrain.setOutputs(0.0, 0.0);
     }
 

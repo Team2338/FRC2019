@@ -14,23 +14,20 @@ import team.gif.robot.commands.drivetrain.FollowPathReverse;
 import team.gif.robot.commands.elevator.SetElevatorPosition;
 import team.gif.robot.subsystems.Drivetrain;
 
-public class RightShipNearHatch extends CommandGroup {
+public class LeftShipFrontHatch extends CommandGroup {
 
     private final Trajectory reverseApproach = Pathfinder.generate(new Waypoint[] {
-            AutoPosition.L1_RIGHT.getWaypoint(),
-            new Waypoint(AutoPosition.L1_RIGHT.getWaypoint().x + 48.275, AutoPosition.L1_RIGHT.getWaypoint().y, 0.0),
-            new Waypoint(AutoPosition.L1_RIGHT.getWaypoint().x + 158.275, -100.0, 0.0),
-            TargetPosition.RIGHT_SHIP_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2, 0.0, false)
+            AutoPosition.L1_LEFT.getRobotWaypoint(0),
+            AutoPosition.L1_LEFT.getRobotWaypoint(48.275),
+            TargetPosition.LEFT_SHIP_FRONT.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2, 0, false)
     }, Constants.Drivetrain.slowConfig);
 
     private final Trajectory loadingStation = Pathfinder.generate(new Waypoint[] {
-            TargetPosition.RIGHT_SHIP_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2, 0, true),
-            new Waypoint(AutoPosition.L1_RIGHT.getWaypoint().x + 158.275, -100.0, 180.0),
-            TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 24, 0, false)
+            TargetPosition.LEFT_SHIP_FRONT.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2, 0,true),
+            TargetPosition.LEFT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 24, -6, false),
     }, Constants.Drivetrain.normalConfig);
 
-
-    public RightShipNearHatch() {
+    public LeftShipFrontHatch() {
         addSequential(new FollowPathReverse(reverseApproach));
         addSequential(new SetDeploy(true));
         addParallel(new SetElevatorPosition(Constants.Elevator.HATCH_LOW_POS));

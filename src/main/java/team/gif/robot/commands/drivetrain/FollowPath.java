@@ -40,7 +40,7 @@ public class FollowPath extends Command implements Runnable {
                 Constants.Drivetrain.WHEEL_DIAMETER);
         rightFollower.configureEncoder(drivetrain.getRightPosTicks(), Constants.Drivetrain.TICKS_PER_REV,
                 Constants.Drivetrain.WHEEL_DIAMETER);
-        drivetrain.setBrakeMode(false);
+
         notifier.startPeriodic(0.01);
     }
 
@@ -49,26 +49,22 @@ public class FollowPath extends Command implements Runnable {
         double leftOutput = leftFollower.calculate(drivetrain.getLeftPosTicks());
         double rightOutput = rightFollower.calculate(drivetrain.getRightPosTicks());
 
-        if (Math.abs(leftOutput) > 0.01) leftOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_LEFT_FWD, leftOutput);
-        if (Math.abs(rightOutput) > 0.01) rightOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_RIGHT_FWD, rightOutput);
+        if (Math.abs(leftOutput) > 0.01) { leftOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_LEFT_FWD, leftOutput); }
+        if (Math.abs(rightOutput) > 0.01) { rightOutput += Math.copySign(Constants.Drivetrain.V_INTERCEPT_RIGHT_FWD, rightOutput); }
 
         double heading = Pathfinder.boundHalfDegrees(drivetrain.getHeadingDegrees());
         double headingTarget = Pathfinder.boundHalfDegrees(Math.toDegrees(leftFollower.getHeading()));
-//        heading = Math.copySign((headingTarget - heading) % 360, -heading);
-        if (Math.abs(headingTarget - heading) > 180)  {
-            if (heading < 0) heading += 360;
-            if (heading > 0) heading -= 360;
+        double error = headingTarget - heading;
+        if (Math.abs(error) > 180) {
+            if (error > 0) {
+                error -= 360;
+            } else {
+                error += 360;
+            }
         }
-        double turn = rotatePID.getOutput(heading, headingTarget);
 
-//        System.out.println(headingTarget - heading);
-
+        double turn = rotatePID.getOutput(-error, 0);
         drivetrain.setOutputs(leftOutput - turn, rightOutput + turn);
-    }
-
-    @Override
-    protected void execute() {
-
     }
 
     @Override
@@ -81,7 +77,6 @@ public class FollowPath extends Command implements Runnable {
         notifier.stop();
         notifier.close();
         drivetrain.setOutputs(0.0, 0.0);
-        drivetrain.setBrakeMode(true);
     }
 
 }

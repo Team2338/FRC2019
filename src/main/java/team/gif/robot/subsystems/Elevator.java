@@ -29,16 +29,24 @@ public class Elevator extends Subsystem {
     }
 
     public void setPercentOutput(double percent) {
-//        lift.set(ControlMode.PercentOutput, percent, DemandType.ArbitraryFeedForward, Constants.Elevator.GRAV_FEED_FORWARD);
         lift.set(ControlMode.PercentOutput, percent);
+//        lift.set(ControlMode.PercentOutput, percent);
     }
 
     public void setMotionMagic(double position) {
-        lift.set(ControlMode.MotionMagic, position, DemandType.ArbitraryFeedForward, Constants.Elevator.GRAV_FEED_FORWARD);
+        lift.set(ControlMode.MotionMagic, position);
     }
 
-    public void setMotionVelocity(int ticksPer100ms) {
+    public void setMotionMagic(double position, double arbitraryFeedForward) {
+        lift.set(ControlMode.MotionMagic, position, DemandType.ArbitraryFeedForward, arbitraryFeedForward);
+    }
+
+    public void setCruiseVelocity(int ticksPer100ms) {
         lift.configMotionCruiseVelocity(ticksPer100ms);
+    }
+
+    public void configF(double f) {
+        lift.config_kF(0, f);
     }
 
     public int getPosition() {
@@ -61,12 +69,20 @@ public class Elevator extends Subsystem {
         return lift.getMotorOutputVoltage();
     }
 
+    public double getOutputCommand() {
+        return lift.getMotorOutputPercent();
+    }
+
     public double getVelTPS() {
         return lift.getSelectedSensorVelocity() * 10.0;
     }
 
     public double getVelRPS() {
         return getVelTPS() * Constants.Drivetrain.TPS_TO_RPS;
+    }
+
+    public double getCurrent() {
+        return lift.getOutputCurrent();
     }
 
     public int getClosedLoopError() {
@@ -81,6 +97,7 @@ public class Elevator extends Subsystem {
         talon.enableVoltageCompensation(true);
         talon.setSensorPhase(true);
         talon.setInverted(false);
+        talon.setNeutralMode(NeutralMode.Brake);
 
         talon.config_kP(0, Constants.Elevator.P);
         talon.config_kI(0, Constants.Elevator.I);
@@ -88,6 +105,10 @@ public class Elevator extends Subsystem {
         talon.config_kF(0, Constants.Elevator.F);
         talon.configMotionCruiseVelocity(Constants.Elevator.MAX_VELOCITY);
         talon.configMotionAcceleration(Constants.Elevator.MAX_ACCELERATION);
+        talon.configNominalOutputForward(0);
+        talon.configNominalOutputReverse(0);
+        talon.configPeakOutputForward(1);
+        talon.configPeakOutputReverse(-1);
 
         talon.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyClosed);
         talon.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);

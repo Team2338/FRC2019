@@ -37,4 +37,6 @@ public abstract class RobotMap {
     // Sensors
     public static final int PIGEON_ID = 0; // CAN
     public static final int CLAW_BALL_SENSOR_ID = 0; // Analog Input
+    public static final int WORKING_PRESSURE_SENSOR_ID = 1;
+    public static final int STORED_PRESSURE_SENSOR_ID = 2;
 }

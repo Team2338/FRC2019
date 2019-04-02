@@ -10,12 +10,13 @@ import jaci.pathfinder.modifiers.TankModifier;
 import team.gif.lib.MiniPID;
 import team.gif.lib.drivers.Limelight;
 import team.gif.robot.Constants;
+import team.gif.robot.Robot;
 import team.gif.robot.subsystems.Drivetrain;
 
 public class VisionApproach extends Command implements Runnable {
 
     private final Drivetrain drivetrain = Drivetrain.getInstance();
-    private final Limelight limelight = Limelight.getInstance();
+    private final Limelight limelight = Robot.limelight;
     private TankModifier modifier;
     private EncoderFollower leftFollower;
     private EncoderFollower rightFollower;

@@ -22,7 +22,8 @@ public enum AutoPosition {
         return level;
     }
 
-    public Waypoint getWaypoint() {
-        return position;
+    public Waypoint getRobotWaypoint(double depthOffset) {
+        return new Waypoint(position.x + depthOffset * Math.cos(position.angle),
+                position.y + depthOffset * Math.sin(position.angle), position.angle);
     }
 }

@@ -10,16 +10,15 @@ public enum TargetPosition {
     RIGHT_ROCKET_MID(new Waypoint(229.125, -133.558, Math.toRadians(-90.0))),
     RIGHT_ROCKET_FAR(new Waypoint(243.759, -142.885, Math.toRadians(-151.233))),
     LEFT_SHIP_FRONT(new Waypoint(220.5, 10.875, Math.toRadians(0.0))),
-    LEFT_SHIP_NEAR(new Waypoint(261.0, 55.750, Math.toRadians(-90.0))),
-    LEFT_SHIP_MID(new Waypoint(282.75, 55.750, Math.toRadians(-90.0))),
-    LEFT_SHIP_FAR(new Waypoint(304.5, 55.750, Math.toRadians(-90.0))),
+    LEFT_SHIP_NEAR(new Waypoint(261.0, 28.875, Math.toRadians(-90.0))),
+    LEFT_SHIP_MID(new Waypoint(282.75, 28.875, Math.toRadians(-90.0))),
+    LEFT_SHIP_FAR(new Waypoint(304.5, 28.875, Math.toRadians(-90.0))),
     RIGHT_SHIP_FRONT(new Waypoint(220.5, -10.875, Math.toRadians(0.0))),
-    RIGHT_SHIP_NEAR(new Waypoint(261.0, -55.750, Math.toRadians(90.0))),
-    RIGHT_SHIP_MID(new Waypoint(282.75, -55.750, Math.toRadians(90.0))),
-    RIGHT_SHIP_FAR(new Waypoint(304.5, -55.750, Math.toRadians(90.0))),
+    RIGHT_SHIP_NEAR(new Waypoint(261.0, -28.875, Math.toRadians(90.0))),
+    RIGHT_SHIP_MID(new Waypoint(282.75, -28.875, Math.toRadians(90.0))),
+    RIGHT_SHIP_FAR(new Waypoint(304.5, -28.875, Math.toRadians(90.0))),
     LEFT_LOADING_STATION(new Waypoint(0.0, 135.285, Math.toRadians(180.0))),
     RIGHT_LOADING_STATION(new Waypoint(0.0, -135.285, Math.toRadians(180.0)));
-
 
     private Waypoint position;
 
@@ -42,5 +41,11 @@ public enum TargetPosition {
         return new Waypoint(position.x + depthOffset * Math.cos(position.angle) + horizOffset * Math.sin(position.angle),
                 position.y + depthOffset * Math.sin(position.angle) - horizOffset * Math.cos(position.angle),
                 invert ? Math.PI + position.angle : position.angle);
+    }
+
+    public Waypoint getRelativeWaypoint(double depthOffset, double horizOffset, double heading) {
+        return new Waypoint(position.x + depthOffset * Math.cos(position.angle) + horizOffset * Math.sin(position.angle),
+                position.y + depthOffset * Math.sin(position.angle) - horizOffset * Math.cos(position.angle),
+                heading);
     }
 }
