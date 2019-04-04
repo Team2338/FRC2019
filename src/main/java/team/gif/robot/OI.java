@@ -99,22 +99,22 @@ public class OI {
         aDPadRight.whenPressed(new SmartElevatorPosition(SmartElevatorPosition.GenericPosition.MID));
         aDPadUp.whenPressed(new SmartElevatorPosition(SmartElevatorPosition.GenericPosition.HIGH));
 
-        dLT.whenPressed(new VisionApproach());
+//        dLT.whenPressed(new VisionApproach());
 
         aTriggers.whenPressed(new Climb());
         aRB.whenPressed(new RaiseFront());
         aA.whileHeld(new RaiseRear());
 
-        dY.whenPressed(new ElevatorVoltageRampTest(35, false, 1300));
-        dA.whenPressed(new ElevatorVoltageRampTest(11.5, true, 150));
+//        dY.whenPressed(new ElevatorVoltageRampTest(35, false, 1300));
+//        dA.whenPressed(new ElevatorVoltageRampTest(11.5, true, 150));
 
 //        dX.whenPressed(new FollowPathReverse(backupAroundLeftRocket));
 //        dB.whenPressed(new FollowPathReverse(backupAroundRightRocket));
 
 //        dY.whenPressed(new Mobility(AutoPosition.L1_CENTER));
 //
-//        dA.whenPressed(new DriveVoltageRampTest(12.0, false, 5));
-//        dB.whenPressed(new DriveVoltageRampTest(12.0, true, 5));
+        dA.whenPressed(new DriveVoltageRampTest(11.0, false, 5));
+        dB.whenPressed(new DriveVoltageRampTest(11.0, true, 5));
     }
 
     public static OI getInstance() {

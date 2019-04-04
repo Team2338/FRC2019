@@ -22,19 +22,19 @@ public class CenterToRightShipFrontSideHatch extends CommandGroup {
     private final Trajectory reverseApproach = Pathfinder.generate(new Waypoint[] {
             AutoPosition.L1_CENTER.getRobotWaypoint(0),
             AutoPosition.L1_CENTER.getRobotWaypoint(48.275),
-            TargetPosition.RIGHT_SHIP_FRONT.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, 1, false)
+            TargetPosition.RIGHT_SHIP_FRONT.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, 1, false) // -4, 1
     }, Constants.Drivetrain.slowConfig);
 
     private final Trajectory loadingStation = Pathfinder.generate(new Waypoint[] {
             TargetPosition.RIGHT_SHIP_FRONT.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2, 0, true),
-            TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4 - 48, 1, false),
-            TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, 1, false)
+            TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4 - 48, 1, false), // -4 - 48, 1
+            TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, 1, false) // -4, 1
     }, Constants.Drivetrain.normalConfig);
 
     private final Trajectory reverseReturn = Pathfinder.generate(new Waypoint[] {
             TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, 0, true),
-            TargetPosition.RIGHT_SHIP_NEAR.getRelativeWaypoint(-Constants.Drivetrain.BUMPER_WIDTH / 2 - 12 + 12, -36 - 8, 0),
-            TargetPosition.RIGHT_SHIP_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 48 + 12, -8, true)
+            TargetPosition.RIGHT_SHIP_NEAR.getRelativeWaypoint(-Constants.Drivetrain.BUMPER_WIDTH / 2 - 12 + 12, -36 - 8, 0), // +12, -8
+            TargetPosition.RIGHT_SHIP_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 48 + 12, -8, true) // +12, -8
     }, Constants.Drivetrain.fastConfig);
 
     private final Trajectory finalApproach = Pathfinder.generate(new Waypoint[] {

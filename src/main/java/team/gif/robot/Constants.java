@@ -64,7 +64,7 @@ public abstract class Constants {
         public static final double BUMPER_WIDTH = 36.0;
         public static final double BUMPER_LENGTH = 36.0;
 
-        public static final double INPUT_DEADBAND = 0.02;
+        public static final double INPUT_DEADBAND = 0.05;
         public static final double QUICK_STOP_THRESHOLD = 0.2;
         public static final double QUICK_STOP_ALPHA = 0.1;
 
@@ -78,14 +78,14 @@ public abstract class Constants {
         public static final double ROTATE_I = 0.0;
         public static final double ROTATE_D = 0.0;
         public static final double VISION_P = 0.004;
-        public static final double V_LEFT_FWD = (Robot.isCompBot ? 0.0734 : 0.0704) / (WHEEL_DIAMETER * PI); // 0.0698
-        public static final double V_LEFT_REV = (Robot.isCompBot ? 0.0721 : 0.0704) / (WHEEL_DIAMETER * PI); // 0.0700
-        public static final double V_RIGHT_FWD = (Robot.isCompBot ? 0.0727 : 0.0705) / (WHEEL_DIAMETER * PI); // 0.0706
-        public static final double V_RIGHT_REV = (Robot.isCompBot ? 0.0735 : 0.0703) / (WHEEL_DIAMETER * PI); // 0.0696
-        public static final double V_INTERCEPT_LEFT_FWD = Robot.isCompBot ? 0.0193 : 0.0157; // 0.0164
-        public static final double V_INTERCEPT_LEFT_REV = Robot.isCompBot ? 0.0211 : 0.0145; // 0.0176
-        public static final double V_INTERCEPT_RIGHT_FWD = Robot.isCompBot ? 0.0208 : 0.0155; // 0.0164
-        public static final double V_INTERCEPT_RIGHT_REV = Robot.isCompBot ? 0.0193 : 0.0151; // 0.0176
+        public static final double V_LEFT_FWD = (Robot.isCompBot ? 0.0730 : 0.0704) / (WHEEL_DIAMETER * PI); // 0.0698
+        public static final double V_LEFT_REV = (Robot.isCompBot ? 0.0724 : 0.0704) / (WHEEL_DIAMETER * PI); // 0.0700
+        public static final double V_RIGHT_FWD = (Robot.isCompBot ? 0.0732 : 0.0705) / (WHEEL_DIAMETER * PI); // 0.0706
+        public static final double V_RIGHT_REV = (Robot.isCompBot ? 0.0737 : 0.0703) / (WHEEL_DIAMETER * PI); // 0.0696
+        public static final double V_INTERCEPT_LEFT_FWD = Robot.isCompBot ? 0.0149 : 0.0157; // 0.0164
+        public static final double V_INTERCEPT_LEFT_REV = Robot.isCompBot ? 0.0145 : 0.0145; // 0.0176
+        public static final double V_INTERCEPT_RIGHT_FWD = Robot.isCompBot ? 0.0144 : 0.0155; // 0.0164
+        public static final double V_INTERCEPT_RIGHT_REV = Robot.isCompBot ? 0.0141 : 0.0151; // 0.0176
         public static final double A_LEFT = 0.006 / (WHEEL_DIAMETER * PI); // 0.008
         public static final double A_RIGHT = 0.006 / (WHEEL_DIAMETER * PI); // 0.008
 
@@ -124,9 +124,9 @@ public abstract class Constants {
         private static final double CARGO_LOAD_HEIGHT_DIFF = 25.125;
         private static final int TICKS_PER_REV = 4096;
 
-        public static final int MIN_POS = Robot.isCompBot ? 3900 : 900; // C: 3900 P: 1000
-        public static final int MAX_POS = Robot.isCompBot ? 37400 : 34400; // C: 39000 P: 36000
-        public static final int HATCH_LOW_POS = Robot.isCompBot ? 9100 : 6100; // C: 9100 P: 6100
+        public static final int MIN_POS = Robot.isCompBot ? 200 : 900; // C: 3900 P: 1000
+        public static final int MAX_POS = Robot.isCompBot ? 33700 : 34400; // C: 37400 P: 34400
+        public static final int HATCH_LOW_POS = Robot.isCompBot ? 5400 : 6100; // C: 9100 P: 6100
         public static final int HATCH_MID_POS = (int)(HATCH_LOW_POS + PORT_HEIGHT_DIFF /
                 (DIAMETRICAL_PITCH * Math.PI) * TICKS_PER_REV / 2.0);
         public static final int HATCH_HIGH_POS = (int)(HATCH_MID_POS + PORT_HEIGHT_DIFF /

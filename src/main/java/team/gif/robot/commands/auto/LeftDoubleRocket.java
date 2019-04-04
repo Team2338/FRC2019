@@ -29,7 +29,7 @@ public class LeftDoubleRocket extends CommandGroup {
     private final Trajectory loadingStation = Pathfinder.generate(new Waypoint[] {
             TargetPosition.LEFT_ROCKET_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2, 0, true),
 //            TargetPosition.LEFT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 6 - 72, -5, false),
-            TargetPosition.LEFT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 6, -5, false)
+            TargetPosition.LEFT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 6, -3.5, false)
     }, Constants.Drivetrain.normalConfig);
 
     private final Trajectory backupAroundRocket = Pathfinder.generate(new Waypoint[] {

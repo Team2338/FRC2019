@@ -23,24 +23,24 @@ public class LeftShipFrontSideHatch extends CommandGroup {
     private final Trajectory reverseApproach = Pathfinder.generate(new Waypoint[] {
             AutoPosition.L1_LEFT.getRobotWaypoint(0),
             AutoPosition.L1_LEFT.getRobotWaypoint(48.275),
-            TargetPosition.LEFT_SHIP_FRONT.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, -3, false)
+            TargetPosition.LEFT_SHIP_FRONT.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, -3.5, false)
     }, Constants.Drivetrain.slowConfig);
 
     private final Trajectory loadingStation = Pathfinder.generate(new Waypoint[] {
             TargetPosition.LEFT_SHIP_FRONT.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2, 0, true),
-            TargetPosition.LEFT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 60, -5, false),
-            TargetPosition.LEFT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 2, -5, false)
+            TargetPosition.LEFT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 60, -6, false),
+            TargetPosition.LEFT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 2, -6, false)
     }, Constants.Drivetrain.normalConfig);
 
     private final Trajectory reverseReturn = Pathfinder.generate(new Waypoint[] {
             TargetPosition.LEFT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, 0, true),
-            TargetPosition.LEFT_SHIP_NEAR.getRelativeWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 20, 50, 0),
-            TargetPosition.LEFT_SHIP_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 60, 9, true)
+            TargetPosition.LEFT_SHIP_NEAR.getRelativeWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 20, 40 + 16, 0),
+            TargetPosition.LEFT_SHIP_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 60, 16, true)
     }, Constants.Drivetrain.fastConfig);
 
     private final Trajectory finalApproach = Pathfinder.generate(new Waypoint[] {
             TargetPosition.LEFT_SHIP_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 60, 0, false),
-            TargetPosition.LEFT_SHIP_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 6, 0, false)
+            TargetPosition.LEFT_SHIP_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4 - 12, 0, false)
     }, Constants.Drivetrain.slowConfig);
 
     public LeftShipFrontSideHatch() {

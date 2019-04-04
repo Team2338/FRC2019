@@ -22,19 +22,19 @@ public class RightShipFrontSideHatch extends CommandGroup {
     private final Trajectory reverseApproach = Pathfinder.generate(new Waypoint[] {
             AutoPosition.L1_RIGHT.getRobotWaypoint(0),
             AutoPosition.L1_RIGHT.getRobotWaypoint(48.275),
-            TargetPosition.RIGHT_SHIP_FRONT.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 3, 0.5, false)
+            TargetPosition.RIGHT_SHIP_FRONT.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 3, 1, false)
     }, Constants.Drivetrain.slowConfig);
 
     private final Trajectory loadingStation = Pathfinder.generate(new Waypoint[] {
             TargetPosition.RIGHT_SHIP_FRONT.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2, 0, true),
-            TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4 - 48, 1, false),
-            TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, 1, false)
+            TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4 - 60, 8, false),
+            TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 0, 8, false)
     }, Constants.Drivetrain.normalConfig);
 
     private final Trajectory reverseReturn = Pathfinder.generate(new Waypoint[] {
             TargetPosition.RIGHT_LOADING_STATION.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 4, 0, true),
-            TargetPosition.RIGHT_SHIP_NEAR.getRelativeWaypoint(-Constants.Drivetrain.BUMPER_WIDTH / 2 - 12 + 0, -36 - 6, 0),
-            TargetPosition.RIGHT_SHIP_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 12 - 36 + 0, -6, true)
+            TargetPosition.RIGHT_SHIP_NEAR.getRelativeWaypoint(-Constants.Drivetrain.BUMPER_WIDTH / 2 - 12 + 0, -36 - 9, 0),
+            TargetPosition.RIGHT_SHIP_NEAR.getRobotWaypoint(-Constants.Drivetrain.BUMPER_LENGTH / 2 - 12 - 36 + 0, -9, true)
     }, Constants.Drivetrain.fastConfig);
 
     private final Trajectory finalApproach = Pathfinder.generate(new Waypoint[] {
@@ -48,7 +48,7 @@ public class RightShipFrontSideHatch extends CommandGroup {
         addParallel(new SetClawMode(true));
         addParallel(new SetElevatorPosition(Constants.Elevator.HATCH_LOW_POS));
         addSequential(new BackEject(0.5));
-        addSequential(new FollowPathVision(loadingStation, 36));
+        addSequential(new FollowPathVision(loadingStation, 48));
         addParallel(new SmartCollect());
         addSequential(new WaitCommand(0.2));
         addSequential(new FollowPathReverse(reverseReturn));

@@ -40,9 +40,9 @@ public class Robot extends TimedRobot {
     private final AnalogInput storedPressureSensor = new AnalogInput(RobotMap.STORED_PRESSURE_SENSOR_ID);
 
     private ShuffleboardTab autoTab, teleopTab, debugTab;
-    private SendableChooser<AutoPosition> autoPositionChooser;
-    private SendableChooser<AutoMode> autoModeChooser;
-    private NetworkTableEntry workingPressureEntry, storedPressureEntry, headingEntry,
+    private SendableChooser<AutoPosition> autoPositionChooser = new SendableChooser<>();
+    private SendableChooser<AutoMode> autoModeChooser = new SendableChooser<>();
+    private NetworkTableEntry workingPressureEntry, storedPressureEntry, batteryVoltageEntry, matchTimeEntry, headingEntry,
             elevPosEntry, leftPosEntry, rightPosEntry, winchPosEntry;
 
     private AutoPosition selectedAutoPosition;
@@ -50,7 +50,7 @@ public class Robot extends TimedRobot {
     private Command auto;
     private boolean autoComplete;
 
-    public static final boolean isCompBot = false;
+    public static final boolean isCompBot = true;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -61,6 +61,7 @@ public class Robot extends TimedRobot {
         setupShuffleboard();
         selectedAutoPosition = autoPositionChooser.getSelected();
         selectedAutoMode = autoModeChooser.getSelected();
+        updateSelectedAuto();
 
         System.out.println("Robot Initialized. WPILib Version " + WPILibVersion.Version);
     }
@@ -76,7 +77,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         if (oi.dMenuButtons.get() || oi.aMenuButtons.get()) Scheduler.getInstance().removeAll();
-        updateShuffleboard();
+//        updateShuffleboard();
     }
 
     @Override
@@ -153,9 +154,6 @@ public class Robot extends TimedRobot {
         teleopTab = Shuffleboard.getTab("TeleOp");
         debugTab = Shuffleboard.getTab("Debug");
 
-        autoPositionChooser = new SendableChooser<>();
-        autoModeChooser = new SendableChooser<>();
-
         autoPositionChooser.setDefaultOption("L1: Left", AutoPosition.L1_LEFT);
         autoPositionChooser.addOption("L1: Center", AutoPosition.L1_CENTER);
         autoPositionChooser.addOption("L1: Right", AutoPosition.L1_RIGHT);
@@ -173,32 +171,41 @@ public class Robot extends TimedRobot {
         autoModeChooser.addOption("Manual Control", AutoMode.MANUAL);
         autoTab.add("Auto Mode", autoModeChooser).withWidget(BuiltInWidgets.kComboBoxChooser);
 
-        workingPressureEntry = teleopTab.add("Working Pressure", 0.0)
-                .withWidget(BuiltInWidgets.kDial)
-                .withProperties(Map.of("min", 45, "max", 75))
-                .withPosition(0, 0)
-                .getEntry();
-        storedPressureEntry = teleopTab.add("Stored Pressure", 0.0)
-                .withWidget(BuiltInWidgets.kDial)
-                .withProperties(Map.of("min", 60, "max", 120))
-                .withPosition(0, 1)
-                .getEntry();
-
-        headingEntry = debugTab.add("Heading", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
-        elevPosEntry = debugTab.add("Elev Pos", 0).getEntry();
-        leftPosEntry = debugTab.add("Left Pos", 0).getEntry();
-        rightPosEntry = debugTab.add("Right Pos", 0).getEntry();
-        winchPosEntry = debugTab.add("Winch Pos", 0).getEntry();
+//        workingPressureEntry = teleopTab.add("Working Pressure", 0.0)
+//                .withWidget(BuiltInWidgets.kDial)
+//                .withProperties(Map.of("min", 45, "max", 75))
+//                .withPosition(0, 0)
+//                .getEntry();
+//        storedPressureEntry = teleopTab.add("Stored Pressure", 0.0)
+//                .withWidget(BuiltInWidgets.kDial)
+//                .withProperties(Map.of("min", 60, "max", 120))
+//                .withPosition(0, 1)
+//                .getEntry();
+//        batteryVoltageEntry = teleopTab.add("Battery Voltage", 0.0)
+//                .withWidget(BuiltInWidgets.kNumberBar)
+//                .withPosition(9, 0)
+//                .withProperties(Map.of("min", 6, "max", 13))
+//                .getEntry();
+//        matchTimeEntry = teleopTab.add("Match Time", 0).getEntry();
+//
+//
+//        headingEntry = debugTab.add("Heading", 0).withWidget(BuiltInWidgets.kGyro).getEntry();
+//        elevPosEntry = debugTab.add("Elev Pos", 0).getEntry();
+//        leftPosEntry = debugTab.add("Left Pos", 0).getEntry();
+//        rightPosEntry = debugTab.add("Right Pos", 0).getEntry();
+//        winchPosEntry = debugTab.add("Winch Pos", 0).getEntry();
     }
 
     private void updateShuffleboard() {
-        workingPressureEntry.setNumber(250 * (workingPressureSensor.getAverageVoltage() / RobotController.getCurrent5V()) - 25);
-        storedPressureEntry.setNumber(250 * (storedPressureSensor.getAverageVoltage() / RobotController.getCurrent5V()) - 25);
-        headingEntry.setNumber(drivetrain.getHeadingDegrees());
-        elevPosEntry.setNumber(elevator.getPosition());
-        leftPosEntry.setNumber(drivetrain.getLeftPosTicks());
-        rightPosEntry.setNumber(drivetrain.getRightPosTicks());
-        winchPosEntry.setNumber(climber.getWinchPos());
+//        workingPressureEntry.setNumber(250 * (workingPressureSensor.getAverageVoltage() / RobotController.getVoltage5V()) - 25);
+//        storedPressureEntry.setNumber(250 * (storedPressureSensor.getAverageVoltage() / RobotController.getVoltage5V()) - 25);
+//        batteryVoltageEntry.setNumber(RobotController.getBatteryVoltage());
+//        matchTimeEntry.setNumber(DriverStation.getInstance().getMatchTime());
+//        headingEntry.setNumber(drivetrain.getHeadingDegrees());
+//        elevPosEntry.setNumber(elevator.getPosition());
+//        leftPosEntry.setNumber(drivetrain.getLeftPosTicks());
+//        rightPosEntry.setNumber(drivetrain.getRightPosTicks());
+//        winchPosEntry.setNumber(climber.getWinchPos());
     }
 
     /**
